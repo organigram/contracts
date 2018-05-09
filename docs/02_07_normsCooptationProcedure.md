@@ -14,6 +14,8 @@ There are three roles in this procedure:
 * Vetoers
 * Promulgators
 
+This procedure is largely derived from the [Vote on norms](02_05_voteOnNormsProcedure.md) procedure.
+
 ## Step 1: Creating a proposition
 Any outside member can ask to become a new member, using function createProposition(). This function takes 4 parameters in input:
 * ipfsHash, hash_function, and size: Used to store a reference to a file, possibly on IPFS. These will be checkable during the vote process, and they will be stored in the organ after promulgation. 

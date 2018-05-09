@@ -8,7 +8,7 @@ There are three roles in this contract:
 * Admins
 * Masters
 
-Organs are a part of the Kelsen framework [Kelsen.md](00_Kelsen.md)
+Organs are a part of the [Kelsen](00_Kelsen.md) framework
 
 ## 1. Norms
 
@@ -31,6 +31,7 @@ An admin is an address that can add, delete or replace a norm. It can be a contr
 * Retrieve the admin list using adminList[]
 * Check an admin privileges using isAdmin() which returns the permission to add, and to delete
 * An admin is added, deleted or replaced using addAdmin(), remAdmin(), and replaceAdmin(). Restricted to masters.
+Admins can also deposit or spend funds stored in the organ, with specific permissions (canDeposit and canSpend). Depositing funds is made by simply sending funds to the organ, while paying is made with the transfer() function.
 
 ## 3. Masters
 A master is an address that can add, delete or replace an admin. It can be a contract or a person.

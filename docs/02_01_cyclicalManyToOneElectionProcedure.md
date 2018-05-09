@@ -11,8 +11,8 @@ This is a [procedure](02_00_standardProcedure.md) of the [Kelsen](00_Kelsen.md) 
 
 ## Instructions
 The election is organized with function "CreateBallot". Each election can have a specific name. This will initialize a timer for two steps:
-  * 1. The candidacy period. 
-  * 2. The voting period. 
+  * The candidacy period. 
+  * The voting period. 
 
 The total number of elections can be retrieved with getBallotNumber().
 
