@@ -1,0 +1,274 @@
+{
+  "contractName": "Procedure",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "procedureTypeNumber",
+      "outputs": [
+        {
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "kelsenVersionNumber",
+      "outputs": [
+        {
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isAnOrgan",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isAProcedure",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6060604052341561000f57600080fd5b6101708061001e6000396000f300606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632647d7f9146100675780635dbe4d2814610090578063a8bef97a146100b9578063e80b30a5146100e6575b600080fd5b341561007257600080fd5b61007a610113565b6040518082815260200191505060405180910390f35b341561009b57600080fd5b6100a3610119565b6040518082815260200191505060405180910390f35b34156100c457600080fd5b6100cc61011f565b604051808215151515815260200191505060405180910390f35b34156100f157600080fd5b6100f9610132565b604051808215151515815260200191505060405180910390f35b60025481565b60005481565b600160009054906101000a900460ff1681565b6001809054906101000a900460ff16815600a165627a7a72305820ec2acec8a4f66df0b0dc1e3806b14961f54979032c7811ca1a3d5a3e2e8297d80029",
+  "deployedBytecode": "0x606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632647d7f9146100675780635dbe4d2814610090578063a8bef97a146100b9578063e80b30a5146100e6575b600080fd5b341561007257600080fd5b61007a610113565b6040518082815260200191505060405180910390f35b341561009b57600080fd5b6100a3610119565b6040518082815260200191505060405180910390f35b34156100c457600080fd5b6100cc61011f565b604051808215151515815260200191505060405180910390f35b34156100f157600080fd5b6100f9610132565b604051808215151515815260200191505060405180910390f35b60025481565b60005481565b600160009054906101000a900460ff1681565b6001809054906101000a900460ff16815600a165627a7a72305820ec2acec8a4f66df0b0dc1e3806b14961f54979032c7811ca1a3d5a3e2e8297d80029",
+  "sourceMap": "87:117:3:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "87:117:3:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;170:30;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;129::0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;165:21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;192:24;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;170:30:3;;;;:::o;129::0:-;;;;:::o;165:21::-;;;;;;;;;;;;;:::o;192:24::-;;;;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.4.11;\n\n/// @title Standard organ contract\n\nimport \"./Kelsen.sol\";\n\n\ncontract Procedure is Kelsen {\n    // Identifiers to adapt procedure interface\n    int public procedureTypeNumber;\n\n}\n",
+  "sourcePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
+  "ast": {
+    "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
+    "exportedSymbols": {
+      "Procedure": [
+        2146
+      ]
+    },
+    "id": 2147,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2140,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:3"
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/Kelsen.sol",
+        "file": "./Kelsen.sol",
+        "id": 2141,
+        "nodeType": "ImportDirective",
+        "scope": 2147,
+        "sourceUnit": 9,
+        "src": "62:22:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": [],
+            "baseName": {
+              "contractScope": null,
+              "id": 2142,
+              "name": "Kelsen",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 8,
+              "src": "109:6:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Kelsen_$8",
+                "typeString": "contract Kelsen"
+              }
+            },
+            "id": 2143,
+            "nodeType": "InheritanceSpecifier",
+            "src": "109:6:3"
+          }
+        ],
+        "contractDependencies": [
+          8
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2146,
+        "linearizedBaseContracts": [
+          2146,
+          8
+        ],
+        "name": "Procedure",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 2145,
+            "name": "procedureTypeNumber",
+            "nodeType": "VariableDeclaration",
+            "scope": 2146,
+            "src": "170:30:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_int256",
+              "typeString": "int256"
+            },
+            "typeName": {
+              "id": 2144,
+              "name": "int",
+              "nodeType": "ElementaryTypeName",
+              "src": "170:3:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_int256",
+                "typeString": "int256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2147,
+        "src": "87:117:3"
+      }
+    ],
+    "src": "0:205:3"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
+    "exportedSymbols": {
+      "Procedure": [
+        2146
+      ]
+    },
+    "id": 2147,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2140,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:3"
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/Kelsen.sol",
+        "file": "./Kelsen.sol",
+        "id": 2141,
+        "nodeType": "ImportDirective",
+        "scope": 2147,
+        "sourceUnit": 9,
+        "src": "62:22:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": [],
+            "baseName": {
+              "contractScope": null,
+              "id": 2142,
+              "name": "Kelsen",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 8,
+              "src": "109:6:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Kelsen_$8",
+                "typeString": "contract Kelsen"
+              }
+            },
+            "id": 2143,
+            "nodeType": "InheritanceSpecifier",
+            "src": "109:6:3"
+          }
+        ],
+        "contractDependencies": [
+          8
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2146,
+        "linearizedBaseContracts": [
+          2146,
+          8
+        ],
+        "name": "Procedure",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 2145,
+            "name": "procedureTypeNumber",
+            "nodeType": "VariableDeclaration",
+            "scope": 2146,
+            "src": "170:30:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_int256",
+              "typeString": "int256"
+            },
+            "typeName": {
+              "id": 2144,
+              "name": "int",
+              "nodeType": "ElementaryTypeName",
+              "src": "170:3:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_int256",
+                "typeString": "int256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2147,
+        "src": "87:117:3"
+      }
+    ],
+    "src": "0:205:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-05-09T14:16:34.463Z"
+}
