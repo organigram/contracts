@@ -12,6 +12,7 @@ contract deploySimpleNormNominationProcedure is simpleNormNominationProcedure {
     function deploySimpleNormNominationProcedure (address _authorizedNominatersOrgan) public {
 
     authorizedNominatersOrgan = _authorizedNominatersOrgan;
+    linkedOrgans = [authorizedNominatersOrgan];
     kelsenVersionNumber = 1;
     }
 }

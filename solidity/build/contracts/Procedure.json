@@ -56,26 +56,59 @@
       "payable": false,
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "linkedOrgans",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getLinkedOrgans",
+      "outputs": [
+        {
+          "name": "_linkedOrgans",
+          "type": "address[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
     }
   ],
-  "bytecode": "0x60606040526000600360006101000a81548160ff0219169083151502179055506001600360016101000a81548160ff021916908315150217905550341561004557600080fd5b610171806100546000396000f300606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632647d7f9146100675780635dbe4d2814610090578063a8bef97a146100b9578063e80b30a5146100e6575b600080fd5b341561007257600080fd5b61007a610113565b6040518082815260200191505060405180910390f35b341561009b57600080fd5b6100a3610119565b6040518082815260200191505060405180910390f35b34156100c457600080fd5b6100cc61011f565b604051808215151515815260200191505060405180910390f35b34156100f157600080fd5b6100f9610132565b604051808215151515815260200191505060405180910390f35b60025481565b60005481565b600360009054906101000a900460ff1681565b600360019054906101000a900460ff16815600a165627a7a72305820d1d885bcfabfc17b1e6af3ce4aec59e8a1d950d818af9386923f15d6f36ce8020029",
-  "deployedBytecode": "0x606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632647d7f9146100675780635dbe4d2814610090578063a8bef97a146100b9578063e80b30a5146100e6575b600080fd5b341561007257600080fd5b61007a610113565b6040518082815260200191505060405180910390f35b341561009b57600080fd5b6100a3610119565b6040518082815260200191505060405180910390f35b34156100c457600080fd5b6100cc61011f565b604051808215151515815260200191505060405180910390f35b34156100f157600080fd5b6100f9610132565b604051808215151515815260200191505060405180910390f35b60025481565b60005481565b600360009054906101000a900460ff1681565b600360019054906101000a900460ff16815600a165627a7a72305820d1d885bcfabfc17b1e6af3ce4aec59e8a1d950d818af9386923f15d6f36ce8020029",
-  "sourceMap": "87:188:17:-;;;230:5;206:29;;;;;;;;;;;;;;;;;;;;268:4;241:31;;;;;;;;;;;;;;;;;;;;87:188;;;;;;;;;;;;;;",
-  "deployedSourceMap": "87:188:17:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;170:30;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;129::0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;206:29:17;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;241:31;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;170:30;;;;:::o;129::0:-;;;;:::o;206:29:17:-;;;;;;;;;;;;;:::o;241:31::-;;;;;;;;;;;;;:::o",
-  "source": "pragma solidity ^0.4.11;\n\n/// @title Standard organ contract\n\nimport \"./Kelsen.sol\";\n\n\ncontract Procedure is Kelsen {\n    // Identifiers to adapt procedure interface\n    int public procedureTypeNumber;\n    bool public isAnOrgan = false;\n    bool public isAProcedure = true;\n}\n",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.11;\n\n/// @title Standard organ contract\n\nimport \"./Kelsen.sol\";\n\n\ncontract Procedure is Kelsen {\n    // Identifiers to adapt procedure interface\n    int public procedureTypeNumber;\n    address[] public linkedOrgans;\n    bool public isAnOrgan = false;\n    bool public isAProcedure = true;\n    function getLinkedOrgans() public view returns (address[] _linkedOrgans);\n}\n",
   "sourcePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
   "ast": {
     "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
     "exportedSymbols": {
       "Procedure": [
-        8587
+        7995
       ]
     },
-    "id": 8588,
+    "id": 7996,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8575,
+        "id": 7974,
         "literals": [
           "solidity",
           "^",
@@ -83,16 +116,16 @@
           ".11"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:17"
+        "src": "0:24:16"
       },
       {
         "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/Kelsen.sol",
         "file": "./Kelsen.sol",
-        "id": 8576,
+        "id": 7975,
         "nodeType": "ImportDirective",
-        "scope": 8588,
+        "scope": 7996,
         "sourceUnit": 9,
-        "src": "62:22:17",
+        "src": "62:22:16",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -102,19 +135,19 @@
             "arguments": [],
             "baseName": {
               "contractScope": null,
-              "id": 8577,
+              "id": 7976,
               "name": "Kelsen",
               "nodeType": "UserDefinedTypeName",
               "referencedDeclaration": 8,
-              "src": "109:6:17",
+              "src": "109:6:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_contract$_Kelsen_$8",
                 "typeString": "contract Kelsen"
               }
             },
-            "id": 8578,
+            "id": 7977,
             "nodeType": "InheritanceSpecifier",
-            "src": "109:6:17"
+            "src": "109:6:16"
           }
         ],
         "contractDependencies": [
@@ -122,10 +155,10 @@
         ],
         "contractKind": "contract",
         "documentation": null,
-        "fullyImplemented": true,
-        "id": 8587,
+        "fullyImplemented": false,
+        "id": 7995,
         "linearizedBaseContracts": [
-          8587,
+          7995,
           8
         ],
         "name": "Procedure",
@@ -133,11 +166,11 @@
         "nodes": [
           {
             "constant": false,
-            "id": 8580,
+            "id": 7979,
             "name": "procedureTypeNumber",
             "nodeType": "VariableDeclaration",
-            "scope": 8587,
-            "src": "170:30:17",
+            "scope": 7995,
+            "src": "170:30:16",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -145,10 +178,10 @@
               "typeString": "int256"
             },
             "typeName": {
-              "id": 8579,
+              "id": 7978,
               "name": "int",
               "nodeType": "ElementaryTypeName",
-              "src": "170:3:17",
+              "src": "170:3:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_int256",
                 "typeString": "int256"
@@ -159,11 +192,47 @@
           },
           {
             "constant": false,
-            "id": 8583,
+            "id": 7982,
+            "name": "linkedOrgans",
+            "nodeType": "VariableDeclaration",
+            "scope": 7995,
+            "src": "206:29:16",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[] storage ref"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 7980,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "206:7:16",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 7981,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "206:9:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[] storage pointer"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 7985,
             "name": "isAnOrgan",
             "nodeType": "VariableDeclaration",
-            "scope": 8587,
-            "src": "206:29:17",
+            "scope": 7995,
+            "src": "241:29:16",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -171,10 +240,10 @@
               "typeString": "bool"
             },
             "typeName": {
-              "id": 8581,
+              "id": 7983,
               "name": "bool",
               "nodeType": "ElementaryTypeName",
-              "src": "206:4:17",
+              "src": "241:4:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
                 "typeString": "bool"
@@ -183,14 +252,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "66616c7365",
-              "id": 8582,
+              "id": 7984,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "bool",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "230:5:17",
+              "src": "265:5:16",
               "subdenomination": null,
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
@@ -202,11 +271,11 @@
           },
           {
             "constant": false,
-            "id": 8586,
+            "id": 7988,
             "name": "isAProcedure",
             "nodeType": "VariableDeclaration",
-            "scope": 8587,
-            "src": "241:31:17",
+            "scope": 7995,
+            "src": "276:31:16",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -214,10 +283,10 @@
               "typeString": "bool"
             },
             "typeName": {
-              "id": 8584,
+              "id": 7986,
               "name": "bool",
               "nodeType": "ElementaryTypeName",
-              "src": "241:4:17",
+              "src": "276:4:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
                 "typeString": "bool"
@@ -226,14 +295,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "74727565",
-              "id": 8585,
+              "id": 7987,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "bool",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "268:4:17",
+              "src": "303:4:16",
               "subdenomination": null,
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
@@ -242,26 +311,91 @@
               "value": "true"
             },
             "visibility": "public"
+          },
+          {
+            "body": null,
+            "id": 7994,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getLinkedOrgans",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7989,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "337:2:16"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 7993,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7992,
+                  "name": "_linkedOrgans",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7994,
+                  "src": "361:23:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[] memory"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 7990,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "361:7:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 7991,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "361:9:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[] storage pointer"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "360:25:16"
+            },
+            "scope": 7995,
+            "src": "313:73:16",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
           }
         ],
-        "scope": 8588,
-        "src": "87:188:17"
+        "scope": 7996,
+        "src": "87:301:16"
       }
     ],
-    "src": "0:276:17"
+    "src": "0:389:16"
   },
   "legacyAST": {
     "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
     "exportedSymbols": {
       "Procedure": [
-        8587
+        7995
       ]
     },
-    "id": 8588,
+    "id": 7996,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8575,
+        "id": 7974,
         "literals": [
           "solidity",
           "^",
@@ -269,16 +403,16 @@
           ".11"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:17"
+        "src": "0:24:16"
       },
       {
         "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/Kelsen.sol",
         "file": "./Kelsen.sol",
-        "id": 8576,
+        "id": 7975,
         "nodeType": "ImportDirective",
-        "scope": 8588,
+        "scope": 7996,
         "sourceUnit": 9,
-        "src": "62:22:17",
+        "src": "62:22:16",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -288,19 +422,19 @@
             "arguments": [],
             "baseName": {
               "contractScope": null,
-              "id": 8577,
+              "id": 7976,
               "name": "Kelsen",
               "nodeType": "UserDefinedTypeName",
               "referencedDeclaration": 8,
-              "src": "109:6:17",
+              "src": "109:6:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_contract$_Kelsen_$8",
                 "typeString": "contract Kelsen"
               }
             },
-            "id": 8578,
+            "id": 7977,
             "nodeType": "InheritanceSpecifier",
-            "src": "109:6:17"
+            "src": "109:6:16"
           }
         ],
         "contractDependencies": [
@@ -308,10 +442,10 @@
         ],
         "contractKind": "contract",
         "documentation": null,
-        "fullyImplemented": true,
-        "id": 8587,
+        "fullyImplemented": false,
+        "id": 7995,
         "linearizedBaseContracts": [
-          8587,
+          7995,
           8
         ],
         "name": "Procedure",
@@ -319,11 +453,11 @@
         "nodes": [
           {
             "constant": false,
-            "id": 8580,
+            "id": 7979,
             "name": "procedureTypeNumber",
             "nodeType": "VariableDeclaration",
-            "scope": 8587,
-            "src": "170:30:17",
+            "scope": 7995,
+            "src": "170:30:16",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -331,10 +465,10 @@
               "typeString": "int256"
             },
             "typeName": {
-              "id": 8579,
+              "id": 7978,
               "name": "int",
               "nodeType": "ElementaryTypeName",
-              "src": "170:3:17",
+              "src": "170:3:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_int256",
                 "typeString": "int256"
@@ -345,11 +479,47 @@
           },
           {
             "constant": false,
-            "id": 8583,
+            "id": 7982,
+            "name": "linkedOrgans",
+            "nodeType": "VariableDeclaration",
+            "scope": 7995,
+            "src": "206:29:16",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_address_$dyn_storage",
+              "typeString": "address[] storage ref"
+            },
+            "typeName": {
+              "baseType": {
+                "id": 7980,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "206:7:16",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "id": 7981,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "206:9:16",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                "typeString": "address[] storage pointer"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 7985,
             "name": "isAnOrgan",
             "nodeType": "VariableDeclaration",
-            "scope": 8587,
-            "src": "206:29:17",
+            "scope": 7995,
+            "src": "241:29:16",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -357,10 +527,10 @@
               "typeString": "bool"
             },
             "typeName": {
-              "id": 8581,
+              "id": 7983,
               "name": "bool",
               "nodeType": "ElementaryTypeName",
-              "src": "206:4:17",
+              "src": "241:4:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
                 "typeString": "bool"
@@ -369,14 +539,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "66616c7365",
-              "id": 8582,
+              "id": 7984,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "bool",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "230:5:17",
+              "src": "265:5:16",
               "subdenomination": null,
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
@@ -388,11 +558,11 @@
           },
           {
             "constant": false,
-            "id": 8586,
+            "id": 7988,
             "name": "isAProcedure",
             "nodeType": "VariableDeclaration",
-            "scope": 8587,
-            "src": "241:31:17",
+            "scope": 7995,
+            "src": "276:31:16",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
@@ -400,10 +570,10 @@
               "typeString": "bool"
             },
             "typeName": {
-              "id": 8584,
+              "id": 7986,
               "name": "bool",
               "nodeType": "ElementaryTypeName",
-              "src": "241:4:17",
+              "src": "276:4:16",
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
                 "typeString": "bool"
@@ -412,14 +582,14 @@
             "value": {
               "argumentTypes": null,
               "hexValue": "74727565",
-              "id": 8585,
+              "id": 7987,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
               "kind": "bool",
               "lValueRequested": false,
               "nodeType": "Literal",
-              "src": "268:4:17",
+              "src": "303:4:16",
               "subdenomination": null,
               "typeDescriptions": {
                 "typeIdentifier": "t_bool",
@@ -428,13 +598,78 @@
               "value": "true"
             },
             "visibility": "public"
+          },
+          {
+            "body": null,
+            "id": 7994,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getLinkedOrgans",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 7989,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "337:2:16"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 7993,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 7992,
+                  "name": "_linkedOrgans",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 7994,
+                  "src": "361:23:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[] memory"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 7990,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "361:7:16",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 7991,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "361:9:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[] storage pointer"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "360:25:16"
+            },
+            "scope": 7995,
+            "src": "313:73:16",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
           }
         ],
-        "scope": 8588,
-        "src": "87:188:17"
+        "scope": 7996,
+        "src": "87:301:16"
       }
     ],
-    "src": "0:276:17"
+    "src": "0:389:16"
   },
   "compiler": {
     "name": "solc",
@@ -442,5 +677,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-05-14T09:52:50.140Z"
+  "updatedAt": "2018-05-14T12:23:13.889Z"
 }

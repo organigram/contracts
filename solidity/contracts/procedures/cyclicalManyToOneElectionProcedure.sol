@@ -24,6 +24,9 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     // Where are the voter registered
     address public referenceOrganContract;
 
+    // Gathering connected organs for easier DAO mapping
+    address[] public linkedOrgans;
+
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
     // Election frequency

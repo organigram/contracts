@@ -25,6 +25,9 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     // Organ in which final promulgators are listed
     address public finalPromulgatorsOrganContract;
 
+    // Gathering connected organs for easier DAO mapping
+    address[] public linkedOrgans;
+
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
 

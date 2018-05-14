@@ -155,11 +155,44 @@
     {
       "constant": true,
       "inputs": [],
+      "name": "getLinkedOrgans",
+      "outputs": [
+        {
+          "name": "_linkedOrgans",
+          "type": "address[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
       "name": "isAProcedure",
       "outputs": [
         {
           "name": "",
           "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "linkedOrgans",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
         }
       ],
       "payable": false,
@@ -178,24 +211,24 @@
       "type": "constructor"
     }
   ],
-  "bytecode": "0x60606040526000600360006101000a81548160ff0219169083151502179055506001600360016101000a81548160ff0219169083151502179055506003600455341561004a57600080fd5b604051602080610d7a8339810160405280805190602001909190505080600560006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550600160008190555050610cbb806100bf6000396000f30060606040526004361061008e576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632647d7f91461009357806326a1d187146100bc578063418414ff146100fe5780635dbe4d28146101d25780637d3575f0146101fb578063a587f936146102c4578063a8bef97a14610319578063e80b30a514610346575b600080fd5b341561009e57600080fd5b6100a6610373565b6040518082815260200191505060405180910390f35b34156100c757600080fd5b6100fc600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091908035906020019091905050610379565b005b341561010957600080fd5b6101bc600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919080356000191690602001909190803560ff1690602001909190803560ff169060200190919050506105d0565b6040518082815260200191505060405180910390f35b34156101dd57600080fd5b6101e561090b565b6040518082815260200191505060405180910390f35b341561020657600080fd5b6102c2600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001909190803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919080356000191690602001909190803560ff1690602001909190803560ff16906020019091905050610911565b005b34156102cf57600080fd5b6102d7610c43565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561032457600080fd5b61032c610c69565b604051808215151515815260200191505060405180910390f35b341561035157600080fd5b610359610c7c565b604051808215151515815260200191505060405180910390f35b60045481565b600080600080600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1693508373ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b151561044757600080fd5b6102c65a03f1151561045857600080fd5b50505060405180519050151561046d57600080fd5b600093508592508273ffffffffffffffffffffffffffffffffffffffff166324d7806c306000604051604001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019150506040805180830381600087803b151561051657600080fd5b6102c65a03f1151561052757600080fd5b50505060405180519060200180519050809250819350505080156105c8578273ffffffffffffffffffffffffffffffffffffffff16630e9defff866040518263ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040180828152602001915050600060405180830381600087803b15156105b357600080fd5b6102c65a03f115156105c457600080fd5b5050505b505050505050565b6000806000806000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1693508373ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b15156106a057600080fd5b6102c65a03f115156106b157600080fd5b5050506040518051905015156106c657600080fd5b600093508a92508273ffffffffffffffffffffffffffffffffffffffff166324d7806c306000604051604001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019150506040805180830381600087803b151561076f57600080fd5b6102c65a03f1151561078057600080fd5b50505060405180519060200180519050809250819350505081156108fc578273ffffffffffffffffffffffffffffffffffffffff1663696c52198b8b8b8b8b6000604051602001526040518663ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018060200185600019166000191681526020018460ff1660ff1681526020018360ff1660ff168152602001828103825286818151815260200191508051906020019080838360005b8381101561088b578082015181840152602081019050610870565b50505050905090810190601f1680156108b85780820380516001836020036101000a031916815260200191505b509650505050505050602060405180830381600087803b15156108da57600080fd5b6102c65a03f115156108eb57600080fd5b5050506040518051905094506108fd565b5b505050509695505050505050565b60005481565b600080600080600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1693508373ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b15156109df57600080fd5b6102c65a03f115156109f057600080fd5b505050604051805190501515610a0557600080fd5b600093508a92508273ffffffffffffffffffffffffffffffffffffffff166324d7806c306000604051604001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019150506040805180830381600087803b1515610aae57600080fd5b6102c65a03f11515610abf57600080fd5b505050604051805190602001805190508092508193505050818015610ae15750805b15610c36578273ffffffffffffffffffffffffffffffffffffffff1663cd26b87b8b8b8b8b8b8b6040518763ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808781526020018673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018060200185600019166000191681526020018460ff1660ff1681526020018360ff1660ff168152602001828103825286818151815260200191508051906020019080838360005b83811015610bd1578082015181840152602081019050610bb6565b50505050905090810190601f168015610bfe5780820380516001836020036101000a031916815260200191505b50975050505050505050600060405180830381600087803b1515610c2157600080fd5b6102c65a03f11515610c3257600080fd5b5050505b5050505050505050505050565b600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b600360009054906101000a900460ff1681565b600360019054906101000a900460ff16815600a165627a7a7230582011ddcf0feeaa0279a8eae4318f48bbd2e5b9d80a91bca2bd25c290df6416d3230029",
-  "deployedBytecode": "0x60606040526004361061008e576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632647d7f91461009357806326a1d187146100bc578063418414ff146100fe5780635dbe4d28146101d25780637d3575f0146101fb578063a587f936146102c4578063a8bef97a14610319578063e80b30a514610346575b600080fd5b341561009e57600080fd5b6100a6610373565b6040518082815260200191505060405180910390f35b34156100c757600080fd5b6100fc600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091908035906020019091905050610379565b005b341561010957600080fd5b6101bc600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919080356000191690602001909190803560ff1690602001909190803560ff169060200190919050506105d0565b6040518082815260200191505060405180910390f35b34156101dd57600080fd5b6101e561090b565b6040518082815260200191505060405180910390f35b341561020657600080fd5b6102c2600480803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001909190803573ffffffffffffffffffffffffffffffffffffffff1690602001909190803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919080356000191690602001909190803560ff1690602001909190803560ff16906020019091905050610911565b005b34156102cf57600080fd5b6102d7610c43565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561032457600080fd5b61032c610c69565b604051808215151515815260200191505060405180910390f35b341561035157600080fd5b610359610c7c565b604051808215151515815260200191505060405180910390f35b60045481565b600080600080600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1693508373ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b151561044757600080fd5b6102c65a03f1151561045857600080fd5b50505060405180519050151561046d57600080fd5b600093508592508273ffffffffffffffffffffffffffffffffffffffff166324d7806c306000604051604001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019150506040805180830381600087803b151561051657600080fd5b6102c65a03f1151561052757600080fd5b50505060405180519060200180519050809250819350505080156105c8578273ffffffffffffffffffffffffffffffffffffffff16630e9defff866040518263ffffffff167c010000000000000000000000000000000000000000000000000000000002815260040180828152602001915050600060405180830381600087803b15156105b357600080fd5b6102c65a03f115156105c457600080fd5b5050505b505050505050565b6000806000806000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1693508373ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b15156106a057600080fd5b6102c65a03f115156106b157600080fd5b5050506040518051905015156106c657600080fd5b600093508a92508273ffffffffffffffffffffffffffffffffffffffff166324d7806c306000604051604001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019150506040805180830381600087803b151561076f57600080fd5b6102c65a03f1151561078057600080fd5b50505060405180519060200180519050809250819350505081156108fc578273ffffffffffffffffffffffffffffffffffffffff1663696c52198b8b8b8b8b6000604051602001526040518663ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018060200185600019166000191681526020018460ff1660ff1681526020018360ff1660ff168152602001828103825286818151815260200191508051906020019080838360005b8381101561088b578082015181840152602081019050610870565b50505050905090810190601f1680156108b85780820380516001836020036101000a031916815260200191505b509650505050505050602060405180830381600087803b15156108da57600080fd5b6102c65a03f115156108eb57600080fd5b5050506040518051905094506108fd565b5b505050509695505050505050565b60005481565b600080600080600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1693508373ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b15156109df57600080fd5b6102c65a03f115156109f057600080fd5b505050604051805190501515610a0557600080fd5b600093508a92508273ffffffffffffffffffffffffffffffffffffffff166324d7806c306000604051604001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019150506040805180830381600087803b1515610aae57600080fd5b6102c65a03f11515610abf57600080fd5b505050604051805190602001805190508092508193505050818015610ae15750805b15610c36578273ffffffffffffffffffffffffffffffffffffffff1663cd26b87b8b8b8b8b8b8b6040518763ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808781526020018673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018060200185600019166000191681526020018460ff1660ff1681526020018360ff1660ff168152602001828103825286818151815260200191508051906020019080838360005b83811015610bd1578082015181840152602081019050610bb6565b50505050905090810190601f168015610bfe5780820380516001836020036101000a031916815260200191505b50975050505050505050600060405180830381600087803b1515610c2157600080fd5b6102c65a03f11515610c3257600080fd5b5050505b5050505050505050505050565b600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b600360009054906101000a900460ff1681565b600360019054906101000a900460ff16815600a165627a7a7230582011ddcf0feeaa0279a8eae4318f48bbd2e5b9d80a91bca2bd25c290df6416d3230029",
-  "sourceMap": "139:273:6:-;;;230:5:17;206:29;;;;;;;;;;;;;;;;;;;;268:4;241:31;;;;;;;;;;;;;;;;;;;;535:1:13;502:34;;224:186:6;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;348:26;320:25;;:54;;;;;;;;;;;;;;;;;;402:1;380:19;:23;;;;224:186;139:273;;;;;;",
-  "deployedSourceMap": "139:273:6:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;502:34:13;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1507:719;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;639:863;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;129:30:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2231:895:13;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;587:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;206:29:17;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;241:31;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;502:34:13;;;;:::o;1507:719::-;1624:34;1897:25;1954:11;1975:14;1667:25;;;;;;;;;;;1624:69;;1711:28;:35;;;1747:10;1711:47;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1703:56;;;;;;;;1769:35;;;1931:12;1897:47;;2021:19;:27;;;2057:4;2021:42;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1999:64;;;;;;;;2142:9;2138:81;;;2168:19;:27;;;2196:11;2168:40;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2138:81;1507:719;;;;;;:::o;639:863::-;784:18;857:34;1130:25;1187:11;1208:14;900:25;;;;;;;;;;;857:69;;944:28;:35;;;980:10;944:47;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;936:56;;;;;;;;1002:35;;;1164:12;1130:47;;1254:19;:27;;;1290:4;1254:42;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1232:64;;;;;;;;1373:6;1369:126;;;1403:19;:27;;;1431:11;1444:5;1451:9;1462:14;1478:5;1403:81;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:2;8:100;;;99:1;94:3;90;84:5;80:1;75:3;71;64:6;52:2;49:1;45:3;40:15;;8:100;;;12:14;3:109;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1396:88:13;;;;1369:126;639:863;;;;;;;;;;;;;:::o;129:30:0:-;;;;:::o;2231:895:13:-;2447:34;2720:25;2777:11;2798:14;2490:25;;;;;;;;;;;2447:69;;2534:28;:35;;;2570:10;2534:47;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2526:56;;;;;;;;2592:35;;;2754:12;2720:47;;2844:19;:27;;;2880:4;2844:42;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2822:64;;;;;;;;2959:6;:19;;;;;2969:9;2959:19;2955:156;;;2995:19;:31;;;3027:14;3043;3059:5;3066:9;3077:14;3093:5;2995:104;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:2;8:100;;;99:1;94:3;90;84:5;80:1;75:3;71;64:6;52:2;49:1;45:3;40:15;;8:100;;;12:14;3:109;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2955:156:13;2231:895;;;;;;;;;;;:::o;587:40::-;;;;;;;;;;;;;:::o;206:29:17:-;;;;;;;;;;;;;:::o;241:31::-;;;;;;;;;;;;;:::o",
-  "source": "pragma solidity ^0.4.11;\n\n// Standard contract for a constitutionnal reform\n\nimport \"../procedures/simpleNormNominationProcedure.sol\";\n\n\n\n\ncontract deploySimpleNormNominationProcedure is simpleNormNominationProcedure {\n\n    function deploySimpleNormNominationProcedure (address _authorizedNominatersOrgan) public {\n\n    authorizedNominatersOrgan = _authorizedNominatersOrgan;\n    kelsenVersionNumber = 1;\n    }\n}\n",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.4.11;\n\n// Standard contract for a constitutionnal reform\n\nimport \"../procedures/simpleNormNominationProcedure.sol\";\n\n\n\n\ncontract deploySimpleNormNominationProcedure is simpleNormNominationProcedure {\n\n    function deploySimpleNormNominationProcedure (address _authorizedNominatersOrgan) public {\n\n    authorizedNominatersOrgan = _authorizedNominatersOrgan;\n    linkedOrgans = [authorizedNominatersOrgan];\n    kelsenVersionNumber = 1;\n    }\n}\n",
   "sourcePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/deploy/deploySimpleNormNominationProcedure.sol",
   "ast": {
     "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/deploy/deploySimpleNormNominationProcedure.sol",
     "exportedSymbols": {
       "deploySimpleNormNominationProcedure": [
-        296
+        107
       ]
     },
-    "id": 297,
+    "id": 108,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 278,
+        "id": 84,
         "literals": [
           "solidity",
           "^",
@@ -203,16 +236,16 @@
           ".11"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:6"
+        "src": "0:24:2"
       },
       {
         "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/procedures/simpleNormNominationProcedure.sol",
         "file": "../procedures/simpleNormNominationProcedure.sol",
-        "id": 279,
+        "id": 85,
         "nodeType": "ImportDirective",
-        "scope": 297,
-        "sourceUnit": 4950,
-        "src": "77:57:6",
+        "scope": 108,
+        "sourceUnit": 4837,
+        "src": "77:57:2",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -222,34 +255,34 @@
             "arguments": [],
             "baseName": {
               "contractScope": null,
-              "id": 280,
+              "id": 86,
               "name": "simpleNormNominationProcedure",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 4949,
-              "src": "187:29:6",
+              "referencedDeclaration": 4836,
+              "src": "187:29:2",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_simpleNormNominationProcedure_$4949",
+                "typeIdentifier": "t_contract$_simpleNormNominationProcedure_$4836",
                 "typeString": "contract simpleNormNominationProcedure"
               }
             },
-            "id": 281,
+            "id": 87,
             "nodeType": "InheritanceSpecifier",
-            "src": "187:29:6"
+            "src": "187:29:2"
           }
         ],
         "contractDependencies": [
           8,
-          4949,
-          8587
+          4836,
+          9425
         ],
         "contractKind": "contract",
         "documentation": null,
-        "fullyImplemented": true,
-        "id": 296,
+        "fullyImplemented": false,
+        "id": 107,
         "linearizedBaseContracts": [
-          296,
-          4949,
-          8587,
+          107,
+          4836,
+          9425,
           8
         ],
         "name": "deploySimpleNormNominationProcedure",
@@ -257,26 +290,26 @@
         "nodes": [
           {
             "body": {
-              "id": 294,
+              "id": 105,
               "nodeType": "Block",
-              "src": "313:97:6",
+              "src": "313:145:2",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 288,
+                    "id": 94,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 286,
+                      "id": 92,
                       "name": "authorizedNominatersOrgan",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 4747,
-                      "src": "320:25:6",
+                      "referencedDeclaration": 4631,
+                      "src": "320:25:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -286,43 +319,106 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 287,
+                      "id": 93,
                       "name": "_authorizedNominatersOrgan",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 283,
-                      "src": "348:26:6",
+                      "referencedDeclaration": 89,
+                      "src": "348:26:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "320:54:6",
+                    "src": "320:54:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 289,
+                  "id": 95,
                   "nodeType": "ExpressionStatement",
-                  "src": "320:54:6"
+                  "src": "320:54:2"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 292,
+                    "id": 99,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 290,
+                      "id": 96,
+                      "name": "linkedOrgans",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4634,
+                      "src": "380:12:2",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                        "typeString": "address[] storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "components": [
+                        {
+                          "argumentTypes": null,
+                          "id": 97,
+                          "name": "authorizedNominatersOrgan",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4631,
+                          "src": "396:25:2",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        }
+                      ],
+                      "id": 98,
+                      "isConstant": false,
+                      "isInlineArray": true,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "TupleExpression",
+                      "src": "395:27:2",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$1_memory_ptr",
+                        "typeString": "address[1] memory"
+                      }
+                    },
+                    "src": "380:42:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                      "typeString": "address[] storage ref"
+                    }
+                  },
+                  "id": 100,
+                  "nodeType": "ExpressionStatement",
+                  "src": "380:42:2"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 103,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 101,
                       "name": "kelsenVersionNumber",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3,
-                      "src": "380:19:6",
+                      "src": "428:19:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_int256",
                         "typeString": "int256"
@@ -333,14 +429,14 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "31",
-                      "id": 291,
+                      "id": 102,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "402:1:6",
+                      "src": "450:1:2",
                       "subdenomination": null,
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_1_by_1",
@@ -348,19 +444,19 @@
                       },
                       "value": "1"
                     },
-                    "src": "380:23:6",
+                    "src": "428:23:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
                     }
                   },
-                  "id": 293,
+                  "id": 104,
                   "nodeType": "ExpressionStatement",
-                  "src": "380:23:6"
+                  "src": "428:23:2"
                 }
               ]
             },
-            "id": 295,
+            "id": 106,
             "implemented": true,
             "isConstructor": true,
             "isDeclaredConst": false,
@@ -368,16 +464,16 @@
             "name": "deploySimpleNormNominationProcedure",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 284,
+              "id": 90,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 283,
+                  "id": 89,
                   "name": "_authorizedNominatersOrgan",
                   "nodeType": "VariableDeclaration",
-                  "scope": 295,
-                  "src": "270:34:6",
+                  "scope": 106,
+                  "src": "270:34:2",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -385,10 +481,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 282,
+                    "id": 88,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "270:7:6",
+                    "src": "270:7:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -398,40 +494,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "269:36:6"
+              "src": "269:36:2"
             },
             "payable": false,
             "returnParameters": {
-              "id": 285,
+              "id": 91,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "313:0:6"
+              "src": "313:0:2"
             },
-            "scope": 296,
-            "src": "224:186:6",
+            "scope": 107,
+            "src": "224:234:2",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 297,
-        "src": "139:273:6"
+        "scope": 108,
+        "src": "139:321:2"
       }
     ],
-    "src": "0:413:6"
+    "src": "0:461:2"
   },
   "legacyAST": {
     "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/deploy/deploySimpleNormNominationProcedure.sol",
     "exportedSymbols": {
       "deploySimpleNormNominationProcedure": [
-        296
+        107
       ]
     },
-    "id": 297,
+    "id": 108,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 278,
+        "id": 84,
         "literals": [
           "solidity",
           "^",
@@ -439,16 +535,16 @@
           ".11"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:24:6"
+        "src": "0:24:2"
       },
       {
         "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/procedures/simpleNormNominationProcedure.sol",
         "file": "../procedures/simpleNormNominationProcedure.sol",
-        "id": 279,
+        "id": 85,
         "nodeType": "ImportDirective",
-        "scope": 297,
-        "sourceUnit": 4950,
-        "src": "77:57:6",
+        "scope": 108,
+        "sourceUnit": 4837,
+        "src": "77:57:2",
         "symbolAliases": [],
         "unitAlias": ""
       },
@@ -458,34 +554,34 @@
             "arguments": [],
             "baseName": {
               "contractScope": null,
-              "id": 280,
+              "id": 86,
               "name": "simpleNormNominationProcedure",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 4949,
-              "src": "187:29:6",
+              "referencedDeclaration": 4836,
+              "src": "187:29:2",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_simpleNormNominationProcedure_$4949",
+                "typeIdentifier": "t_contract$_simpleNormNominationProcedure_$4836",
                 "typeString": "contract simpleNormNominationProcedure"
               }
             },
-            "id": 281,
+            "id": 87,
             "nodeType": "InheritanceSpecifier",
-            "src": "187:29:6"
+            "src": "187:29:2"
           }
         ],
         "contractDependencies": [
           8,
-          4949,
-          8587
+          4836,
+          9425
         ],
         "contractKind": "contract",
         "documentation": null,
-        "fullyImplemented": true,
-        "id": 296,
+        "fullyImplemented": false,
+        "id": 107,
         "linearizedBaseContracts": [
-          296,
-          4949,
-          8587,
+          107,
+          4836,
+          9425,
           8
         ],
         "name": "deploySimpleNormNominationProcedure",
@@ -493,26 +589,26 @@
         "nodes": [
           {
             "body": {
-              "id": 294,
+              "id": 105,
               "nodeType": "Block",
-              "src": "313:97:6",
+              "src": "313:145:2",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 288,
+                    "id": 94,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 286,
+                      "id": 92,
                       "name": "authorizedNominatersOrgan",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 4747,
-                      "src": "320:25:6",
+                      "referencedDeclaration": 4631,
+                      "src": "320:25:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
@@ -522,43 +618,106 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "id": 287,
+                      "id": 93,
                       "name": "_authorizedNominatersOrgan",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 283,
-                      "src": "348:26:6",
+                      "referencedDeclaration": 89,
+                      "src": "348:26:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
                         "typeString": "address"
                       }
                     },
-                    "src": "320:54:6",
+                    "src": "320:54:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
                   },
-                  "id": 289,
+                  "id": 95,
                   "nodeType": "ExpressionStatement",
-                  "src": "320:54:6"
+                  "src": "320:54:2"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 292,
+                    "id": 99,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "argumentTypes": null,
-                      "id": 290,
+                      "id": 96,
+                      "name": "linkedOrgans",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4634,
+                      "src": "380:12:2",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                        "typeString": "address[] storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "components": [
+                        {
+                          "argumentTypes": null,
+                          "id": 97,
+                          "name": "authorizedNominatersOrgan",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4631,
+                          "src": "396:25:2",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        }
+                      ],
+                      "id": 98,
+                      "isConstant": false,
+                      "isInlineArray": true,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "TupleExpression",
+                      "src": "395:27:2",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$1_memory_ptr",
+                        "typeString": "address[1] memory"
+                      }
+                    },
+                    "src": "380:42:2",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                      "typeString": "address[] storage ref"
+                    }
+                  },
+                  "id": 100,
+                  "nodeType": "ExpressionStatement",
+                  "src": "380:42:2"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 103,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 101,
                       "name": "kelsenVersionNumber",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
                       "referencedDeclaration": 3,
-                      "src": "380:19:6",
+                      "src": "428:19:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_int256",
                         "typeString": "int256"
@@ -569,14 +728,14 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "31",
-                      "id": 291,
+                      "id": 102,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
                       "kind": "number",
                       "lValueRequested": false,
                       "nodeType": "Literal",
-                      "src": "402:1:6",
+                      "src": "450:1:2",
                       "subdenomination": null,
                       "typeDescriptions": {
                         "typeIdentifier": "t_rational_1_by_1",
@@ -584,19 +743,19 @@
                       },
                       "value": "1"
                     },
-                    "src": "380:23:6",
+                    "src": "428:23:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
                     }
                   },
-                  "id": 293,
+                  "id": 104,
                   "nodeType": "ExpressionStatement",
-                  "src": "380:23:6"
+                  "src": "428:23:2"
                 }
               ]
             },
-            "id": 295,
+            "id": 106,
             "implemented": true,
             "isConstructor": true,
             "isDeclaredConst": false,
@@ -604,16 +763,16 @@
             "name": "deploySimpleNormNominationProcedure",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 284,
+              "id": 90,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 283,
+                  "id": 89,
                   "name": "_authorizedNominatersOrgan",
                   "nodeType": "VariableDeclaration",
-                  "scope": 295,
-                  "src": "270:34:6",
+                  "scope": 106,
+                  "src": "270:34:2",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -621,10 +780,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 282,
+                    "id": 88,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "270:7:6",
+                    "src": "270:7:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
@@ -634,27 +793,27 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "269:36:6"
+              "src": "269:36:2"
             },
             "payable": false,
             "returnParameters": {
-              "id": 285,
+              "id": 91,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "313:0:6"
+              "src": "313:0:2"
             },
-            "scope": 296,
-            "src": "224:186:6",
+            "scope": 107,
+            "src": "224:234:2",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 297,
-        "src": "139:273:6"
+        "scope": 108,
+        "src": "139:321:2"
       }
     ],
-    "src": "0:413:6"
+    "src": "0:461:2"
   },
   "compiler": {
     "name": "solc",
@@ -662,5 +821,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-05-14T09:52:50.046Z"
+  "updatedAt": "2018-05-14T12:18:21.821Z"
 }

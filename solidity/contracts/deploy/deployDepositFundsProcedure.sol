@@ -15,6 +15,7 @@ function deployDepositFundsProcedure (address _authorizedDepositors, address _de
 
     authorizedDepositorsOrganContract = _authorizedDepositors;
     defaultReceivingOrganContract = _defaultReceivingOrgan;
+    linkedOrgans = [defaultReceivingOrganContract,authorizedDepositorsOrganContract];
 
     kelsenVersionNumber = 1;
 

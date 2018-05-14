@@ -16,6 +16,7 @@ contract deployNormsCooptationProcedure is normsCooptationProcedure {
     membersOrganContract = _membersOrganContract;
     membersWithVetoOrganContract = _membersWithVetoOrganContract;
     finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 
+    linkedOrgans = [finalPromulgatorsOrganContract,membersWithVetoOrganContract,membersOrganContract];
 
     quorumSize = _quorumSize;
     minimumDepositSize = 1000;

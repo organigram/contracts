@@ -17,6 +17,8 @@ function deployVoteOnNormsProcedure (address _affectedOrganContract, address _vo
     votersOrganContract = _votersOrganContract;
     membersWithVetoOrganContract = _membersWithVetoOrganContract;
     finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 
+    linkedOrgans = [affectedOrganContract,votersOrganContract,membersWithVetoOrganContract,finalPromulgatorsOrganContract];
+
 
     quorumSize = _quorumSize;
     // votingPeriodDuration = 3 minutes;

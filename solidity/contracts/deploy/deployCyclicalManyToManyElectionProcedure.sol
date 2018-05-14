@@ -28,6 +28,9 @@ contract deployCyclicalManyToManyElectionProcedure is cyclicalManyToManyElection
     referenceOrganContract = _referenceOrganContract;
     // Adress of president registry organ
     affectedOrganContract = _affectedOrganContract;
+
+    linkedOrgans = [referenceOrganContract,affectedOrganContract];
+
     quorumSize = 40;
     ballotDuration = 3 minutes;
     candidacyDuration = 3 minutes;

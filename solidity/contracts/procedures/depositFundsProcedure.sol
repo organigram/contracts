@@ -24,6 +24,9 @@ contract depositFundsProcedure is Procedure{
     // Default organ to which deposits are sent
     address public defaultReceivingOrganContract;
 
+    // Gathering connected organs for easier DAO mapping
+    address[] public linkedOrgans;
+
     // Mapping each proposition to the user creating it
     mapping (address => uint) public amountDepositedByDepositorAddress;    
 

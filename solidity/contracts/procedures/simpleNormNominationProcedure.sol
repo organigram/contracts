@@ -17,6 +17,9 @@ contract simpleNormNominationProcedure is Procedure{
     int public procedureTypeNumber = 3;
     // address public affectedOrganContract;
     address public authorizedNominatersOrgan;
+
+    // Gathering connected organs for easier DAO mapping
+    address[] public linkedOrgans;
     
 
     function addNorm(address _targetOrgan, address _normAdress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  public returns (uint newNormNumber) {
