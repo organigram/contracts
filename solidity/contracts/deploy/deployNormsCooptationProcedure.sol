@@ -25,8 +25,7 @@ contract deployNormsCooptationProcedure is normsCooptationProcedure {
     votingPeriodDuration = _votingPeriodDuration;
     promulgationPeriodDuration = _promulgationPeriodDuration;
 
-    isAnOrgan = false;
-    isAProcedure = true;
+
     kelsenVersionNumber = 1;
 
     }

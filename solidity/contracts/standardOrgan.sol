@@ -101,7 +101,7 @@ contract Organ is Kelsen{
 
 
     }
-    function transfer(address _to, uint _value) public {
+    function payout(address _to, uint _value) public {
         require(admins[msg.sender].canSpend);
         _to.transfer(_value);
         spendMoney(msg.sender, _to, _value);

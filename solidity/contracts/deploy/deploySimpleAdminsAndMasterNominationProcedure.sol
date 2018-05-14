@@ -12,6 +12,7 @@ contract deploySimpleAdminsAndMasterNominationProcedure is simpleAdminsAndMaster
     function deploySimpleAdminsAndMasterNominationProcedure (address _authorizedReformersOrgan) public {
 
     authorizedReformersOrgan = _authorizedReformersOrgan;
-
+    kelsenVersionNumber = 1;
+    
     }
 }

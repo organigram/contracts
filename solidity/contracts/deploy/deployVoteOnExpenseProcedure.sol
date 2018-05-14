@@ -4,15 +4,16 @@ pragma solidity ^0.4.11;
 
 import "../standardProcedure.sol";
 import "../standardOrgan.sol";
-import "../procedures/voteOnAdminsAndMastersProcedure.sol";
+import "../procedures/voteOnExpenseProcedure.sol";
 
 
 
 
-contract deployVoteOnAdminsAndMastersProcedure is voteOnAdminsAndMastersProcedure {
+contract deployVoteOnExpenseProcedure is voteOnExpenseProcedure {
 
-function deployVoteOnAdminsAndMastersProcedure (address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration) public {
+function deployVoteOnExpenseProcedure (address _affectedOrganContract, address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration) public {
 
+    affectedOrganContract = _affectedOrganContract;
     votersOrganContract = _votersOrganContract;
     membersWithVetoOrganContract = _membersWithVetoOrganContract;
     finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 

@@ -1,0 +1,894 @@
+{
+  "contractName": "deployDepositFundsProcedure",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "amountDepositedToReceiverAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_organAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getFundsDepositedToOrgan",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "procedureTypeNumber",
+      "outputs": [
+        {
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "defaultReceivingOrganContract",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "kelsenVersionNumber",
+      "outputs": [
+        {
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_userAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getFundsDepositedByUser",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "authorizedDepositorsOrganContract",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_targetOrgan",
+          "type": "address"
+        }
+      ],
+      "name": "depositToOrgan",
+      "outputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "amountDepositedByDepositorAddress",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isAnOrgan",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isAProcedure",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_authorizedDepositors",
+          "type": "address"
+        },
+        {
+          "name": "_defaultReceivingOrgan",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_payoutAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "depositedFunds",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x60606040526000600360006101000a81548160ff0219169083151502179055506001600360016101000a81548160ff0219169083151502179055506009600455341561004a57600080fd5b604051604080610ba98339810160405280805190602001909190805190602001909190505081600560006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555080600660006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555060016000819055505050610a9f8061010a6000396000f3006060604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630ef63945146103c85780632403afe7146104155780632647d7f9146104625780634499fa0e1461048b5780635dbe4d28146104e05780636a91ec1a14610509578063791854d61461055657806386042717146105ab578063a3ffea82146105d9578063a8bef97a14610626578063e80b30a514610653575b6000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690506000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415156101e2578073ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b15156101bb57600080fd5b6102c65a03f115156101cc57600080fd5b5050506040518051905015156101e157600080fd5b5b60009050600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff166108fc349081150290604051600060405180830381858888f19350505050151561024857600080fd5b34600760003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055503460086000600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055507f9ba2320cd77403ddf10e62bb77145a1658f32e86971f41eef53b724d39bcb0a833600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1634604051808473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a150005b34156103d357600080fd5b6103ff600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610680565b6040518082815260200191505060405180910390f35b341561042057600080fd5b61044c600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610698565b6040518082815260200191505060405180910390f35b341561046d57600080fd5b6104756106e1565b6040518082815260200191505060405180910390f35b341561049657600080fd5b61049e6106e7565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156104eb57600080fd5b6104f361070d565b6040518082815260200191505060405180910390f35b341561051457600080fd5b610540600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610713565b6040518082815260200191505060405180910390f35b341561056157600080fd5b61056961075c565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6105d7600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610782565b005b34156105e457600080fd5b610610600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610a36565b6040518082815260200191505060405180910390f35b341561063157600080fd5b610639610a4e565b604051808215151515815260200191505060405180910390f35b341561065e57600080fd5b610666610a61565b604051808215151515815260200191505060405180910390f35b60086020528060005260406000206000915090505481565b6000600860008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60045481565b600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60005481565b6000600760008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690506000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415156108b5578073ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b151561088e57600080fd5b6102c65a03f1151561089f57600080fd5b5050506040518051905015156108b457600080fd5b5b600090508173ffffffffffffffffffffffffffffffffffffffff166108fc349081150290604051600060405180830381858888f1935050505015156108f957600080fd5b34600760003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254019250508190555034600860008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055507f9ba2320cd77403ddf10e62bb77145a1658f32e86971f41eef53b724d39bcb0a8338334604051808473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a15050565b60076020528060005260406000206000915090505481565b600160009054906101000a900460ff1681565b6001809054906101000a900460ff16815600a165627a7a72305820114d0cb1f338ace4675e4fc0a8d84e1ba83c86527930e09e86d250020858d0760029",
+  "deployedBytecode": "0x6060604052600436106100af576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630ef63945146103c85780632403afe7146104155780632647d7f9146104625780634499fa0e1461048b5780635dbe4d28146104e05780636a91ec1a14610509578063791854d61461055657806386042717146105ab578063a3ffea82146105d9578063a8bef97a14610626578063e80b30a514610653575b6000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690506000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415156101e2578073ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b15156101bb57600080fd5b6102c65a03f115156101cc57600080fd5b5050506040518051905015156101e157600080fd5b5b60009050600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff166108fc349081150290604051600060405180830381858888f19350505050151561024857600080fd5b34600760003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055503460086000600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055507f9ba2320cd77403ddf10e62bb77145a1658f32e86971f41eef53b724d39bcb0a833600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1634604051808473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a150005b34156103d357600080fd5b6103ff600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610680565b6040518082815260200191505060405180910390f35b341561042057600080fd5b61044c600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610698565b6040518082815260200191505060405180910390f35b341561046d57600080fd5b6104756106e1565b6040518082815260200191505060405180910390f35b341561049657600080fd5b61049e6106e7565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b34156104eb57600080fd5b6104f361070d565b6040518082815260200191505060405180910390f35b341561051457600080fd5b610540600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610713565b6040518082815260200191505060405180910390f35b341561056157600080fd5b61056961075c565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6105d7600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610782565b005b34156105e457600080fd5b610610600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610a36565b6040518082815260200191505060405180910390f35b341561063157600080fd5b610639610a4e565b604051808215151515815260200191505060405180910390f35b341561065e57600080fd5b610666610a61565b604051808215151515815260200191505060405180910390f35b60086020528060005260406000206000915090505481565b6000600860008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60045481565b600660009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60005481565b6000600760008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690506000600560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415156108b5578073ffffffffffffffffffffffffffffffffffffffff1663d323a4f8336000604051602001526040518263ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001915050602060405180830381600087803b151561088e57600080fd5b6102c65a03f1151561089f57600080fd5b5050506040518051905015156108b457600080fd5b5b600090508173ffffffffffffffffffffffffffffffffffffffff166108fc349081150290604051600060405180830381858888f1935050505015156108f957600080fd5b34600760003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254019250508190555034600860008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020600082825401925050819055507f9ba2320cd77403ddf10e62bb77145a1658f32e86971f41eef53b724d39bcb0a8338334604051808473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020018373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a15050565b60076020528060005260406000206000915090505481565b600160009054906101000a900460ff1681565b6001809054906101000a900460ff16815600a165627a7a72305820114d0cb1f338ace4675e4fc0a8d84e1ba83c86527930e09e86d250020858d0760029",
+  "sourceMap": "206:337:1:-;;;223:5:4;206:22;;;;;;;;;;;;;;;;;;;;254:4;234:24;;;;;;;;;;;;;;;;;;;;581:1:2;548:34;;271:270:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;422:21;386:33;;:57;;;;;;;;;;;;;;;;;;481:22;449:29;;:54;;;;;;;;;;;;;;;;;;532:1;510:19;:23;;;;271:270;;206:337;;;;;;",
+  "deployedSourceMap": "206:337:1:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1298:31:2;1338:33;;;;;;;;;;;1298:74;;1473:6;1436:33;;;;;;;;;;;:43;;;;1432:141;;;1504:25;:32;;;1537:10;1504:44;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1496:53;;;;;;;;1432:141;1583:32;;;1660:29;;;;;;;;;;;:38;;:49;1699:9;1660:49;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1805:9;1756:33;:45;1790:10;1756:45;;;;;;;;;;;;;;;;:58;;;;;;;;;;;1891:9;1824:32;:63;1857:29;;;;;;;;;;;1824:63;;;;;;;;;;;;;;;;:76;;;;;;;;;;;1932:68;1947:10;1959:29;;;;;;;;;;;1990:9;1932:68;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1229:780;206:337:1;1063:65:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2941:145;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;548:34;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;818:44;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;129:30:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2789:143:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;715:48;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2019:763;;;;;;;;;;;;;;;;;;;;925:66;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;165:21:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;192:24;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1063:65:2;;;;;;;;;;;;;;;;;:::o;2941:145::-;3019:4;3037:32;:47;3070:13;3037:47;;;;;;;;;;;;;;;;3030:54;;2941:145;;;:::o;548:34::-;;;;:::o;818:44::-;;;;;;;;;;;;;:::o;129:30:0:-;;;;:::o;2789:143:2:-;2865:4;2883:33;:47;2917:12;2883:47;;;;;;;;;;;;;;;;2876:54;;2789:143;;;:::o;715:48::-;;;;;;;;;;;;;:::o;2019:763::-;2122:31;2162:33;;;;;;;;;;;2122:74;;2297:6;2260:33;;;;;;;;;;;:43;;;;2256:141;;;2328:25;:32;;;2361:10;2328:44;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2320:53;;;;;;;;2256:141;2407:32;;;2484:12;:21;;:32;2506:9;2484:32;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2612:9;2563:33;:45;2597:10;2563:45;;;;;;;;;;;;;;;;:58;;;;;;;;;;;2681:9;2631:32;:46;2664:12;2631:46;;;;;;;;;;;;;;;;:59;;;;;;;;;;;2722:51;2737:10;2749:12;2763:9;2722:51;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2019:763;;:::o;925:66::-;;;;;;;;;;;;;;;;;:::o;165:21:0:-;;;;;;;;;;;;;:::o;192:24::-;;;;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.4.11;\n\n// Standard contract for a presidential election procedure\n\nimport \"../standardProcedure.sol\";\nimport \"../standardOrgan.sol\";\nimport \"../procedures/depositFundsProcedure.sol\";\n\n\n\n\ncontract deployDepositFundsProcedure is depositFundsProcedure {\n\nfunction deployDepositFundsProcedure (address _authorizedDepositors, address _defaultReceivingOrgan) public {\n\n    authorizedDepositorsOrganContract = _authorizedDepositors;\n    defaultReceivingOrganContract = _defaultReceivingOrgan;\n\n    kelsenVersionNumber = 1;\n\n    }\n}\n",
+  "sourcePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/deploy/deployDepositFundsProcedure.sol",
+  "ast": {
+    "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/deploy/deployDepositFundsProcedure.sol",
+    "exportedSymbols": {
+      "deployDepositFundsProcedure": [
+        36
+      ]
+    },
+    "id": 37,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 10,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
+        "file": "../standardProcedure.sol",
+        "id": 11,
+        "nodeType": "ImportDirective",
+        "scope": 37,
+        "sourceUnit": 1342,
+        "src": "86:34:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardOrgan.sol",
+        "file": "../standardOrgan.sol",
+        "id": 12,
+        "nodeType": "ImportDirective",
+        "scope": 37,
+        "sourceUnit": 1328,
+        "src": "121:30:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/procedures/depositFundsProcedure.sol",
+        "file": "../procedures/depositFundsProcedure.sol",
+        "id": 13,
+        "nodeType": "ImportDirective",
+        "scope": 37,
+        "sourceUnit": 205,
+        "src": "152:49:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": [],
+            "baseName": {
+              "contractScope": null,
+              "id": 14,
+              "name": "depositFundsProcedure",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 204,
+              "src": "246:21:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_depositFundsProcedure_$204",
+                "typeString": "contract depositFundsProcedure"
+              }
+            },
+            "id": 15,
+            "nodeType": "InheritanceSpecifier",
+            "src": "246:21:1"
+          }
+        ],
+        "contractDependencies": [
+          8,
+          204,
+          1341
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 36,
+        "linearizedBaseContracts": [
+          36,
+          204,
+          1341,
+          8
+        ],
+        "name": "deployDepositFundsProcedure",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 34,
+              "nodeType": "Block",
+              "src": "379:162:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 24,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 22,
+                      "name": "authorizedDepositorsOrganContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 47,
+                      "src": "386:33:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 23,
+                      "name": "_authorizedDepositors",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 17,
+                      "src": "422:21:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "386:57:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 25,
+                  "nodeType": "ExpressionStatement",
+                  "src": "386:57:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 28,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 26,
+                      "name": "defaultReceivingOrganContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 49,
+                      "src": "449:29:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 27,
+                      "name": "_defaultReceivingOrgan",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 19,
+                      "src": "481:22:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "449:54:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 29,
+                  "nodeType": "ExpressionStatement",
+                  "src": "449:54:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 32,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 30,
+                      "name": "kelsenVersionNumber",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3,
+                      "src": "510:19:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_int256",
+                        "typeString": "int256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "hexValue": "31",
+                      "id": 31,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "532:1:1",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
+                      },
+                      "value": "1"
+                    },
+                    "src": "510:23:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_int256",
+                      "typeString": "int256"
+                    }
+                  },
+                  "id": 33,
+                  "nodeType": "ExpressionStatement",
+                  "src": "510:23:1"
+                }
+              ]
+            },
+            "id": 35,
+            "implemented": true,
+            "isConstructor": true,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "deployDepositFundsProcedure",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 20,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17,
+                  "name": "_authorizedDepositors",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 35,
+                  "src": "309:29:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "309:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 19,
+                  "name": "_defaultReceivingOrgan",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 35,
+                  "src": "340:30:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 18,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "340:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "308:63:1"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 21,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "379:0:1"
+            },
+            "scope": 36,
+            "src": "271:270:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 37,
+        "src": "206:337:1"
+      }
+    ],
+    "src": "0:544:1"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/deploy/deployDepositFundsProcedure.sol",
+    "exportedSymbols": {
+      "deployDepositFundsProcedure": [
+        36
+      ]
+    },
+    "id": 37,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 10,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardProcedure.sol",
+        "file": "../standardProcedure.sol",
+        "id": 11,
+        "nodeType": "ImportDirective",
+        "scope": 37,
+        "sourceUnit": 1342,
+        "src": "86:34:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/standardOrgan.sol",
+        "file": "../standardOrgan.sol",
+        "id": 12,
+        "nodeType": "ImportDirective",
+        "scope": 37,
+        "sourceUnit": 1328,
+        "src": "121:30:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/henrilieutaud/Documents/Mes documents/97/Workshop/Kelsen/solidity/contracts/procedures/depositFundsProcedure.sol",
+        "file": "../procedures/depositFundsProcedure.sol",
+        "id": 13,
+        "nodeType": "ImportDirective",
+        "scope": 37,
+        "sourceUnit": 205,
+        "src": "152:49:1",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": [],
+            "baseName": {
+              "contractScope": null,
+              "id": 14,
+              "name": "depositFundsProcedure",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 204,
+              "src": "246:21:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_depositFundsProcedure_$204",
+                "typeString": "contract depositFundsProcedure"
+              }
+            },
+            "id": 15,
+            "nodeType": "InheritanceSpecifier",
+            "src": "246:21:1"
+          }
+        ],
+        "contractDependencies": [
+          8,
+          204,
+          1341
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 36,
+        "linearizedBaseContracts": [
+          36,
+          204,
+          1341,
+          8
+        ],
+        "name": "deployDepositFundsProcedure",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 34,
+              "nodeType": "Block",
+              "src": "379:162:1",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 24,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 22,
+                      "name": "authorizedDepositorsOrganContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 47,
+                      "src": "386:33:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 23,
+                      "name": "_authorizedDepositors",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 17,
+                      "src": "422:21:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "386:57:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 25,
+                  "nodeType": "ExpressionStatement",
+                  "src": "386:57:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 28,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 26,
+                      "name": "defaultReceivingOrganContract",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 49,
+                      "src": "449:29:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 27,
+                      "name": "_defaultReceivingOrgan",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 19,
+                      "src": "481:22:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "449:54:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 29,
+                  "nodeType": "ExpressionStatement",
+                  "src": "449:54:1"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 32,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 30,
+                      "name": "kelsenVersionNumber",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3,
+                      "src": "510:19:1",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_int256",
+                        "typeString": "int256"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "hexValue": "31",
+                      "id": 31,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "number",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "532:1:1",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_rational_1_by_1",
+                        "typeString": "int_const 1"
+                      },
+                      "value": "1"
+                    },
+                    "src": "510:23:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_int256",
+                      "typeString": "int256"
+                    }
+                  },
+                  "id": 33,
+                  "nodeType": "ExpressionStatement",
+                  "src": "510:23:1"
+                }
+              ]
+            },
+            "id": 35,
+            "implemented": true,
+            "isConstructor": true,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "deployDepositFundsProcedure",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 20,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 17,
+                  "name": "_authorizedDepositors",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 35,
+                  "src": "309:29:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 16,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "309:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 19,
+                  "name": "_defaultReceivingOrgan",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 35,
+                  "src": "340:30:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 18,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "340:7:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "308:63:1"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 21,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "379:0:1"
+            },
+            "scope": 36,
+            "src": "271:270:1",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 37,
+        "src": "206:337:1"
+      }
+    ],
+    "src": "0:544:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2018-05-14T09:49:41.463Z"
+}

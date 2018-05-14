@@ -42,8 +42,6 @@ contract deployCyclicalManyToManyElectionProcedure is cyclicalManyToManyElection
     totalBallotNumber = 0;
     voterToCandidateRatio = 2;
 
-    isAnOrgan = false;
-    isAProcedure = true;
     kelsenVersionNumber = 1;
     lastElectionNumber = 0;
     }

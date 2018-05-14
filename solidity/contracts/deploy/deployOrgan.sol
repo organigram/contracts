@@ -23,6 +23,7 @@ contract deployOrgan is Organ {
         // Initializing first norms to avoid errors when deleting norms
         Norm memory initNorm;
         norms.push(initNorm);
+        kelsenVersionNumber = 1;
 
     }
 }
