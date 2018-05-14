@@ -304,8 +304,8 @@ contract voteOnNormsProcedure is Procedure{
     }
 
         //////////////////////// Functions to communicate with other contracts
-    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, address _addressToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name){
-        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size,propositions[_propositionNumber].name);
+    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, address _addressToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size){
+        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
     }
     function getPropositionDates(uint _propositionNumber) public view returns (uint _startDate, uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
         return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].votingPeriodEndDate, propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration);
@@ -313,10 +313,14 @@ contract voteOnNormsProcedure is Procedure{
     function getPropositionStatus(uint _propositionNumber) public view returns (bool _wasCounted, bool _wasEnded){
         return (propositions[_propositionNumber].wasCounted, propositions[_propositionNumber].wasEnded);
     }
-    function getVotedPropositionResults(uint _propositionNumber) public view returns (uint _startDate, uint _totalVoteCount, uint _voteFor, bool _wasVetoed, bool _wasAccepted){
+    function getVotedPropositionResults(uint _propositionNumber) public view returns (bool _wasVetoed, bool _wasAccepted){
         require(propositions[_propositionNumber].wasCounted);
-        return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].wasVetoed, propositions[_propositionNumber].wasAccepted);
-        }
+        return (propositions[_propositionNumber].wasVetoed, propositions[_propositionNumber].wasAccepted);
+    }
+    function getVotedPropositionStats(uint _propositionNumber) public view returns (uint _totalVoters, uint _totalVoteCount, uint _voteFor)
+        {require(propositions[_propositionNumber].wasCounted);
+        return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor);}
+
     function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
     {return propositionToUser[_userAddress];}    
     function getPropositionsVetoedByUser(address _userAddress) public view returns (uint[])

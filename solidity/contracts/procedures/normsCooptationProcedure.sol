@@ -352,9 +352,9 @@ contract normsCooptationProcedure is Procedure{
     function getPropositionStatus(uint _propositionNumber) public view returns (bool _wasCounted, bool _wasEnacted){
         return (propositions[_propositionNumber].wasCounted, propositions[_propositionNumber].wasEnacted);
     }
-    function getVotedPropositionResults(uint _propositionNumber) public view returns (uint _startDate, uint _totalVoteCount, uint _voteFor, uint _vetoCount, uint _notVetoCount, bool _wasAccepted){
+    function getVotedPropositionResults(uint _propositionNumber) public view returns (uint totalVoters, uint _totalVoteCount, uint _voteFor, uint _vetoCount, uint _notVetoCount, bool _wasAccepted){
         require(propositions[_propositionNumber].wasCounted);
-        return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].vetoCount, propositions[_propositionNumber].notVetoCount, propositions[_propositionNumber].wasAccepted);
+        return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].vetoCount, propositions[_propositionNumber].notVetoCount, propositions[_propositionNumber].wasAccepted);
         }
     function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
     {return propositionToUser[_userAddress];}    

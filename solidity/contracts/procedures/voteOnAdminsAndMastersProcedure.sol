@@ -412,10 +412,14 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     function getPropositionStatus(uint _propositionNumber) public view returns (bool _wasCounted, bool _wasEnded){
         return (propositions[_propositionNumber].wasCounted, propositions[_propositionNumber].wasEnded);
     }
-    function getVotedPropositionResults(uint _propositionNumber) public view returns (uint _startDate, uint _totalVoteCount, uint _voteFor, bool _wasVetoed, bool _wasAccepted){
+    function getVotedPropositionResults(uint _propositionNumber) public view returns (bool _wasVetoed, bool _wasAccepted){
         require(propositions[_propositionNumber].wasCounted);
-        return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].wasVetoed, propositions[_propositionNumber].wasAccepted);
+        return (propositions[_propositionNumber].wasVetoed, propositions[_propositionNumber].wasAccepted);
         }
+    function getVotedPropositionStats(uint _propositionNumber) public view returns (uint _totalVoters, uint _totalVoteCount, uint _voteFor)
+        {require(propositions[_propositionNumber].wasCounted);
+        return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor);}
+
     function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
     {return propositionToUser[_userAddress];}    
     function getPropositionsVetoedByUser(address _userAddress) public view returns (uint[])

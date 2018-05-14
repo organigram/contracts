@@ -97,6 +97,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
         bool wasEnforced;
         address[] winningCandidates;
         uint totalVoteCount;
+        uint totalVoters;
 
     }
 
@@ -145,6 +146,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
             newBallot.electionEndDate = now + candidacyDuration+ballotDuration;
             newBallot.wasEnded = false;
             newBallot.totalVoteCount =0;
+            newBallot.totalVoters =0;
 
             // Retrieving size of electorate
             Organ voterRegistryOrgan = Organ(referenceOrganContract);
@@ -237,6 +239,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
             require(!ballots[_ballotNumber].voters[msg.sender].hasVotedForCandidate[_candidateAddresses[i]]);
             if(ballots[_ballotNumber].voters[_candidateAddresses[i]].isCandidate)
                 {ballots[_ballotNumber].candidacies[_candidateAddresses[i]].voteNumber += ballots[_ballotNumber].electedOfficialSlotNumber-i;
+                    ballots[_ballotNumber].totalVoteCount += ballots[_ballotNumber].electedOfficialSlotNumber-i;
                     ballots[_ballotNumber].voters[msg.sender].hasVotedForCandidate[_candidateAddresses[i]] = true;}
             else
                 // If candidate does not exist, this is a neutral vote
@@ -247,7 +250,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
 
         ballots[_ballotNumber].voters[msg.sender].voted = true;
 
-        ballots[_ballotNumber].totalVoteCount += 1;
+        ballots[_ballotNumber].totalVoters += 1;
 
         // Attribute vote to voter
         ballotToVoter[msg.sender].push(_ballotNumber);
@@ -298,7 +301,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
         Organ voterRegistryOrgan = Organ(referenceOrganContract);
 
         // Check if quorum is obtained. We avoiding divisions here, since Solidity is not good to calculate divisions
-        if (ballots[_ballotNumber].totalVoteCount*100 < quorumSize*voterRegistryOrgan.getActiveNormNumber())
+        if (ballots[_ballotNumber].totalVoters*100 < quorumSize*voterRegistryOrgan.getActiveNormNumber())
         {
             // Quorum was not obtained. Rebooting election
             ballots[_ballotNumber].wasEnforced = true;
@@ -434,9 +437,12 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     function getSingleBallotInfo(uint _ballotNumber) public view returns (string _name, uint _startDate, uint _candidacyEndDate, uint _electionEndDate, uint _electedOfficialSlotNumber){
         return (ballots[_ballotNumber].name, ballots[_ballotNumber].startDate, ballots[_ballotNumber].candidacyEndDate, ballots[_ballotNumber].electionEndDate, ballots[_ballotNumber].electedOfficialSlotNumber);
     }
-    function getBallotResult(uint _ballotNumber) public view returns (bool _wasEnded, bool _wasEnforced, address[] _winningCandidates, uint _totalVoteCount)
-    { return (ballots[_ballotNumber].wasEnded, ballots[_ballotNumber].wasEnforced, ballots[_ballotNumber].winningCandidates, ballots[_ballotNumber].totalVoteCount);}
+    function getBallotStatus(uint _ballotNumber) public view returns (bool _wasEnded, bool _wasEnforced, address[] _winningCandidates)
+    { return (ballots[_ballotNumber].wasEnded, ballots[_ballotNumber].wasEnforced, ballots[_ballotNumber].winningCandidates);}
 
+    function getBallotStats(uint _ballotNumber) public view returns (uint _votersNumber, uint _totalVoteCount)
+    { return (ballots[_ballotNumber].totalVoters, ballots[_ballotNumber].totalVoteCount);}
+    
     function getCandidateVoteNumber(uint _ballotNumber, address _candidateAddress) public view returns (uint voteReceived){
         require(ballots[_ballotNumber].wasEnforced);
         return ballots[_ballotNumber].candidacies[_candidateAddress].voteNumber;

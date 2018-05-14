@@ -376,12 +376,17 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     function getCandidateList(uint _ballotNumber) public view returns (address[] _candidateList){
         return ballots[_ballotNumber].candidateList;
     }
-    function getSingleBallotInfo(uint _ballotNumber) public view returns (string _name, uint _startDate, uint _candidacyEndDate, uint _electionEndDate){
-        return (ballots[_ballotNumber].name, ballots[_ballotNumber].startDate, ballots[_ballotNumber].candidacyEndDate, ballots[_ballotNumber].electionEndDate);
-    }
-    function getBallotResult(uint _ballotNumber) public view returns (bool _wasEnded, bool _wasEnforced, address _winningCandidate, uint _totalVoteCount)
+ // Ballot related infos
+    function getSingleBallotInfo(uint _ballotNumber) public view returns (string _name, uint _startDate, uint _candidacyEndDate, uint _electionEndDate)
+    {return (ballots[_ballotNumber].name, ballots[_ballotNumber].startDate, ballots[_ballotNumber].candidacyEndDate, ballots[_ballotNumber].electionEndDate);}
+    function getBallotStatus(uint _ballotNumber) public view returns (bool _wasEnded, bool _wasEnforced, address _winningCandidate, uint _totalVoteCount)
     { return (ballots[_ballotNumber].wasEnded, ballots[_ballotNumber].wasEnforced, ballots[_ballotNumber].winningCandidate, ballots[_ballotNumber].totalVoteCount);}
-    // function getOpenBallotsList() public view returns (uint[]){return [currentBallot];}
+
+    function getBallotDates(uint _ballotNumber) public view returns (uint startDate, uint endDate)
+    {return (ballots[_ballotNumber].startDate, ballots[_ballotNumber].electionEndDate);}
+    
+    function getBallotStats(uint _ballotNumber) public view returns (uint _votersNumber, uint _totalVoteCount)
+    { return (ballots[_ballotNumber].totalVoteCount, ballots[_ballotNumber].totalVoteCount);}
 
     function haveIVoted(uint _ballotNumber) public view returns (bool IHaveVoted)
     {return ballots[_ballotNumber].voters[msg.sender].voted;}
