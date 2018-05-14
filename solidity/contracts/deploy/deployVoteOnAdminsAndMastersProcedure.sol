@@ -24,8 +24,6 @@ function deployVoteOnAdminsAndMastersProcedure (address _votersOrganContract, ad
     votingPeriodDuration = _votingPeriodDuration;
     promulgationPeriodDuration = _promulgationPeriodDuration;
 
-    isAnOrgan = false;
-    isAProcedure = true;
     kelsenVersionNumber = 1;
 
     }

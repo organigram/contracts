@@ -25,8 +25,7 @@ function deployVoteOnNormsProcedure (address _affectedOrganContract, address _vo
     votingPeriodDuration = _votingPeriodDuration;
     promulgationPeriodDuration = _promulgationPeriodDuration;
 
-    isAnOrgan = false;
-    isAProcedure = true;
+
     kelsenVersionNumber = 1;
 
     }

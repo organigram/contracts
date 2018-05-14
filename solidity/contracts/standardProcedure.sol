@@ -8,5 +8,6 @@ import "./Kelsen.sol";
 contract Procedure is Kelsen {
     // Identifiers to adapt procedure interface
     int public procedureTypeNumber;
-
+    bool public isAnOrgan = false;
+    bool public isAProcedure = true;
 }

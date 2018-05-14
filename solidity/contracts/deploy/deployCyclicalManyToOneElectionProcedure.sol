@@ -37,8 +37,7 @@ contract deployCyclicalManyToOneElectionProcedure is cyclicalManyToOneElectionPr
     reelectionMaximum = 2;
     totalBallotNumber = 0;
 
-    isAnOrgan = false;
-    isAProcedure = true;
+
     kelsenVersionNumber = 1;
     lastElectionNumber = 0;
     }
