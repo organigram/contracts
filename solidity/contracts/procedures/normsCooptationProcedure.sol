@@ -332,7 +332,7 @@ contract normsCooptationProcedure is Procedure{
 
         // Send payment
         Organ membersOrgan = Organ(membersOrganContract);
-        membersOrgan.transfer(msg.sender, propositions[_propositionNumber].payoutPerUser);
+        membersOrgan.payout(msg.sender, propositions[_propositionNumber].payoutPerUser);
 
         // Log event
         withdrawal(msg.sender, _propositionNumber, propositions[_propositionNumber].payoutPerUser);
