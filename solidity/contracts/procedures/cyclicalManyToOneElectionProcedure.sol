@@ -382,8 +382,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     function getBallotResult(uint _ballotNumber) public view returns (bool _wasEnded, bool _wasEnforced, address _winningCandidate, uint _totalVoteCount)
     { return (ballots[_ballotNumber].wasEnded, ballots[_ballotNumber].wasEnforced, ballots[_ballotNumber].winningCandidate, ballots[_ballotNumber].totalVoteCount);}
     // function getOpenBallotsList() public view returns (uint[]){return [currentBallot];}
-    function getBallotDates(uint _ballotNumber) public view returns (uint startDate, uint endDate)
-    {return (ballots[_ballotNumber].startDate, ballots[_ballotNumber].electionEndDate);}
+
     function haveIVoted(uint _ballotNumber) public view returns (bool IHaveVoted)
     {return ballots[_ballotNumber].voters[msg.sender].voted;}
     function getCandidateVoteNumber(uint _ballotNumber, address _candidateAddress) public view returns (uint voteReceived){
@@ -396,6 +395,8 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     {return ballotToCounter[_userAddress];}  
     function getBallotToEnforcer(address _userAddress) public view returns (uint[])
     {return ballotToEnforcer[_userAddress];}  
+    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    {return linkedOrgans;}
 
 }
 

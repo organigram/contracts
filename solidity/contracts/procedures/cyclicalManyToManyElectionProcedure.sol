@@ -443,8 +443,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     }
     function haveIVoted(uint _ballotNumber) public view returns (bool IHaveVoted)
     {return ballots[_ballotNumber].voters[msg.sender].voted;}
-    function getBallotDates(uint _ballotNumber) public view returns (uint startDate, uint endDate)
-    {return (ballots[_ballotNumber].startDate, ballots[_ballotNumber].electionEndDate);}
+
     function getBallotToCreator(address _userAddress) public view returns (uint[])
     {return ballotToCreator[_userAddress];}    
     function getBallotToVoter(address _userAddress) public view returns (uint[])
@@ -453,6 +452,8 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     {return ballotToCounter[_userAddress];}  
     function getBallotToEnforcer(address _userAddress) public view returns (uint[])
     {return ballotToEnforcer[_userAddress];}  
+    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    {return linkedOrgans;}
 
 
 }

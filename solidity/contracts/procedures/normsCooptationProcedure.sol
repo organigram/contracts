@@ -366,6 +366,8 @@ contract normsCooptationProcedure is Procedure{
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
+    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    {return linkedOrgans;}
 
 }
 
