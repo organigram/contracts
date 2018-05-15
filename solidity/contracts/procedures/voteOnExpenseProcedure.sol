@@ -17,6 +17,9 @@ contract voteOnExpenseProcedure is Procedure{
     // 8: Vote on an expense
     int public procedureTypeNumber = 8;
 
+    // Storage for procedure name
+    string public procedureName;
+
     // Which organ will be affected
     address public affectedOrganContract;
 
@@ -317,6 +320,8 @@ contract voteOnExpenseProcedure is Procedure{
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
     function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     {return linkedOrgans;}
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
 
 }
 

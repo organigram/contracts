@@ -9,10 +9,14 @@ import "../procedures/simpleNormNominationProcedure.sol";
 
 contract deploySimpleNormNominationProcedure is simpleNormNominationProcedure {
 
-    function deploySimpleNormNominationProcedure (address _authorizedNominatersOrgan) public {
+    function deploySimpleNormNominationProcedure (address _authorizedNominatersOrgan, string _name) public {
 
     authorizedNominatersOrgan = _authorizedNominatersOrgan;
     linkedOrgans = [authorizedNominatersOrgan];
     kelsenVersionNumber = 1;
+    
+    // Procedure name 
+    procedureName = _name;
+
     }
 }

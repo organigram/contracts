@@ -17,6 +17,8 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
 
     int public procedureTypeNumber = 2;
 
+    string public procedureName;
+
     // Which organ will be affected
     address public affectedOrganContract;
 
@@ -460,6 +462,8 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     {return ballotToEnforcer[_userAddress];}  
     function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     {return linkedOrgans;}
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
 
 
 }

@@ -16,6 +16,9 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     // 7: Cooptation
     int public procedureTypeNumber = 6;
 
+    // Storage for procedure name
+    string public procedureName;
+
     // Organ in which the voters are registered
     address public votersOrganContract;
 
@@ -432,6 +435,9 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
     function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     {return linkedOrgans;}
+
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
 
 }
 

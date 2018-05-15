@@ -16,6 +16,9 @@ contract voteOnNormsProcedure is Procedure{
     // 7: Cooptation
     int public procedureTypeNumber = 5;
 
+    // Storage for procedure name
+    string public procedureName;
+
     // Which organ will be affected
     address public affectedOrganContract;
 
@@ -333,6 +336,8 @@ contract voteOnNormsProcedure is Procedure{
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
     function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     {return linkedOrgans;}
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
 
 }
 

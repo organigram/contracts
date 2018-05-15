@@ -18,6 +18,9 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     // address public affectedOrganContract;
     address public authorizedReformersOrgan;
 
+    // Storage for procedure name
+    string public procedureName;
+
     // Gathering connected organs for easier DAO mapping
     address[] public linkedOrgans;
     
@@ -185,6 +188,8 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     {return linkedOrgans;}
 
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
   
 
 }

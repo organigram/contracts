@@ -18,6 +18,9 @@ contract depositFundsProcedure is Procedure{
     // 9: Deposit funds on an organ
     int public procedureTypeNumber = 9;
 
+    // Storage for procedure name
+    string public procedureName;
+
     // Where are authorized depositors registered. If authorizedDepositorsOrganContract is set to 0, anyone can deposit funds
     address public authorizedDepositorsOrganContract;
 
@@ -97,6 +100,8 @@ contract depositFundsProcedure is Procedure{
     {return amountDepositedToReceiverAddress[_organAddress];} 
     function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     {return linkedOrgans;}   
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
 
 }
 

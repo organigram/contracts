@@ -11,5 +11,7 @@ contract Procedure is Kelsen {
     address[] public linkedOrgans;
     bool public isAnOrgan = false;
     bool public isAProcedure = true;
+    string public procedureName;
     function getLinkedOrgans() public view returns (address[] _linkedOrgans);
+    function getProcedureName() public view returns (string _procedureName);
 }

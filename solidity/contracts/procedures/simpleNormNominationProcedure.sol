@@ -20,6 +20,9 @@ contract simpleNormNominationProcedure is Procedure{
 
     // Gathering connected organs for easier DAO mapping
     address[] public linkedOrgans;
+
+    // Storage for procedure name
+    string public procedureName;
     
 
     function addNorm(address _targetOrgan, address _normAdress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  public returns (uint newNormNumber) {
@@ -87,6 +90,8 @@ contract simpleNormNominationProcedure is Procedure{
     }
     function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     {return linkedOrgans;}
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
 
   
 
