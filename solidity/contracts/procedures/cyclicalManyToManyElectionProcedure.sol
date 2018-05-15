@@ -460,7 +460,10 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     {return ballotToCounter[_userAddress];}  
     function getBallotToEnforcer(address _userAddress) public view returns (uint[])
     {return ballotToEnforcer[_userAddress];}  
-
+    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    {return linkedOrgans;}
+    function getProcedureName() public view returns (string _procedureName)
+    {return procedureName;}
 
 
 }

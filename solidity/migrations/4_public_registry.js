@@ -43,11 +43,11 @@ module.exports = function(deployer, network, accounts) {
     voteDurationInSeconds = 60*3
     
     // Deploy members list management
-    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Members list management", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {
     const memberManagement = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
 
     // Deploy members list management
-    deployer.deploy(deployVoteOnNormsProcedure, publicRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Public registry management", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, publicRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Public registry management", {from: accounts[0]}).then(() => {
     const publicRegistryManagement = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
 
     // Deploy constitutionnal reform procedure
@@ -108,6 +108,7 @@ module.exports = function(deployer, network, accounts) {
                                                                 })
                                                               })
                                                             })
+})
 
   // Use deployer to state migration tasks.
 };
