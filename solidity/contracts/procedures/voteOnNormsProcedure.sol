@@ -335,8 +335,6 @@ contract voteOnNormsProcedure is Procedure{
     {return linkedOrgans;}
     function getProcedureName() public view returns (string _procedureName)
     {return procedureName;}
-    // function getProcedureName() public view returns (string _procedureName)
-    // {return procedureName;}
 
 }
 

@@ -78,13 +78,21 @@ module.exports = function(deployer, network, accounts) {
               memberRegistryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
               publicRegistryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
 
+
                       // Set up is ready
+                console.log("Test name display")
+                memberManagement.getProcedureName().then(myInfos1 => {
+                constitutionnalReform.getProcedureName().then(myInfos2 => {
+                publicRegistryManagement.getProcedureName().then(myInfos3 => {
+                    console.log(myInfos1)
+                    console.log(myInfos2)
+                    console.log(myInfos3)
 
                       console.log("-------------------------------------")
                       console.log("Put these new addresses in settings :")
                       console.log("  \"organs_addresses\": [")
                       console.log("    \""+memberRegistryOrgan.address+"\",  // (Members)")
-                      console.log("    \""+publicRegistryOrgan.address+"\",  // (Members)")
+                      console.log("    \""+publicRegistryOrgan.address+"\",  // (Public registry)")
                       console.log("  ],")
                       console.log("  \"procedures_addresses\": [")
                       console.log("    \""+memberManagement.address+"\",  // (Member management)")
@@ -108,7 +116,8 @@ module.exports = function(deployer, network, accounts) {
                                                                 })
                                                               })
                                                             })
-})
+})})})
+
 
   // Use deployer to state migration tasks.
 };

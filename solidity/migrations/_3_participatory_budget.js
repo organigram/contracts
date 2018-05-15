@@ -47,15 +47,15 @@ module.exports = function(deployer, network, accounts) {
     voteDurationInSeconds = 60*3
     
     // Deploy members list management
-    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Members list management", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {
     const memberManagement = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
 
     // Deploy constitutionnal reform procedure
-    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, 0x0000, memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Constitutionnal reform", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, 0x0000, memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 66, "Constitutional reform", {from: accounts[0]}).then(() => {
     const constitutionnalReform = voteOnAdminsAndMastersProcedure.at(deployVoteOnAdminsAndMastersProcedure.address)
 
     // Deploy Vote on expense
-    deployer.deploy(deployVoteOnExpenseProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000,  memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Vote on expenses", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnExpenseProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000,  memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Vote on expenses", {from: accounts[0]}).then(() => {
     const voteOnExpense = voteOnExpenseProcedure.at(deployVoteOnExpenseProcedure.address)
 
     // Deploy deposit procedure
@@ -86,6 +86,17 @@ module.exports = function(deployer, network, accounts) {
               memberRegistryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
 
                       // Set up is ready
+                      
+                console.log("Test name display")
+                memberManagement.getProcedureName().then(myInfos1 => {
+                constitutionnalReform.getProcedureName().then(myInfos2 => {
+                voteOnExpense.getProcedureName().then(myInfos3 => {
+                depositFunds.getProcedureName().then(myInfos4 => {
+                    console.log(myInfos1)
+                    console.log(myInfos2)
+                    console.log(myInfos3)
+                    console.log(myInfos4)
+
 
                       console.log("-------------------------------------")
                       console.log("Put these new addresses in settings :")
@@ -114,6 +125,7 @@ module.exports = function(deployer, network, accounts) {
                                                                   })
                                                                 })
                                                               })
+})})})})
 
   // Use deployer to state migration tasks.
 };
