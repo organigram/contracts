@@ -98,10 +98,7 @@ contract depositFundsProcedure is Procedure{
     {return amountDepositedByDepositorAddress[_userAddress];}    
     function getFundsDepositedToOrgan(address _organAddress) public view returns (uint)
     {return amountDepositedToReceiverAddress[_organAddress];} 
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return linkedOrgans;}   
-    function getProcedureName() public view returns (string _procedureName)
-    {return procedureName;}
+
 
 }
 

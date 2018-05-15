@@ -52,7 +52,9 @@ module.exports = function(deployer, network, accounts) {
     console.log("Deploying Procedures")
     // Deploying 5 procedures: Presidential election, moderators election, contract promulgation, simple nomination, constitutionnal reform
     // Deploy presidential election procedure
-    deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address, "Presidential election", {from: accounts[0]}).then(() => {
+    // voteVariablesVector = [40, 3*60, 3*60, 9*60,2,2]
+    // voteVariablesVector = [web3.toBigNumber(40).valueOf(), web3.toBigNumber(3*60).valueOf(), web3.toBigNumber(3*60).valueOf(), web3.toBigNumber(9*60).valueOf(),web3.toBigNumber(2).valueOf(),web3.toBigNumber(2).valueOf()]
+    deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address , "Presidential election", {from: accounts[0]}).then(() => {
     const presidentialElection = cyclicalManyToOneElectionProcedure.at(deployCyclicalManyToOneElectionProcedure.address)
     // Deploy Moderators election procedure
     deployer.deploy(deployCyclicalManyToManyElectionProcedure, memberRegistryOrgan.address, moderatorsOrgan.address, "Moderators election", {from: accounts[0]}).then(() => {

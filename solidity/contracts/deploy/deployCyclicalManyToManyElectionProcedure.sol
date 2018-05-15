@@ -10,7 +10,7 @@ import "../procedures/cyclicalManyToManyElectionProcedure.sol";
 
 
 contract deployCyclicalManyToManyElectionProcedure is cyclicalManyToManyElectionProcedure {
-
+    // To implement function deployCyclicalManyToManyElectionProcedure (address _referenceOrganContract, address _affectedOrganContract, uint[6] _voteVariables, string _name) public {
     function deployCyclicalManyToManyElectionProcedure (address _referenceOrganContract, address _affectedOrganContract, string _name) public {
     //     // Variables for Presidential election
     // voterRegistry = 0x0000;
@@ -31,22 +31,32 @@ contract deployCyclicalManyToManyElectionProcedure is cyclicalManyToManyElection
 
     // Procedure name 
     procedureName = _name;
-    
+
     linkedOrgans = [referenceOrganContract,affectedOrganContract];
 
+    // Former method
     quorumSize = 40;
     ballotDuration = 3 minutes;
     candidacyDuration = 3 minutes;
     ballotFrequency = 9 minutes;
-    // ballotDuration = 10 seconds;
-    // candidacyDuration = 10 seconds;
-    // ballotFrequency = 30 seconds;
-
-    nextElectionDate = now;
-    neutralVoteAccepted = true;
     reelectionMaximum = 2;
-    totalBallotNumber = 0;
     voterToCandidateRatio = 2;
+
+    // To implement
+    // // Assigning vote variables
+    // quorumSize = _voteVariables[0];
+    // ballotDuration = _voteVariables[1];
+    // candidacyDuration = _voteVariables[2];
+    // ballotFrequency = _voteVariables[3];
+    // reelectionMaximum = _voteVariables[4];
+    // voterToCandidateRatio = _voteVariables[5];
+
+    // To be implemented
+    neutralVoteAccepted = true;
+    
+    // Initializing
+    totalBallotNumber = 0;
+    nextElectionDate = now;
 
     kelsenVersionNumber = 1;
     lastElectionNumber = 0;

@@ -185,11 +185,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         return _success;
 
     }
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return linkedOrgans;}
 
-    function getProcedureName() public view returns (string _procedureName)
-    {return procedureName;}
   
 
 }
