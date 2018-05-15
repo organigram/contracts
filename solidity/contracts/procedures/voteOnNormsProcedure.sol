@@ -16,8 +16,8 @@ contract voteOnNormsProcedure is Procedure{
     // 7: Cooptation
     int public procedureTypeNumber = 5;
 
-    // Storage for procedure name
-    string public procedureName;
+
+    // ############## Variable to set up when declaring the procedure
 
     // Which organ will be affected
     address public affectedOrganContract;
@@ -31,29 +31,26 @@ contract voteOnNormsProcedure is Procedure{
     // Organ in which final promulgators are listed
     address public finalPromulgatorsOrganContract;
 
-    // Gathering connected organs for easier DAO mapping
-    address[] public linkedOrgans;
+    // Minimum participation to validate election. This is a percentage value; for 40% quorum, quorumSize = 40
+    uint public quorumSize;
 
-    // ############## Variable to set up when declaring the procedure
-    // ####### Vote creation process
-
-    // ####### Voting process
     // Time for participant to vote
     uint public votingPeriodDuration;
 
     // Time for president to promulgat
     uint public promulgationPeriodDuration;
 
-    // ####### Resolution process
-    // Minimum participation to validate election
-    uint public quorumSize;
+    // Minimum proportion of votes to win election. This is a percentage value; for 50% majority, majoritySize = 50
+    uint public majoritySize;
+
+    // Storage for procedure name
+    string public procedureName;
+
+    // ########################
 
     // Variable of the procedure to keep track of propositions
     uint public totalPropositionNumber;
 
-    // Variables to measure vote threshold. If majority threshold is 3/5, then requiredMajorityNumerator= 3 and requiredMajorityDenominator = 5
-    uint public requiredMajorityNumerator;
-    uint public requiredMajorityDenominator;
 
     // Proposition structure
     struct Proposition {
@@ -228,7 +225,7 @@ contract voteOnNormsProcedure is Procedure{
             {hasBeenAccepted=false;
                 propositions[_propositionNumber].wasEnded = true;}
         else if
-            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*requiredMajorityDenominator/requiredMajorityNumerator > propositions[_propositionNumber].totalVoteCount))
+            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*majoritySize > propositions[_propositionNumber].totalVoteCount*100))
             {hasBeenAccepted = true;}
         else 
             {hasBeenAccepted=false;

@@ -11,7 +11,7 @@ import "../procedures/voteOnAdminsAndMastersProcedure.sol";
 
 contract deployVoteOnAdminsAndMastersProcedure is voteOnAdminsAndMastersProcedure {
 
-function deployVoteOnAdminsAndMastersProcedure (address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, string _name) public {
+function deployVoteOnAdminsAndMastersProcedure (address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, string _name) public {
 
     votersOrganContract = _votersOrganContract;
     membersWithVetoOrganContract = _membersWithVetoOrganContract;
@@ -27,6 +27,8 @@ function deployVoteOnAdminsAndMastersProcedure (address _votersOrganContract, ad
 
     votingPeriodDuration = _votingPeriodDuration;
     promulgationPeriodDuration = _promulgationPeriodDuration;
+
+    majoritySize = _majoritySize;
 
     kelsenVersionNumber = 1;
 
