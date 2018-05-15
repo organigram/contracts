@@ -47,19 +47,19 @@ module.exports = function(deployer, network, accounts) {
     voteDurationInSeconds = 60*3
     
     // Deploy members list management
-    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Members list management", {from: accounts[0]}).then(() => {
     const memberManagement = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
 
     // Deploy constitutionnal reform procedure
-    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, 0x0000, memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, 0x0000, memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Constitutionnal reform", {from: accounts[0]}).then(() => {
     const constitutionnalReform = voteOnAdminsAndMastersProcedure.at(deployVoteOnAdminsAndMastersProcedure.address)
 
     // Deploy Vote on expense
-    deployer.deploy(deployVoteOnExpenseProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000,  memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnExpenseProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000,  memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Vote on expenses", {from: accounts[0]}).then(() => {
     const voteOnExpense = voteOnExpenseProcedure.at(deployVoteOnExpenseProcedure.address)
 
     // Deploy deposit procedure
-    deployer.deploy(deployDepositFundsProcedure, 0x0000, memberRegistryOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployDepositFundsProcedure, 0x0000, memberRegistryOrgan.address, "Depositing", {from: accounts[0]}).then(() => {
     const depositFunds = depositFundsProcedure.at(deployDepositFundsProcedure.address)
 
       console.log("-------------------------------------")

@@ -52,21 +52,21 @@ module.exports = function(deployer, network, accounts) {
     console.log("Deploying Procedures")
     // Deploying 5 procedures: Presidential election, moderators election, contract promulgation, simple nomination, constitutionnal reform
     // Deploy presidential election procedure
-    deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address, "Presidential election", {from: accounts[0]}).then(() => {
     const presidentialElection = cyclicalManyToOneElectionProcedure.at(deployCyclicalManyToOneElectionProcedure.address)
     // Deploy Moderators election procedure
-    deployer.deploy(deployCyclicalManyToManyElectionProcedure, memberRegistryOrgan.address, moderatorsOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployCyclicalManyToManyElectionProcedure, memberRegistryOrgan.address, moderatorsOrgan.address, "Moderators election", {from: accounts[0]}).then(() => {
     const moderatorsElection = cyclicalManyToManyElectionProcedure.at(deployCyclicalManyToManyElectionProcedure.address)
     // Deploy contract promulgation procedure
     voteDurationInSeconds = 60*3
-    deployer.deploy(deployVoteOnNormsProcedure, activeContractsOrgan.address, moderatorsOrgan.address, secretaryOrgan.address, presidentRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, activeContractsOrgan.address, moderatorsOrgan.address, secretaryOrgan.address, presidentRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, "Contract Promulgation", {from: accounts[0]}).then(() => {
     const promulgationProcess = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
     
     // Deploy simple nomination procedure
-    deployer.deploy(deploySimpleNormNominationProcedure, adminOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deploySimpleNormNominationProcedure, adminOrgan.address, "Simple Nomination", {from: accounts[0]}).then(() => {
     const simpleNomination = simpleNormNominationProcedure.at(deploySimpleNormNominationProcedure.address)
     // Deploy constitutionnal reform procedure
-    deployer.deploy(deploySimpleAdminsAndMasterNominationProcedure, adminOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deploySimpleAdminsAndMasterNominationProcedure, adminOrgan.address, "Constitutionnal reform", {from: accounts[0]}).then(() => {
       const constitutionnalReform = simpleAdminsAndMasterNominationProcedure.at(deploySimpleAdminsAndMasterNominationProcedure.address)
       console.log("-------------------------------------")
       console.log("Crediting masters")
