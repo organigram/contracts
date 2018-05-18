@@ -18,8 +18,11 @@ contract depositFundsProcedure is Procedure{
     // 9: Deposit funds on an organ
     int public procedureTypeNumber = 9;
 
-    // Storage for procedure name
-    string public procedureName;
+    // // Storage for procedure name
+    // string public procedureName;
+
+    // // Gathering connected organs for easier DAO mapping
+    // address[] public linkedOrgans;
 
     // Where are authorized depositors registered. If authorizedDepositorsOrganContract is set to 0, anyone can deposit funds
     address public authorizedDepositorsOrganContract;
@@ -27,8 +30,7 @@ contract depositFundsProcedure is Procedure{
     // Default organ to which deposits are sent
     address public defaultReceivingOrganContract;
 
-    // Gathering connected organs for easier DAO mapping
-    address[] public linkedOrgans;
+
 
     // Mapping each proposition to the user creating it
     mapping (address => uint) public amountDepositedByDepositorAddress;    
@@ -98,10 +100,10 @@ contract depositFundsProcedure is Procedure{
     {return amountDepositedByDepositorAddress[_userAddress];}    
     function getFundsDepositedToOrgan(address _organAddress) public view returns (uint)
     {return amountDepositedToReceiverAddress[_organAddress];} 
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return linkedOrgans;}
-    function getProcedureName() public view returns (string _procedureName)
-    {return procedureName;}
+    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    // {return linkedOrgans;}
+    // function getProcedureName() public view returns (string _procedureName)
+    // {return procedureName;}
 
 }
 

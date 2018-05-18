@@ -18,8 +18,11 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
 
     int public procedureTypeNumber = 1;
 
-    // Storage for procedure name
-    string public procedureName;
+    // // Storage for procedure name
+    // string public procedureName;
+    
+    // // Gathering connected organs for easier DAO mapping
+    // address[] public linkedOrgans;
 
     // Which contract will be affected
     address public affectedOrganContract;
@@ -27,8 +30,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     // Where are the voter registered
     address public referenceOrganContract;
 
-    // Gathering connected organs for easier DAO mapping
-    address[] public linkedOrgans;
+
 
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
@@ -403,10 +405,10 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     {return ballotToCounter[_userAddress];}  
     function getBallotToEnforcer(address _userAddress) public view returns (uint[])
     {return ballotToEnforcer[_userAddress];}  
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return linkedOrgans;}
-    function getProcedureName() public view returns (string _procedureName)
-    {return procedureName;}
+    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    // {return linkedOrgans;}
+    // function getProcedureName() public view returns (string _procedureName)
+    // {return procedureName;}
 
 }
 

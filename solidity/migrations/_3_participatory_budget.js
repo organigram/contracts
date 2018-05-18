@@ -87,11 +87,17 @@ module.exports = function(deployer, network, accounts) {
 
                       // Set up is ready
                       
-                console.log("Test name display")
-                memberManagement.getProcedureName().then(myInfos1 => {
-                constitutionnalReform.getProcedureName().then(myInfos2 => {
-                voteOnExpense.getProcedureName().then(myInfos3 => {
-                depositFunds.getProcedureName().then(myInfos4 => {
+                // console.log("Test name display")
+                // memberManagement.getProcedureName().then(myInfos1 => {
+                // constitutionnalReform.getProcedureName().then(myInfos2 => {
+                // voteOnExpense.getProcedureName().then(myInfos3 => {
+                // depositFunds.getProcedureName().then(myInfos4 => {
+                  console.log("Test getLinkedOrgans display")
+                  memberManagement.getLinkedOrgans().then(myInfos1 => {
+                  constitutionnalReform.getLinkedOrgans().then(myInfos2 => {
+                  voteOnExpense.getLinkedOrgans().then(myInfos3 => {
+                  depositFunds.getLinkedOrgans().then(myInfos4 => {
+
                     console.log(myInfos1)
                     console.log(myInfos2)
                     console.log(myInfos3)
@@ -111,6 +117,14 @@ module.exports = function(deployer, network, accounts) {
                       console.log("  ]")
                       console.log("Accounts 0 has been added as members")
                       console.log("-------------------------------------")
+
+
+
+
+
+
+
+                      // Set up end
 
                                                                                       })
                                                                                     })

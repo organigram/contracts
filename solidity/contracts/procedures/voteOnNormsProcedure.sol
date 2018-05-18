@@ -43,8 +43,8 @@ contract voteOnNormsProcedure is Procedure{
     // Minimum proportion of votes to win election. This is a percentage value; for 50% majority, majoritySize = 50
     uint public majoritySize;
 
-    // Storage for procedure name
-    string public procedureName;
+    // // Storage for procedure name
+    // string public procedureName;
 
     // ########################
 
@@ -331,10 +331,10 @@ contract voteOnNormsProcedure is Procedure{
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return linkedOrgans;}
-    function getProcedureName() public view returns (string _procedureName)
-    {return procedureName;}
+    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    // {return linkedOrgans;}
+    // function getProcedureName() public view returns (string _procedureName)
+    // {return procedureName;}
 
 }
 

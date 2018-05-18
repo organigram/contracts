@@ -16,8 +16,10 @@ contract normsCooptationProcedure is Procedure{
     // 7: Norms cooptation
     int public procedureTypeNumber = 7;
 
-    // Storage for procedure name
-    string public procedureName;
+    // // Storage for procedure name
+    // string public procedureName;
+    // // Gathering connected organs for easier DAO mapping
+    // address[] public linkedOrgans;
 
     // Which organ will be affected
     address public membersOrganContract;
@@ -28,8 +30,6 @@ contract normsCooptationProcedure is Procedure{
     // Organ in which final promulgators are listed
     address public finalPromulgatorsOrganContract;
 
-    // Gathering connected organs for easier DAO mapping
-    address[] public linkedOrgans;
 
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
@@ -369,10 +369,10 @@ contract normsCooptationProcedure is Procedure{
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return linkedOrgans;}
-    function getProcedureName() public view returns (string _procedureName)
-    {return procedureName;}
+    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    // {return linkedOrgans;}
+    // function getProcedureName() public view returns (string _procedureName)
+    // {return procedureName;}
 
 
 }

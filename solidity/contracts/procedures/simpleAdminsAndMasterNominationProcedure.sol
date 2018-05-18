@@ -18,11 +18,11 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     // address public affectedOrganContract;
     address public authorizedReformersOrgan;
 
-    // Storage for procedure name
-    string public procedureName;
+    // // Storage for procedure name
+    // string public procedureName;
 
-    // Gathering connected organs for easier DAO mapping
-    address[] public linkedOrgans;
+    // // Gathering connected organs for easier DAO mapping
+    // address[] public linkedOrgans;
     
 
     function addAdmin(address _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name) public returns (bool _success){
@@ -185,10 +185,10 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         return _success;
 
     }
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return linkedOrgans;}
-    function getProcedureName() public view returns (string _procedureName)
-    {return procedureName;}
+    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    // {return linkedOrgans;}
+    // function getProcedureName() public view returns (string _procedureName)
+    // {return procedureName;}
 
   
 
