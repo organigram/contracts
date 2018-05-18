@@ -255,7 +255,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             {hasBeenAccepted=false;
                 propositions[_propositionNumber].wasEnded = true;}
         else if
-            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*majoritySize > propositions[_propositionNumber].totalVoteCount*100))
+            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*100 > propositions[_propositionNumber].totalVoteCount*majoritySize))
             {hasBeenAccepted = true;}
         else 
             {hasBeenAccepted=false;
