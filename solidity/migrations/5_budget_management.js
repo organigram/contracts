@@ -8,18 +8,14 @@
 var deployOrgan = artifacts.require("deployOrgan")
 var Organ = artifacts.require("Organ")
 // Deposit Funds procedure
-var deployDepositFundsProcedure = artifacts.require("deploy/deployDepositFundsProcedure")
-var depositFundsProcedure = artifacts.require("procedures/depositFundsProcedure")
+var deployDepositFundsProcedure = artifacts.require("deploy/deployDepositWithdrawFundsProcedure")
+var depositFundsProcedure = artifacts.require("procedures/depositWithdrawFundsProcedure")
 // Vote on masters
 var deployVoteOnAdminsAndMastersProcedure = artifacts.require("deploy/deployVoteOnAdminsAndMastersProcedure")
 var voteOnAdminsAndMastersProcedure = artifacts.require("procedures/voteOnAdminsAndMastersProcedure")
 // Vote on member addition
 var deployVoteOnNormsProcedure = artifacts.require("deploy/deployVoteOnNormsProcedure")
 var voteOnNormsProcedure = artifacts.require("procedures/voteOnNormsProcedure")
-// Vote on expense
-var deployVoteOnExpenseProcedure = artifacts.require("deploy/deployVoteOnExpenseProcedure")
-var voteOnExpenseProcedure = artifacts.require("procedures/voteOnExpenseProcedure")
-
 
 
 module.exports = function(deployer, network, accounts) {
@@ -54,12 +50,8 @@ module.exports = function(deployer, network, accounts) {
     deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, 0x0000, memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 66, "Constitutional reform", {from: accounts[0]}).then(() => {
     const constitutionnalReform = voteOnAdminsAndMastersProcedure.at(deployVoteOnAdminsAndMastersProcedure.address)
 
-    // Deploy Vote on expense
-    deployer.deploy(deployVoteOnExpenseProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000,  memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Vote on expenses", {from: accounts[0]}).then(() => {
-    const voteOnExpense = voteOnExpenseProcedure.at(deployVoteOnExpenseProcedure.address)
-
     // Deploy deposit procedure
-    deployer.deploy(deployDepositFundsProcedure, 0x0000, memberRegistryOrgan.address, "Depositing", {from: accounts[0]}).then(() => {
+    deployer.deploy(deployDepositFundsProcedure, 0x0000, memberRegistryOrgan.address, memberRegistryOrgan.address, "Depositing", {from: accounts[0]}).then(() => {
     const depositFunds = depositFundsProcedure.at(deployDepositFundsProcedure.address)
 
       console.log("-------------------------------------")
@@ -70,8 +62,7 @@ module.exports = function(deployer, network, accounts) {
         console.log("Crediting admins")
 
         memberRegistryOrgan.addAdmin(memberManagement.address, true, true, false, false, "Member cooptation", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(voteOnExpense.address, false, false, false, true, "Voting on expenses", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(depositFunds.address, false, false, true, false, "Deposit procedure", {from: accounts[0]}).then(() => {
+        memberRegistryOrgan.addAdmin(depositFunds.address, false, false, true, true, "Deposit procedure", {from: accounts[0]}).then(() => {
         // Temp admin, in order to add members
         memberRegistryOrgan.addAdmin(accounts[0], true, true, false, false, "Temp admin", {from: accounts[0]}).then(() => {
           console.log("-------------------------------------")
@@ -95,12 +86,10 @@ module.exports = function(deployer, network, accounts) {
                   console.log("Test getLinkedOrgans display")
                   memberManagement.getLinkedOrgans().then(myInfos1 => {
                   constitutionnalReform.getLinkedOrgans().then(myInfos2 => {
-                  voteOnExpense.getLinkedOrgans().then(myInfos3 => {
                   depositFunds.getLinkedOrgans().then(myInfos4 => {
                     
                     console.log(myInfos1)
                     console.log(myInfos2)
-                    console.log(myInfos3)
                     console.log(myInfos4)
 
 
@@ -111,7 +100,6 @@ module.exports = function(deployer, network, accounts) {
                       console.log("  ],")
                       console.log("  \"procedures_addresses\": [")
                       console.log("    \""+memberManagement.address+"\",  // (Member management)")
-                      console.log("    \""+voteOnExpense.address+"\",  // (Voting on expenses)")
                       console.log("    \""+depositFunds.address+"\",  // (Depositing funds)")
                       console.log("    \""+constitutionnalReform.address+"\",  // (Constitutionnal reform)")
                       console.log("  ]")
@@ -122,48 +110,13 @@ module.exports = function(deployer, network, accounts) {
                       
                         depositFunds.sendTransaction({from: accounts[0], value: 1000000000}).then(() => {
                         console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
+
                         
                         console.log("Testing Withdrawals")
-                        voteOnExpense.createProposition(accounts[1], 1000, 1, 1, 1, "Test", {from: accounts[0]}).then(() => {
-                        voteOnExpense.vote(0, true, {from: accounts[0]}).then(() => {
-                        setTimeout(() => {
-                        voteOnExpense.endPropositionVote(0, {from: accounts[0]}).then(() => {
-                        console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
-                        
-                        memberRegistryOrgan.getActiveNormNumber().then(normNumber => {
-                        console.log(normNumber)
-                        
-                        voteOnExpense.getVotedPropositionResults(0).then(QueryResult => {
-                        console.log(QueryResult)
-                        voteOnExpense.getPropositionStatus(0).then(QueryResult => {
-                        console.log(QueryResult)
-                        voteOnExpense.getVotedPropositionStats(0).then(QueryResult => {
-                        console.log(QueryResult)
-                        console.log("promulgateProposition")
-                        voteOnExpense.promulgateProposition(0, true, {from: accounts[0]}).then(() => {
-
-                        console.log(web3.eth.getBalance(accounts[1].address).toString(10))
-
-                        }) // Promulgation
-                        }) // Query election stats
-                        }) // Query Election results
-                        }) // Query status
-                        }) // Get Norm Number
-                        }) // End proposition
-                        }, (voteDurationInSeconds+1)*1000) // Timeout
-                        }) //Voting
-                        }) // Proposition creation transaction
-                      }) // Deposit transaction
-
-
-
-
-
-
-
-                      // Set up end
-
-                                                                                      })
+                        console.log(web3.eth.getBalance(accounts[2]).toString(10))
+                        depositFunds.withdrawOnOrgan(memberRegistryOrgan.address, accounts[2], 1234, {from: accounts[1]}).then(() => {
+                        console.log(web3.eth.getBalance(accounts[2]).toString(10))
+           })
                                                                                     })
                                                                                   })
                                                                                 })
@@ -176,7 +129,7 @@ module.exports = function(deployer, network, accounts) {
                                                                   })
                                                                 })
                                                               })
-})})})})
+})})})
 
   // Use deployer to state migration tasks.
 };

@@ -4,16 +4,17 @@ pragma solidity ^0.4.11;
 
 import "../standardProcedure.sol";
 import "../standardOrgan.sol";
-import "../procedures/depositFundsProcedure.sol";
+import "../procedures/depositWithdrawFundsProcedure.sol";
 
 
 
 
-contract deployDepositFundsProcedure is depositFundsProcedure {
+contract deployDepositWithdrawFundsProcedure is depositWithdrawFundsProcedure {
 
-function deployDepositFundsProcedure (address _authorizedDepositors, address _defaultReceivingOrgan, string _name) public {
+function deployDepositWithdrawFundsProcedure (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, string _name) public {
 
     authorizedDepositorsOrganContract = _authorizedDepositors;
+    authorizedWithdrawersOrganContract = _authorizedWithdrawers;
     defaultReceivingOrganContract = _defaultReceivingOrgan;
     linkedOrgans = [defaultReceivingOrganContract,authorizedDepositorsOrganContract];
 	// Procedure name 
