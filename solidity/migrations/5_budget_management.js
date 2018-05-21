@@ -114,7 +114,7 @@ module.exports = function(deployer, network, accounts) {
                         
                         console.log("Testing Withdrawals")
                         console.log(web3.eth.getBalance(accounts[2]).toString(10))
-                        depositFunds.withdrawOnOrgan(memberRegistryOrgan.address, accounts[2], 1234, {from: accounts[1]}).then(() => {
+                        depositFunds.withdrawOnOrgan(memberRegistryOrgan.address, accounts[2], 1234, {from: accounts[0]}).then(() => {
                         console.log(web3.eth.getBalance(accounts[2]).toString(10))
            })
                                                                                     })

@@ -108,18 +108,18 @@ module.exports = function(deployer, network, accounts) {
               moderatorsOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
               secretaryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
               activeContractsOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
-                //console.log("Test name display")
-                //presidentialElection.getProcedureName().then(myInfos1 => {
-                //moderatorsElection.getProcedureName().then(myInfos2 => {
-                //promulgationProcess.getProcedureName().then(myInfos3 => {
-                //simpleNomination.getProcedureName().then(myInfos4 => {
-                //constitutionnalReform.getProcedureName().then(myInfos5 => {
-                  console.log("Test getLinkedOrgans display")
-                  presidentialElection.getLinkedOrgans().then(myInfos1 => {
-                  moderatorsElection.getLinkedOrgans().then(myInfos2 => {
-                  promulgationProcess.getLinkedOrgans().then(myInfos3 => {
-                  simpleNomination.getLinkedOrgans().then(myInfos4 => {
-                  constitutionnalReform.getLinkedOrgans().then(myInfos5 => {
+                console.log("Test name display")
+                presidentialElection.getProcedureName().then(myInfos1 => {
+                moderatorsElection.getProcedureName().then(myInfos2 => {
+                promulgationProcess.getProcedureName().then(myInfos3 => {
+                simpleNomination.getProcedureName().then(myInfos4 => {
+                constitutionnalReform.getProcedureName().then(myInfos5 => {
+                 // console.log("Test getLinkedOrgans display")
+                //  presidentialElection.getLinkedOrgans().then(myInfos1 => {
+                  //moderatorsElection.getLinkedOrgans().then(myInfos2 => {
+                 // promulgationProcess.getLinkedOrgans().then(myInfos3 => {
+                  //simpleNomination.getLinkedOrgans().then(myInfos4 => {
+                  //constitutionnalReform.getLinkedOrgans().then(myInfos5 => {
                     console.log(myInfos1)
                     console.log(myInfos2)
                     console.log(myInfos3)
