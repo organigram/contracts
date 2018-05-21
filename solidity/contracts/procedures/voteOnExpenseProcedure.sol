@@ -17,6 +17,8 @@ contract voteOnExpenseProcedure is Procedure{
     // 8: Vote on an expense
     int public procedureTypeNumber = 8;
 
+    // ############## Variable to set up when declaring the procedure
+
     // Which organ will be affected
     address public affectedOrganContract;
 
@@ -29,26 +31,27 @@ contract voteOnExpenseProcedure is Procedure{
     // Organ in which final promulgators are listed
     address public finalPromulgatorsOrganContract;
 
-    // ############## Variable to set up when declaring the procedure
-    // ####### Vote creation process
+    // Minimum participation to validate election. This is a percentage value; for 40% quorum, quorumSize = 40
+    uint public quorumSize;
 
-    // ####### Voting process
     // Time for participant to vote
     uint public votingPeriodDuration;
 
     // Time for president to promulgat
     uint public promulgationPeriodDuration;
 
-    // ####### Resolution process
-    // Minimum participation to validate election
-    uint public quorumSize;
+    // Minimum proportion of votes to win election. This is a percentage value; for 50% majority, majoritySize = 50
+    uint public majoritySize;
+
+    // // Storage for procedure name
+    // string public procedureName;
+
+    
+
+    // ################## 
 
     // Variable of the procedure to keep track of propositions
     uint public totalPropositionNumber;
-
-    // Variables to measure vote threshold. If majority threshold is 3/5, then requiredMajorityNumerator= 3 and requiredMajorityDenominator = 5
-    uint public requiredMajorityNumerator;
-    uint public requiredMajorityDenominator;
 
     // Proposition structure
     struct Proposition {
@@ -223,7 +226,7 @@ contract voteOnExpenseProcedure is Procedure{
             {hasBeenAccepted=false;
                 propositions[_propositionNumber].wasEnded = true;}
         else if
-            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*requiredMajorityDenominator/requiredMajorityNumerator > propositions[_propositionNumber].totalVoteCount))
+            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*100 > propositions[_propositionNumber].totalVoteCount*majoritySize))
             {hasBeenAccepted = true;}
         else 
             {hasBeenAccepted=false;
@@ -294,10 +297,14 @@ contract voteOnExpenseProcedure is Procedure{
     function getPropositionStatus(uint _propositionNumber) public view returns (bool _wasCounted, bool _wasEnded){
         return (propositions[_propositionNumber].wasCounted, propositions[_propositionNumber].wasEnded);
     }
-    function getVotedPropositionResults(uint _propositionNumber) public view returns (uint _startDate, uint _totalVoteCount, uint _voteFor, bool _wasVetoed, bool _wasAccepted){
+    function getVotedPropositionResults(uint _propositionNumber) public view returns (bool _wasVetoed, bool _wasAccepted){
         require(propositions[_propositionNumber].wasCounted);
-        return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].wasVetoed, propositions[_propositionNumber].wasAccepted);
-        }
+        return (propositions[_propositionNumber].wasVetoed, propositions[_propositionNumber].wasAccepted);
+    }
+    function getVotedPropositionStats(uint _propositionNumber) public view returns (uint _totalVoters, uint _totalVoteCount, uint _voteFor)
+        {require(propositions[_propositionNumber].wasCounted);
+        return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor);}
+
     function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
     {return propositionToUser[_userAddress];}    
     function getPropositionsVetoedByUser(address _userAddress) public view returns (uint[])
@@ -308,6 +315,10 @@ contract voteOnExpenseProcedure is Procedure{
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
+    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    // {return linkedOrgans;}
+    // function getProcedureName() public view returns (string _procedureName)
+    // {return procedureName;}
 
 }
 

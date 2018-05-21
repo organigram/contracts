@@ -11,12 +11,16 @@ import "../procedures/normsCooptationProcedure.sol";
 
 contract deployNormsCooptationProcedure is normsCooptationProcedure {
 
-    function deployNormsCooptationProcedure (address _membersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration) public {
+    function deployNormsCooptationProcedure (address _membersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, string _name) public {
 
     membersOrganContract = _membersOrganContract;
     membersWithVetoOrganContract = _membersWithVetoOrganContract;
     finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 
+    linkedOrgans = [finalPromulgatorsOrganContract,membersWithVetoOrganContract,membersOrganContract];
 
+    // Procedure name 
+    procedureName = _name;
+    
     quorumSize = _quorumSize;
     minimumDepositSize = 1000;
     // votingPeriodDuration = 3 minutes;

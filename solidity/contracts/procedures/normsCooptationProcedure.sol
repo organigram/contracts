@@ -16,6 +16,11 @@ contract normsCooptationProcedure is Procedure{
     // 7: Norms cooptation
     int public procedureTypeNumber = 7;
 
+    // // Storage for procedure name
+    // string public procedureName;
+    // // Gathering connected organs for easier DAO mapping
+    // address[] public linkedOrgans;
+
     // Which organ will be affected
     address public membersOrganContract;
 
@@ -24,6 +29,7 @@ contract normsCooptationProcedure is Procedure{
 
     // Organ in which final promulgators are listed
     address public finalPromulgatorsOrganContract;
+
 
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
@@ -349,9 +355,9 @@ contract normsCooptationProcedure is Procedure{
     function getPropositionStatus(uint _propositionNumber) public view returns (bool _wasCounted, bool _wasEnacted){
         return (propositions[_propositionNumber].wasCounted, propositions[_propositionNumber].wasEnacted);
     }
-    function getVotedPropositionResults(uint _propositionNumber) public view returns (uint _startDate, uint _totalVoteCount, uint _voteFor, uint _vetoCount, uint _notVetoCount, bool _wasAccepted){
+    function getVotedPropositionResults(uint _propositionNumber) public view returns (uint totalVoters, uint _totalVoteCount, uint _voteFor, uint _vetoCount, uint _notVetoCount, bool _wasAccepted){
         require(propositions[_propositionNumber].wasCounted);
-        return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].vetoCount, propositions[_propositionNumber].notVetoCount, propositions[_propositionNumber].wasAccepted);
+        return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].vetoCount, propositions[_propositionNumber].notVetoCount, propositions[_propositionNumber].wasAccepted);
         }
     function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
     {return propositionToUser[_userAddress];}    
@@ -363,6 +369,11 @@ contract normsCooptationProcedure is Procedure{
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}
+    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
+    // {return linkedOrgans;}
+    // function getProcedureName() public view returns (string _procedureName)
+    // {return procedureName;}
+
 
 }
 

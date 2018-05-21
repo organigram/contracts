@@ -11,7 +11,7 @@ import "../procedures/cyclicalManyToOneElectionProcedure.sol";
 
 contract deployCyclicalManyToOneElectionProcedure is cyclicalManyToOneElectionProcedure {
 
-    function deployCyclicalManyToOneElectionProcedure (address _referenceOrganContract, address _affectedOrganContract) public {
+    function deployCyclicalManyToOneElectionProcedure (address _referenceOrganContract, address _affectedOrganContract, string _name) public {
     //     // Variables for Presidential election
     // voterRegistry = 0x0000;
     // quorumSize = 40;
@@ -28,6 +28,12 @@ contract deployCyclicalManyToOneElectionProcedure is cyclicalManyToOneElectionPr
     referenceOrganContract = _referenceOrganContract;
     // Adress of president registry organ
     affectedOrganContract = _affectedOrganContract;
+    
+    // Procedure name 
+    procedureName = _name;
+
+    linkedOrgans = [referenceOrganContract,affectedOrganContract];
+
     quorumSize = 40;
     ballotDuration = 3 minutes;
     candidacyDuration = 3 minutes;

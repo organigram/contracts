@@ -52,21 +52,23 @@ module.exports = function(deployer, network, accounts) {
     console.log("Deploying Procedures")
     // Deploying 5 procedures: Presidential election, moderators election, contract promulgation, simple nomination, constitutionnal reform
     // Deploy presidential election procedure
-    deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address, {from: accounts[0]}).then(() => {
+    // voteVariablesVector = [40, 3*60, 3*60, 9*60,2,2]
+    // voteVariablesVector = [web3.toBigNumber(40).valueOf(), web3.toBigNumber(3*60).valueOf(), web3.toBigNumber(3*60).valueOf(), web3.toBigNumber(9*60).valueOf(),web3.toBigNumber(2).valueOf(),web3.toBigNumber(2).valueOf()]
+    deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address , "Presidential election", {from: accounts[0]}).then(() => {
     const presidentialElection = cyclicalManyToOneElectionProcedure.at(deployCyclicalManyToOneElectionProcedure.address)
     // Deploy Moderators election procedure
-    deployer.deploy(deployCyclicalManyToManyElectionProcedure, memberRegistryOrgan.address, moderatorsOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployCyclicalManyToManyElectionProcedure, memberRegistryOrgan.address, moderatorsOrgan.address,  "Moderators election", {from: accounts[0]}).then(() => {
     const moderatorsElection = cyclicalManyToManyElectionProcedure.at(deployCyclicalManyToManyElectionProcedure.address)
     // Deploy contract promulgation procedure
     voteDurationInSeconds = 60*3
-    deployer.deploy(deployVoteOnNormsProcedure, activeContractsOrgan.address, moderatorsOrgan.address, secretaryOrgan.address, presidentRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, {from: accounts[0]}).then(() => {
+    deployer.deploy(deployVoteOnNormsProcedure, activeContractsOrgan.address, moderatorsOrgan.address, secretaryOrgan.address, presidentRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Contract Promulgation", {from: accounts[0]}).then(() => {
     const promulgationProcess = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
     
     // Deploy simple nomination procedure
-    deployer.deploy(deploySimpleNormNominationProcedure, adminOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deploySimpleNormNominationProcedure, adminOrgan.address, "Simple Nomination", {from: accounts[0]}).then(() => {
     const simpleNomination = simpleNormNominationProcedure.at(deploySimpleNormNominationProcedure.address)
     // Deploy constitutionnal reform procedure
-    deployer.deploy(deploySimpleAdminsAndMasterNominationProcedure, adminOrgan.address, {from: accounts[0]}).then(() => {
+    deployer.deploy(deploySimpleAdminsAndMasterNominationProcedure, adminOrgan.address, "Constitutionnal reform", {from: accounts[0]}).then(() => {
       const constitutionnalReform = simpleAdminsAndMasterNominationProcedure.at(deploySimpleAdminsAndMasterNominationProcedure.address)
       console.log("-------------------------------------")
       console.log("Crediting masters")
@@ -106,6 +108,24 @@ module.exports = function(deployer, network, accounts) {
               moderatorsOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
               secretaryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
               activeContractsOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
+                //console.log("Test name display")
+                //presidentialElection.getProcedureName().then(myInfos1 => {
+                //moderatorsElection.getProcedureName().then(myInfos2 => {
+                //promulgationProcess.getProcedureName().then(myInfos3 => {
+                //simpleNomination.getProcedureName().then(myInfos4 => {
+                //constitutionnalReform.getProcedureName().then(myInfos5 => {
+                  console.log("Test getLinkedOrgans display")
+                  presidentialElection.getLinkedOrgans().then(myInfos1 => {
+                  moderatorsElection.getLinkedOrgans().then(myInfos2 => {
+                  promulgationProcess.getLinkedOrgans().then(myInfos3 => {
+                  simpleNomination.getLinkedOrgans().then(myInfos4 => {
+                  constitutionnalReform.getLinkedOrgans().then(myInfos5 => {
+                    console.log(myInfos1)
+                    console.log(myInfos2)
+                    console.log(myInfos3)
+                    console.log(myInfos4)
+                    console.log(myInfos5)
+
 
                       // Set up is ready
 
@@ -169,5 +189,6 @@ module.exports = function(deployer, network, accounts) {
             })
           })
         })
+})})})})})
   // Use deployer to state migration tasks.
 };

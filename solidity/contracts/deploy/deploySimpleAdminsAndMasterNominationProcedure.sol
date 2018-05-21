@@ -9,9 +9,14 @@ import "../procedures/simpleAdminsAndMasterNominationProcedure.sol";
 
 contract deploySimpleAdminsAndMasterNominationProcedure is simpleAdminsAndMasterNominationProcedure {
 
-    function deploySimpleAdminsAndMasterNominationProcedure (address _authorizedReformersOrgan) public {
+    function deploySimpleAdminsAndMasterNominationProcedure (address _authorizedReformersOrgan, string _name) public {
 
     authorizedReformersOrgan = _authorizedReformersOrgan;
+    linkedOrgans = [authorizedReformersOrgan];
+
+    // Procedure name 
+    procedureName = _name;
+
     kelsenVersionNumber = 1;
     
     }
