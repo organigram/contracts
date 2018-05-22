@@ -447,7 +447,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     { return (ballots[_ballotNumber].totalVoters, ballots[_ballotNumber].totalVoteCount);}
     
     function getCandidateVoteNumber(uint _ballotNumber, address _candidateAddress) public view returns (uint voteReceived){
-        require(ballots[_ballotNumber].wasEnforced);
+        require(ballots[_ballotNumber].wasEnded);
         return ballots[_ballotNumber].candidacies[_candidateAddress].voteNumber;
     }
     function haveIVoted(uint _ballotNumber) public view returns (bool IHaveVoted)
