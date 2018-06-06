@@ -106,7 +106,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
 
     }
 
-        function addMaster(address _organToReform, address _newMaster, bool _canAdd, bool _canDelete, string _name) public returns (bool _success){
+    function addMaster(address _organToReform, address _newMaster, bool _canAdd, bool _canDelete, string _name) public returns (bool _success){
 
         // Checking if caller is an admin
         Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
