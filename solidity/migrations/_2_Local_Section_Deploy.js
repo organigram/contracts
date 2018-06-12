@@ -27,8 +27,11 @@ module.exports = function(deployer, network, accounts) {
   console.log("Available accounts : ")
   accounts.forEach((account, i) => console.log("-", account))
   console.log("-------------------------------------")
+  console.log("Initial balance:")
+  console.log(web3.eth.getBalance(accounts[0]).toString(10))
   console.log("-------------------------------------")
   console.log("Deploying Organs")
+
   // 6 organs to deploy: Admins, Members, President, Moderators, Secretary, Active contracts
   // Deploy First organ (admins)
   deployer.deploy(deployOrgan, "Admins Organ", {from: accounts[0]}).then(() => {
@@ -108,18 +111,18 @@ module.exports = function(deployer, network, accounts) {
               moderatorsOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
               secretaryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
               activeContractsOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
-                //console.log("Test name display")
-                //presidentialElection.getProcedureName().then(myInfos1 => {
-                //moderatorsElection.getProcedureName().then(myInfos2 => {
-                //promulgationProcess.getProcedureName().then(myInfos3 => {
-                //simpleNomination.getProcedureName().then(myInfos4 => {
-                //constitutionnalReform.getProcedureName().then(myInfos5 => {
-                  console.log("Test getLinkedOrgans display")
-                  presidentialElection.getLinkedOrgans().then(myInfos1 => {
-                  moderatorsElection.getLinkedOrgans().then(myInfos2 => {
-                  promulgationProcess.getLinkedOrgans().then(myInfos3 => {
-                  simpleNomination.getLinkedOrgans().then(myInfos4 => {
-                  constitutionnalReform.getLinkedOrgans().then(myInfos5 => {
+                console.log("Test name display")
+                presidentialElection.getProcedureName().then(myInfos1 => {
+                moderatorsElection.getProcedureName().then(myInfos2 => {
+                promulgationProcess.getProcedureName().then(myInfos3 => {
+                simpleNomination.getProcedureName().then(myInfos4 => {
+                constitutionnalReform.getProcedureName().then(myInfos5 => {
+                 // console.log("Test getLinkedOrgans display")
+                //  presidentialElection.getLinkedOrgans().then(myInfos1 => {
+                  //moderatorsElection.getLinkedOrgans().then(myInfos2 => {
+                 // promulgationProcess.getLinkedOrgans().then(myInfos3 => {
+                  //simpleNomination.getLinkedOrgans().then(myInfos4 => {
+                  //constitutionnalReform.getLinkedOrgans().then(myInfos5 => {
                     console.log(myInfos1)
                     console.log(myInfos2)
                     console.log(myInfos3)
@@ -149,6 +152,8 @@ module.exports = function(deployer, network, accounts) {
                       console.log("Accounts 0 to 4 have been added as members")
                       console.log("Accounts 0 is an admin")
                       console.log("-------------------------------------")
+                      console.log("Final balance:")
+                      console.log(web3.eth.getBalance(accounts[0]).toString(10))
 
                                                                                       })
                                                                                     })

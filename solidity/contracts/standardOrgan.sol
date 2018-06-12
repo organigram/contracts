@@ -52,12 +52,10 @@ contract Organ is Kelsen{
     // Master management events
     event addMasterEvent(address _from, address _newMaster, bool _canAdd, bool _canDelete, string _name);
     event remMasterEvent(address _from, address _masterToRemove);
-    event replaceMasterEvent(address _from, address _masterToRemove, address _masterToAdd, bool _canAdd, bool _canDelete, string _name);
 
     // Admin management events
     event addAdminEvent(address _from, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name);
     event remAdminEvent(address _from, address _adminToRemove);
-    event replaceAdminEvent(address _from, address _adminToRemove, address _adminToAdd, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name);
 
     // Norm management events
     event addNormEvent(address _from, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
@@ -116,6 +114,9 @@ contract Organ is Kelsen{
         // Check new master is not already a master
         require((!masters[_newMasterAddress].canAdd) && (!masters[_newMasterAddress].canDelete));
 
+        // Check new master has at least one permission activated
+        require(_canAdd || _canDelete);
+
         // Adding master to master list and retrieving position
         masters[_newMasterAddress].rankInMasterList = masterList.push(_newMasterAddress) - 1;
 
@@ -130,9 +131,34 @@ contract Organ is Kelsen{
     function replaceMaster(address _masterToRemove, address _masterToAdd, bool _canAdd, bool _canDelete, string _name) public {
         // Check sender is allowed
         require((masters[msg.sender].canAdd) && (masters[msg.sender].canDelete));
-        remMaster(_masterToRemove);
-        addMaster(_masterToAdd, _canAdd, _canDelete, _name);
-        replaceMasterEvent(msg.sender, _masterToRemove, _masterToAdd, _canAdd, _canDelete, _name);
+        // Check new master has at least one permission activated
+        require(_canAdd || _canDelete);
+
+        // Check if we are replacing a master with another, or if we are modifying permissions
+        if (_masterToRemove != _masterToAdd)
+        {
+            // Replacing a master
+            addMaster(_masterToAdd, _canAdd, _canDelete, _name);
+            remMaster(_masterToRemove);
+        }
+
+        else
+        {
+            // Modifying permissions
+            
+
+            // Triggering events
+            remMasterEvent(msg.sender, _masterToRemove);
+            addMasterEvent(msg.sender, _masterToAdd, _canAdd, _canDelete, _name);
+
+            //Modifying permissions
+            masters[_masterToRemove].canAdd = _canAdd;
+            masters[_masterToRemove].canDelete = _canDelete;
+            masters[_masterToRemove].name = _name;
+
+        }
+
+
     }
     function remMaster(address _masterToRemove) public {
         // Check sender is allowed
@@ -152,7 +178,10 @@ contract Organ is Kelsen{
         // Check the sender is allowed
         require((masters[msg.sender].canAdd));
         // Check new admin is not already an admin
-        require((!admins[_newAdminAddress].canAdd) && (!admins[_newAdminAddress].canDelete));
+        require((!admins[_newAdminAddress].canAdd) && (!admins[_newAdminAddress].canDelete) && (!admins[_newAdminAddress].canDeposit) && (!admins[_newAdminAddress].canSpend));
+
+        // Check new admin has at least one permission activated
+        require(_canAdd || _canDelete || _canDeposit || _canSpend);
 
         // Adding admin to admin list and retrieving position
         admins[_newAdminAddress].rankInAdminList = adminList.push(_newAdminAddress) - 1;
@@ -170,9 +199,11 @@ contract Organ is Kelsen{
     function replaceAdmin(address _adminToRemove, address _adminToAdd, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name) public {
         // Check sender is allowed
         require((masters[msg.sender].canAdd) && (masters[msg.sender].canDelete));
+        // Check new admin has at least one permission activated
+        require(_canAdd || _canDelete || _canDeposit || _canSpend);
+        
         remAdmin(_adminToRemove);
         addAdmin(_adminToAdd, _canAdd, _canDelete, _canDeposit, _canSpend, _name);
-        replaceAdminEvent(msg.sender, _adminToRemove,  _adminToAdd,  _canAdd,  _canDelete,  _canDeposit,  _canSpend, _name);
 
     }
 

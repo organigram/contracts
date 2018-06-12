@@ -1,31 +1,20 @@
 
 
-
-
-
 /// Importing required contracts
 // Organs
 var deployOrgan = artifacts.require("deployOrgan")
 var Organ = artifacts.require("Organ")
-// Deposit Funds procedure
-var deployDepositFundsProcedure = artifacts.require("deploy/deployDepositWithdrawFundsProcedure")
-var depositFundsProcedure = artifacts.require("procedures/depositWithdrawFundsProcedure")
-// Vote on masters
-var deployVoteOnAdminsAndMastersProcedure = artifacts.require("deploy/deployVoteOnAdminsAndMastersProcedure")
-var voteOnAdminsAndMastersProcedure = artifacts.require("procedures/voteOnAdminsAndMastersProcedure")
-// Vote on member addition
-var deployVoteOnNormsProcedure = artifacts.require("deploy/deployVoteOnNormsProcedure")
-var voteOnNormsProcedure = artifacts.require("procedures/voteOnNormsProcedure")
-// Vote on expense
-var deployVoteOnExpenseProcedure = artifacts.require("deploy/deployVoteOnExpenseProcedure")
-var voteOnExpenseProcedure = artifacts.require("procedures/voteOnExpenseProcedure")
-
-
+// Presidential election
+var deployCyclicalManyToOneElectionProcedure = artifacts.require("deploy/deployCyclicalManyToOneElectionProcedure")
+var cyclicalManyToOneElectionProcedure = artifacts.require("procedures/cyclicalManyToOneElectionProcedure")
+// Moderators election
+var deployCyclicalManyToManyElectionProcedure = artifacts.require("deploy/deployCyclicalManyToManyElectionProcedure")
+var cyclicalManyToManyElectionProcedure = artifacts.require("procedures/cyclicalManyToManyElectionProcedure")
 
 module.exports = function(deployer, network, accounts) {
 
   console.log("---------------------------------------------------------------------------------------------------------------")
-  console.log("Deploying a participatory budget")
+  console.log("Testing stats display on cyclicalManyToManyElectionProcedure and cyclicalManyToOneElectionProcedure")
   console.log("---------------------------------------------------------------------------------------------------------------")
   console.log("-------------------------------------")
   console.log("Available accounts : ")
@@ -35,9 +24,16 @@ module.exports = function(deployer, network, accounts) {
   console.log(web3.eth.getBalance(accounts[0]).toString(10))
   console.log("-------------------------------------")
   console.log("Deploying Organ")
-  // 1 organs to deploy: Members list
+  // 3 organs to deploy: Members list
   deployer.deploy(deployOrgan, "Member Organ", {from: accounts[0]}).then(() => {
   const memberRegistryOrgan = Organ.at(deployOrgan.address)
+  // Deploy second organ (president registry)
+  deployer.deploy(deployOrgan, "Presidential Organ", {from: accounts[0]}).then(() => {
+  const presidentRegistryOrgan = Organ.at(deployOrgan.address)
+  // Deploy third organ (admins)
+  deployer.deploy(deployOrgan, "Moderators Organ", {from: accounts[0]}).then(() => {
+  const moderatorsOrgan = Organ.at(deployOrgan.address)
+
     console.log("-------------------------------------")
     console.log("Deploying Procedures")
     // Deploying 4 procedures: 
@@ -46,34 +42,20 @@ module.exports = function(deployer, network, accounts) {
     // * Vote on expense
     // * Deposit procedure
     // Voting time variables. These are short for demonstration purposes
-    voteDurationInSeconds = 30
-    
-    // Deploy members list management
-    deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {
-    const memberManagement = voteOnNormsProcedure.at(deployVoteOnNormsProcedure.address)
+    voteDurationInSeconds = 10
 
-    // Deploy constitutionnal reform procedure
-    deployer.deploy(deployVoteOnAdminsAndMastersProcedure, memberRegistryOrgan.address, 0x0000, memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 66, "Constitutional reform", {from: accounts[0]}).then(() => {
-    const constitutionnalReform = voteOnAdminsAndMastersProcedure.at(deployVoteOnAdminsAndMastersProcedure.address)
-
-    // Deploy Vote on expense
-    deployer.deploy(deployVoteOnExpenseProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000,  memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Vote on expenses", {from: accounts[0]}).then(() => {
-    const voteOnExpense = voteOnExpenseProcedure.at(deployVoteOnExpenseProcedure.address)
-
-    // Deploy deposit procedure
-    deployer.deploy(deployDepositFundsProcedure, 0x0000, 0x0000, memberRegistryOrgan.address, "Depositing", {from: accounts[0]}).then(() => {
-    const depositFunds = depositFundsProcedure.at(deployDepositFundsProcedure.address)
-
-      console.log("-------------------------------------")
-      console.log("Crediting masters")
-      memberRegistryOrgan.addMaster(constitutionnalReform.address, true, true, "Constitutionnal reform", {from: accounts[0]}).then(() => {
+    // Deploy presidential election procedure
+    deployer.deploy(deployCyclicalManyToOneElectionProcedure, memberRegistryOrgan.address, presidentRegistryOrgan.address , "Presidential election", {from: accounts[0]}).then(() => {
+    const presidentialElection = cyclicalManyToOneElectionProcedure.at(deployCyclicalManyToOneElectionProcedure.address)
+    // Deploy Moderators election procedure
+    deployer.deploy(deployCyclicalManyToManyElectionProcedure, memberRegistryOrgan.address, moderatorsOrgan.address,  "Moderators election", {from: accounts[0]}).then(() => {
+    const moderatorsElection = cyclicalManyToManyElectionProcedure.at(deployCyclicalManyToManyElectionProcedure.address)
 
         console.log("-------------------------------------")
         console.log("Crediting admins")
 
-        memberRegistryOrgan.addAdmin(memberManagement.address, true, true, false, false, "Member cooptation", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(voteOnExpense.address, false, false, false, true, "Voting on expenses", {from: accounts[0]}).then(() => {
-        memberRegistryOrgan.addAdmin(depositFunds.address, false, false, true, false, "Deposit procedure", {from: accounts[0]}).then(() => {
+        presidentRegistryOrgan.addAdmin(presidentialElection.address, true, true, false, false, "PresElec", {from: accounts[0]}).then(() => {
+        moderatorsOrgan.addAdmin(moderatorsElection.address, true, true, false, false, "ModElec", {from: accounts[0]}).then(() => {
         // Temp admin, in order to add members
         memberRegistryOrgan.addAdmin(accounts[0], true, true, false, false, "Temp admin", {from: accounts[0]}).then(() => {
           console.log("-------------------------------------")
@@ -86,42 +68,87 @@ module.exports = function(deployer, network, accounts) {
               console.log("-------------------------------------")
               console.log("Removing temp masters")
               memberRegistryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
-
-                      // Set up is ready
-                      
-                // console.log("Test name display")
-                // memberManagement.getProcedureName().then(myInfos1 => {
-                // constitutionnalReform.getProcedureName().then(myInfos2 => {
-                // voteOnExpense.getProcedureName().then(myInfos3 => {
-                // depositFunds.getProcedureName().then(myInfos4 => {
-                  console.log("Test getLinkedOrgans display")
-                  memberManagement.getLinkedOrgans().then(myInfos1 => {
-                  constitutionnalReform.getLinkedOrgans().then(myInfos2 => {
-                  voteOnExpense.getLinkedOrgans().then(myInfos3 => {
-                  depositFunds.getLinkedOrgans().then(myInfos4 => {
-                    
-                    console.log(myInfos1)
-                    console.log(myInfos2)
-                    console.log(myInfos3)
-                    console.log(myInfos4)
+              presidentRegistryOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
+              moderatorsOrgan.remMaster(accounts[0], {from: accounts[0]}).then(() => {
 
 
                       console.log("-------------------------------------")
                       console.log("Put these new addresses in settings :")
                       console.log("  \"organs_addresses\": [")
                       console.log("    \""+memberRegistryOrgan.address+"\",  // (Members)")
+                      console.log("    \""+presidentRegistryOrgan.address+"\",  // (President)")
+                      console.log("    \""+moderatorsOrgan.address+"\",  // (Moderators)")
                       console.log("  ],")
                       console.log("  \"procedures_addresses\": [")
-                      console.log("    \""+memberManagement.address+"\",  // (Member management)")
-                      console.log("    \""+voteOnExpense.address+"\",  // (Voting on expenses)")
-                      console.log("    \""+depositFunds.address+"\",  // (Depositing funds)")
-                      console.log("    \""+constitutionnalReform.address+"\",  // (Constitutionnal reform)")
+                      console.log("    \""+presidentialElection.address+"\",  // (Presidential Election)")
+                      console.log("    \""+moderatorsElection.address+"\",  // (Moderators Election)")
                       console.log("  ]")
                       console.log("Accounts 0 has been added as members")
                       console.log("-------------------------------------")
-                      console.log("Final balance:")
-                      console.log(web3.eth.getBalance(accounts[0]).toString(10))
-                      // console.log("Testing deposits")
+
+
+
+
+
+                      console.log("Testing Elections")
+                      presidentialElection.createBallot("Test Pres", {from: accounts[0]}).then(() => {
+                      moderatorsElection.createBallot("Test Mods", {from: accounts[0]}).then(() => {
+                        presidentialElection.presentCandidacy(0, "Henri", 0,0,0, {from: accounts[0]}).then(() => {
+                        moderatorsElection.presentCandidacy(0, "Henri", 0,0,0, {from: accounts[0]}).then(() => {
+                          console.log("Waiting for voting period...")
+                          setTimeout(() => {
+                            console.log("Done. Voting")
+                            presidentialElection.vote(0, accounts[0], {from: accounts[0]}).then(() => {
+                            moderatorsElection.vote(0, [accounts[0]], {from: accounts[0]}).then(() => {
+                              console.log("Waiting for counting period...")
+                              setTimeout(() => {
+                              console.log("Done. Counting")
+                              presidentialElection.endBallot(0, {from: accounts[0]}).then(() => {
+                              moderatorsElection.endBallot(0, {from: accounts[0]}).then(() => {
+
+                              console.log("Getting Stats:")
+                              presidentialElection.getCandidateVoteNumber(0, accounts[0],{from: accounts[0]}).then(stats1 => {
+                              moderatorsElection.getCandidateVoteNumber(0,  accounts[0], {from: accounts[0]}).then(stats2 => {
+                              console.log(stats1)
+                              console.log(stats2)
+
+                        //      console.log("Done. Enforcing")
+                        //      presidentialElection.enforceBallot(0, {from: accounts[0]}).then(() => {
+                        //      moderatorsElection.enforceBallot(0, {from: accounts[0]}).then(() => {
+
+                        //      console.log("Getting Stats:")
+                        //      presidentialElection.getCandidateVoteNumber(0, accounts[0],{from: accounts[0]}).then(stats1 => {
+                        //      moderatorsElection.getCandidateVoteNumber(0, accounts[0], {from: accounts[0]}).then(stats2 => {
+                        //      console.log(stats1)
+                        //      console.log(stats2)
+
+                      //  }) // Getting stats V2
+                      //  }) // Getting stats V2
+                      //  }) // Enforcing Mods
+                      //  }) // Enforcing  pres
+
+                        }) // Getting stats V1
+                        }) // Getting stats V1
+
+                        }) // Couting Mods
+                        }) // Couting  pres
+                        }, (voteDurationInSeconds+1)*1000) // Counting timeout
+                        }) // Voting Mods
+                        }) // Voting  pres
+                        }, (voteDurationInSeconds+1)*1000) // Voting timeout
+                        }) // Candidacy Mods
+                        }) // Candidacy Pres
+                        
+                        }) // Create Ballot Mods
+                        }) // Create Ballot Pres
+
+                      //   }) // Get Norm Number
+                      //   }) // End proposition
+                      //   }) //Voting
+                      //   }) // Proposition creation transaction
+                      // }) // Deposit transaction
+
+
                       // console.log(web3.eth.getBalance(memberRegistryOrgan.address).toString(10))
                       
                       //   depositFunds.sendTransaction({from: accounts[0], value: 1000000000}).then(() => {
@@ -180,7 +207,6 @@ module.exports = function(deployer, network, accounts) {
                                                                   })
                                                                 })
                                                               })
-})})})})
 
   // Use deployer to state migration tasks.
 };
