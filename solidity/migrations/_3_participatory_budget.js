@@ -46,7 +46,7 @@ module.exports = function(deployer, network, accounts) {
     // * Vote on expense
     // * Deposit procedure
     // Voting time variables. These are short for demonstration purposes
-    voteDurationInSeconds = 10
+    voteDurationInSeconds = 30
     
     // Deploy members list management
     deployer.deploy(deployVoteOnNormsProcedure, memberRegistryOrgan.address, memberRegistryOrgan.address, 0x0000 , memberRegistryOrgan.address, 40, voteDurationInSeconds, voteDurationInSeconds, 50, "Members list management", {from: accounts[0]}).then(() => {

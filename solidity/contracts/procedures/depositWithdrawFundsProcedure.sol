@@ -37,11 +37,11 @@ contract depositWithdrawFundsProcedure is Procedure{
 
     // Mapping each proposition to the user creating it
     mapping (address => uint) public amountDepositedByDepositorAddress;    
-    mapping (address => uint) public amountWithdrewByDepositorAddress;   
+    mapping (address => uint) public amountWithdrawnByDepositorAddress;   
 
     // Mapping each proposition to the user who participated
     mapping (address => uint) public amountDepositedToReceiverAddress;
-    mapping (address => uint) public amountWithdrewFromReceiverAddress;
+    mapping (address => uint) public amountWithdrawnFromReceiverAddress;
 
     // Events
     event depositedFunds(address _from, address _payoutAddress, uint _amount);
@@ -119,8 +119,8 @@ contract depositWithdrawFundsProcedure is Procedure{
         organToWithdrawFrom.payout(_receiver, _amount);
 
         // Recording value transfer
-        amountWithdrewFromReceiverAddress[msg.sender] += _amount;
-        amountWithdrewByDepositorAddress[_targetOrgan] += _amount;
+        amountWithdrawnFromReceiverAddress[msg.sender] += _amount;
+        amountWithdrawnByDepositorAddress[_targetOrgan] += _amount;
 
         // Log event
         withdrewFunds( _targetOrgan, msg.sender, _amount);
@@ -132,10 +132,10 @@ contract depositWithdrawFundsProcedure is Procedure{
     {return amountDepositedByDepositorAddress[_userAddress];}    
     function getFundsDepositedToOrgan(address _organAddress) public view returns (uint)
     {return amountDepositedToReceiverAddress[_organAddress];} 
-    function getFundsWithdrewdByUser(address _userAddress) public view returns (uint)
-    {return amountWithdrewFromReceiverAddress[_userAddress];}    
-    function getFundsWithdrewFromOrgan(address _organAddress) public view returns (uint)
-    {return amountWithdrewByDepositorAddress[_organAddress];} 
+    function getFundsWithdrawndByUser(address _userAddress) public view returns (uint)
+    {return amountWithdrawnFromReceiverAddress[_userAddress];}    
+    function getFundsWithdrawnFromOrgan(address _organAddress) public view returns (uint)
+    {return amountWithdrawnByDepositorAddress[_organAddress];} 
     // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     // {return linkedOrgans;}
     // function getProcedureName() public view returns (string _procedureName)
