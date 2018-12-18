@@ -133,19 +133,9 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     event ballotResultException(uint _ballotNumber, bool _wasRebooted);
     event ballotWasEnforced(address _winningCandidate, uint _ballotNumber);
 
-    constructor(address _referenceOrganContract, address _affectedOrganContract, string _name) 
+    constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, string _name) 
     public 
     {
-    //     // Variables for Presidential election
-    // voterRegistry = 0x0000;
-    // quorumSize = 40;
-    // ballotDuration = 7 days;
-    // candidacyDuration = 7 days;
-    // ballotFrequency = 2 years;
-    // nextElectionDate = now;
-    // neutralVoteAccepted = true;
-    // reelectionMaximum = 2;
-    // totalBallotNumber = 0;
 
         // Variables for testing
         // Adress of voter registry organ
@@ -157,14 +147,16 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     procedureName = _name;
 
     linkedOrgans = [referenceOrganContract,affectedOrganContract];
+    
+    ballotFrequency = _ballotFrequency;
+    ballotDuration = _ballotDuration;
+    quorumSize = _quorumSize;
+    reelectionMaximum = _reelectionMaximum;
 
-    quorumSize = 40;
-    ballotDuration = 3 minutes;
-    candidacyDuration = 3 minutes;
-    ballotFrequency = 9 minutes;
+    candidacyDuration = 2*ballotDuration;
     nextElectionDate = now;
     neutralVoteAccepted = true;
-    reelectionMaximum = 2;
+    
     totalBallotNumber = 0;
 
 
