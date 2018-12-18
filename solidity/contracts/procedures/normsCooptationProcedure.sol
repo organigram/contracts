@@ -114,6 +114,31 @@ contract normsCooptationProcedure is Procedure{
     event promulgatePropositionEvent(address _from, uint _propositionNumber);
     event withdrawal(address _from, uint _propositionNumber, uint _value);
 
+    constructor(address _membersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, string _name) 
+    public 
+    {
+
+    membersOrganContract = _membersOrganContract;
+    membersWithVetoOrganContract = _membersWithVetoOrganContract;
+    finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 
+    linkedOrgans = [finalPromulgatorsOrganContract,membersWithVetoOrganContract,membersOrganContract];
+
+    // Procedure name 
+    procedureName = _name;
+    
+    quorumSize = _quorumSize;
+    minimumDepositSize = 1000;
+    // votingPeriodDuration = 3 minutes;
+    // promulgationPeriodDuration = 3 minutes;
+
+    votingPeriodDuration = _votingPeriodDuration;
+    promulgationPeriodDuration = _promulgationPeriodDuration;
+
+
+    kelsenVersionNumber = 1;
+
+    }
+
     /// Create a new ballot to choose one of `proposalNames`.
     function createProposition(string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public payable returns (uint propositionNumber){
 
@@ -167,7 +192,7 @@ contract normsCooptationProcedure is Procedure{
             propositionsWaitingPromulgation.push(false);
 
             // proposition creation event
-            createPropositionEvent(msg.sender, msg.value, _ipfsHash, _hash_function, _size);
+            emit createPropositionEvent(msg.sender, msg.value, _ipfsHash, _hash_function, _size);
 
             // Sending deposit to organ
             membersOrganContract.transfer(msg.value);
@@ -204,7 +229,7 @@ contract normsCooptationProcedure is Procedure{
         propositionToVoter[msg.sender].push(_propositionNumber);
 
         // create vote event
-        voteOnProposition(msg.sender, _propositionNumber);
+        emit voteOnProposition(msg.sender, _propositionNumber);
     }
 
         /// Veto a candidate
@@ -239,7 +264,7 @@ contract normsCooptationProcedure is Procedure{
         propositionToVetoer[msg.sender].push(_propositionNumber);
 
         //  Create veto event
-        vetoProposition(msg.sender, _propositionNumber, _acceptProposition);
+        emit vetoProposition(msg.sender, _propositionNumber, _acceptProposition);
 
     }
 
@@ -282,7 +307,7 @@ contract normsCooptationProcedure is Procedure{
         // Calculating payout per user
 
 
-        countVotes(msg.sender, _propositionNumber);
+        emit countVotes(msg.sender, _propositionNumber);
 
         return hasBeenAccepted;
     }
@@ -319,7 +344,7 @@ contract normsCooptationProcedure is Procedure{
         propositionsWaitingPromulgation[_propositionNumber] = false;
         propositionToPromulgator[msg.sender].push(_propositionNumber);
         // promulgation event
-        promulgatePropositionEvent(msg.sender, _propositionNumber);
+        emit promulgatePropositionEvent(msg.sender, _propositionNumber);
 
     }
 
@@ -341,7 +366,7 @@ contract normsCooptationProcedure is Procedure{
         membersOrgan.payout(msg.sender, propositions[_propositionNumber].payoutPerUser);
 
         // Log event
-        withdrawal(msg.sender, _propositionNumber, propositions[_propositionNumber].payoutPerUser);
+        emit withdrawal(msg.sender, _propositionNumber, propositions[_propositionNumber].payoutPerUser);
 
      }
 

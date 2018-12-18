@@ -133,6 +133,44 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     event ballotResultException(uint _ballotNumber, bool _wasRebooted);
     event ballotWasEnforced(address _winningCandidate, uint _ballotNumber);
 
+    constructor(address _referenceOrganContract, address _affectedOrganContract, string _name) 
+    public 
+    {
+    //     // Variables for Presidential election
+    // voterRegistry = 0x0000;
+    // quorumSize = 40;
+    // ballotDuration = 7 days;
+    // candidacyDuration = 7 days;
+    // ballotFrequency = 2 years;
+    // nextElectionDate = now;
+    // neutralVoteAccepted = true;
+    // reelectionMaximum = 2;
+    // totalBallotNumber = 0;
+
+        // Variables for testing
+        // Adress of voter registry organ
+    referenceOrganContract = _referenceOrganContract;
+    // Adress of president registry organ
+    affectedOrganContract = _affectedOrganContract;
+    
+    // Procedure name 
+    procedureName = _name;
+
+    linkedOrgans = [referenceOrganContract,affectedOrganContract];
+
+    quorumSize = 40;
+    ballotDuration = 3 minutes;
+    candidacyDuration = 3 minutes;
+    ballotFrequency = 9 minutes;
+    nextElectionDate = now;
+    neutralVoteAccepted = true;
+    reelectionMaximum = 2;
+    totalBallotNumber = 0;
+
+
+    kelsenVersionNumber = 1;
+    lastElectionNumber = 0;
+    }
 
     /// Create a new ballot to choose one of `proposalNames`.
     function createBallot(string _ballotName) public returns (uint ballotNumber){
@@ -165,7 +203,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
             lastElectionNumber = ballotNumber;
 
             // Ballot creation event
-            ballotCreationEvent(msg.sender, newBallot.name, newBallot.startDate, newBallot.candidacyEndDate, newBallot.electionEndDate, ballotNumber);
+            emit ballotCreationEvent(msg.sender, newBallot.name, newBallot.startDate, newBallot.candidacyEndDate, newBallot.electionEndDate, ballotNumber);
             
             // Loggin that ballot creator did create this ballot
             ballotToCreator[msg.sender].push(ballotNumber);
@@ -200,7 +238,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         ballots[_ballotNumber].candidacies[msg.sender].size = _size;
         ballots[_ballotNumber].candidacies[msg.sender].voteNumber = 0;
          // Candidacy event is turned off for now
-        presentCandidacyEvent(_ballotNumber, msg.sender, _name, _ipfsHash, _hash_function, _size);
+        emit presentCandidacyEvent(_ballotNumber, msg.sender, _name, _ipfsHash, _hash_function, _size);
 
 
 
@@ -242,7 +280,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         ballotToVoter[msg.sender].push(_ballotNumber);
 
         // Event
-        votedOnElectionEvent(msg.sender, _ballotNumber);
+        emit votedOnElectionEvent(msg.sender, _ballotNumber);
                         
 
             }
@@ -261,7 +299,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
             {
                     ballots[_ballotNumber].wasEnforced = true;
                     ballots[_ballotNumber].wasEnded = true;
-                    ballotResultException(_ballotNumber, true);
+                    emit ballotResultException(_ballotNumber, true);
                     nextElectionDate = now -1;
                     isBallotCurrentlyRunning = false;
                     createBallot(ballots[_ballotNumber].name);
@@ -304,14 +342,14 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
 
 
             ballots[_ballotNumber].winningCandidate = ballots[_ballotNumber].candidateList[winningCandidate];
-            ballotWasCounted(_ballotNumber, ballots[_ballotNumber].candidateList, ballots[_ballotNumber].winningCandidate, ballots[_ballotNumber].totalVoteCount);
+            emit ballotWasCounted(_ballotNumber, ballots[_ballotNumber].candidateList, ballots[_ballotNumber].winningCandidate, ballots[_ballotNumber].totalVoteCount);
 
                 }
                 else
                     // The ballot did not conclude correctly. We reboot the election process.
                 {
                     ballots[_ballotNumber].wasEnforced = true;
-                    ballotResultException(_ballotNumber, true);
+                    emit ballotResultException(_ballotNumber, true);
                     nextElectionDate = now -1;
                     ballots[_ballotNumber].wasEnded = true;
                     isBallotCurrentlyRunning = false;
@@ -334,7 +372,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         {
             ballots[_ballotNumber].wasEnforced = true;
             // TODO add event to log this  
-            ballotResultException(_ballotNumber, false);                  
+            emit ballotResultException(_ballotNumber, false);                  
             return;
         }
 
@@ -369,7 +407,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
 
         // Adjusting mandate duration
         // nextElectionDate = now + ballotFrequency - candidacyDuration - ballotDuration;
-        ballotWasEnforced( newPresidentAddress, _ballotNumber);
+        emit ballotWasEnforced( newPresidentAddress, _ballotNumber);
         ballotToEnforcer[msg.sender].push(_ballotNumber);                
 
          }

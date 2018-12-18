@@ -47,6 +47,20 @@ contract depositWithdrawFundsProcedure is Procedure{
     event depositedFunds(address _from, address _payoutAddress, uint _amount);
     event withdrewFunds(address _from, address _payoutAddress, uint _amount);
 
+    constructor (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, string _name) 
+    public 
+    {
+
+    authorizedDepositorsOrganContract = _authorizedDepositors;
+    authorizedWithdrawersOrganContract = _authorizedWithdrawers;
+    defaultReceivingOrganContract = _defaultReceivingOrgan;
+    linkedOrgans = [defaultReceivingOrganContract,authorizedDepositorsOrganContract];
+    // Procedure name 
+    procedureName = _name;
+    kelsenVersionNumber = 1;
+
+    }
+
     function () public payable {
 
         // Instanciating Organ
@@ -69,7 +83,7 @@ contract depositWithdrawFundsProcedure is Procedure{
         amountDepositedToReceiverAddress[defaultReceivingOrganContract] += msg.value;
 
         // Log event
-        depositedFunds(msg.sender, defaultReceivingOrganContract, msg.value);
+        emit depositedFunds(msg.sender, defaultReceivingOrganContract, msg.value);
 
 
     }
@@ -96,7 +110,7 @@ contract depositWithdrawFundsProcedure is Procedure{
         amountDepositedToReceiverAddress[_targetOrgan] += msg.value;
 
         // Log event
-        depositedFunds(msg.sender, _targetOrgan, msg.value);
+        emit depositedFunds(msg.sender, _targetOrgan, msg.value);
 
 
     }
@@ -123,7 +137,7 @@ contract depositWithdrawFundsProcedure is Procedure{
         amountWithdrawnByDepositorAddress[_targetOrgan] += _amount;
 
         // Log event
-        withdrewFunds( _targetOrgan, msg.sender, _amount);
+        emit withdrewFunds( _targetOrgan, msg.sender, _amount);
 
 
     }

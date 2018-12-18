@@ -84,25 +84,45 @@ contract Organ is Kelsen{
     // Keeping track of active norms
     uint256 public activeNormNumber;
 
+
+    constructor(string _name) public {
+
+        // Initializing with deployer as master
+        masters[msg.sender].canAdd = true;
+        masters[msg.sender].canDelete = true;
+        masters[msg.sender].name = 'Original Master';
+        masterList.push(msg.sender);
+        organName = _name;
+        // Initializing with deployer as admin
+        // admins[msg.sender].canAdd = true;
+        // admins[msg.sender].canDelete = true;
+        // admins[msg.sender].name = 'Original Master';
+        // adminList.push(msg.sender);
+        // Initializing first norms to avoid errors when deleting norms
+        Norm memory initNorm;
+        norms.push(initNorm);
+        kelsenVersionNumber = 1;
+
+    }
     // ################# Organ managing functions
 
     function setName(string _name) public {
         // Check sender is allowed
         require((masters[msg.sender].canAdd) && (masters[msg.sender].canDelete));
         organName = _name;
-        changeOrganName(msg.sender, _name);
+        emit changeOrganName(msg.sender, _name);
     }
         // Money managing function
     function () public payable {
         require(admins[msg.sender].canDeposit);
-        receiveMoney(msg.sender, msg.value);
+        emit receiveMoney(msg.sender, msg.value);
 
 
     }
     function payout(address _to, uint _value) public {
         require(admins[msg.sender].canSpend);
         _to.transfer(_value);
-        spendMoney(msg.sender, _to, _value);
+        emit spendMoney(msg.sender, _to, _value);
 
     }
 
@@ -124,7 +144,7 @@ contract Organ is Kelsen{
         masters[_newMasterAddress].canAdd = _canAdd;
         masters[_newMasterAddress].canDelete = _canDelete;
         masters[_newMasterAddress].name = _name;
-        addMasterEvent(msg.sender, _newMasterAddress, _canAdd, _canDelete, _name);
+        emit addMasterEvent(msg.sender, _newMasterAddress, _canAdd, _canDelete, _name);
 
     }
 
@@ -148,8 +168,8 @@ contract Organ is Kelsen{
             
 
             // Triggering events
-            remMasterEvent(msg.sender, _masterToRemove);
-            addMasterEvent(msg.sender, _masterToAdd, _canAdd, _canDelete, _name);
+            emit remMasterEvent(msg.sender, _masterToRemove);
+            emit addMasterEvent(msg.sender, _masterToAdd, _canAdd, _canDelete, _name);
 
             //Modifying permissions
             masters[_masterToRemove].canAdd = _canAdd;
@@ -169,7 +189,7 @@ contract Organ is Kelsen{
         delete masterList[masters[_masterToRemove].rankInMasterList];
         // Deleting master privileges
         delete masters[_masterToRemove];
-        remMasterEvent(msg.sender, _masterToRemove);
+        emit remMasterEvent(msg.sender, _masterToRemove);
     }
 
     // ################# Admin managing functions
@@ -192,7 +212,7 @@ contract Organ is Kelsen{
         admins[_newAdminAddress].canDeposit = _canDeposit;
         admins[_newAdminAddress].canSpend = _canSpend;
         admins[_newAdminAddress].name = _name;
-        addAdminEvent(msg.sender, _newAdminAddress,  _canAdd,  _canDelete,  _canDeposit,  _canSpend,  _name);
+        emit addAdminEvent(msg.sender, _newAdminAddress,  _canAdd,  _canDelete,  _canDeposit,  _canSpend,  _name);
    
     }
 
@@ -217,7 +237,7 @@ contract Organ is Kelsen{
         // Deleting admin privileges
         delete admins[_adminToRemove];
 
-        remAdminEvent(msg.sender, _adminToRemove);
+        emit remAdminEvent(msg.sender, _adminToRemove);
 
     }
 
@@ -243,7 +263,7 @@ contract Organ is Kelsen{
         addressPositionInNorms[_normAddress] = norms.length -1;
         // Incrementing active norm number and total norm number trackers
         activeNormNumber = activeNormNumber + 1;
-        addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
+        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
 
         // Registering the address as active
         isAddressInNorms[_normAddress] = true;
@@ -256,7 +276,7 @@ contract Organ is Kelsen{
         if (_normAddress != 0x0000) { require(!isAddressInNorms[_normAddress]);}
         isAddressInNorms[norms[_normNumber].normAddress] = false;
         addressPositionInNorms[norms[_normNumber].normAddress] = 0;
-        remNormEvent(msg.sender, norms[_normNumber].normAddress, norms[_normNumber].name, norms[_normNumber].ipfsHash,  norms[_normNumber].hash_function,  norms[_normNumber].size);
+        emit remNormEvent(msg.sender, norms[_normNumber].normAddress, norms[_normNumber].name, norms[_normNumber].ipfsHash,  norms[_normNumber].hash_function,  norms[_normNumber].size);
 
         delete norms[_normNumber];
         norms[_normNumber] = Norm({
@@ -268,7 +288,7 @@ contract Organ is Kelsen{
             });
         isAddressInNorms[_normAddress] = true;
         addressPositionInNorms[_normAddress] = _normNumber;
-        addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
+        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
 
     }
 
@@ -283,7 +303,7 @@ contract Organ is Kelsen{
         // Marking address as deactivated from isAddressInNorms
         isAddressInNorms[norms[_normNumber].normAddress] = false;
         // Logging event
-        remNormEvent(msg.sender, norms[_normNumber].normAddress, norms[_normNumber].name, norms[_normNumber].ipfsHash,  norms[_normNumber].hash_function,  norms[_normNumber].size);
+        emit remNormEvent(msg.sender, norms[_normNumber].normAddress, norms[_normNumber].name, norms[_normNumber].ipfsHash,  norms[_normNumber].hash_function,  norms[_normNumber].size);
 
         // Removing norm from norms
         delete norms[_normNumber];

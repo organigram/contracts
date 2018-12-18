@@ -23,7 +23,19 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
 
     // // Gathering connected organs for easier DAO mapping
     // address[] public linkedOrgans;
+    constructor(address _authorizedReformersOrgan, string _name) 
+    public 
+    {
+
+    authorizedReformersOrgan = _authorizedReformersOrgan;
+    linkedOrgans = [authorizedReformersOrgan];
+
+    // Procedure name 
+    procedureName = _name;
+
+    kelsenVersionNumber = 1;
     
+    }
 
     function addAdmin(address _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name) public returns (bool _success){
 

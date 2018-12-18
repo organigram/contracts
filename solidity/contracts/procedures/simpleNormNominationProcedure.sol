@@ -23,7 +23,18 @@ contract simpleNormNominationProcedure is Procedure{
 
     // // Storage for procedure name
     // string public procedureName;
+    constructor (address _authorizedNominatersOrgan, string _name) 
+    public
+    {
+
+    authorizedNominatersOrgan = _authorizedNominatersOrgan;
+    linkedOrgans = [authorizedNominatersOrgan];
+    kelsenVersionNumber = 1;
     
+    // Procedure name 
+    procedureName = _name;
+
+    }
 
     function addNorm(address _targetOrgan, address _normAdress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  public returns (uint newNormNumber) {
 

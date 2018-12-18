@@ -108,6 +108,32 @@ contract voteOnExpenseProcedure is Procedure{
     event countVotes(address _from, uint _propositionNumber);
     event promulgatePropositionEvent(address _from, uint _propositionNumber, bool _promulgate);
 
+    constructor(address _affectedOrganContract, address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, string _name) 
+    public 
+    {
+
+    affectedOrganContract = _affectedOrganContract;
+    votersOrganContract = _votersOrganContract;
+    membersWithVetoOrganContract = _membersWithVetoOrganContract;
+    finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 
+    linkedOrgans = [affectedOrganContract,votersOrganContract,membersWithVetoOrganContract,finalPromulgatorsOrganContract];
+
+    // Procedure name 
+    procedureName = _name;
+    
+    majoritySize = _majoritySize;
+
+    quorumSize = _quorumSize;
+    // votingPeriodDuration = 3 minutes;
+    // promulgationPeriodDuration = 3 minutes;
+
+    votingPeriodDuration = _votingPeriodDuration;
+    promulgationPeriodDuration = _promulgationPeriodDuration;
+
+    kelsenVersionNumber = 1;
+
+    }
+
     /// Create a new ballot to choose one of `proposalNames`.
     function createProposition(address _payoutAddress, uint _amount, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name) public returns (uint propositionNumber){
 
@@ -148,7 +174,7 @@ contract voteOnExpenseProcedure is Procedure{
             propositionsWaitingPromulgation.push(false);
 
             // proposition creation event
-            createPropositionEvent(msg.sender, _payoutAddress, _amount, _ipfsHash, _hash_function, _size);
+            emit createPropositionEvent(msg.sender, _payoutAddress, _amount, _ipfsHash, _hash_function, _size);
 
     }
 
@@ -182,7 +208,7 @@ contract voteOnExpenseProcedure is Procedure{
         propositionToVoter[msg.sender].push(_propositionNumber);
 
         // create vote event
-        voteOnProposition(msg.sender, _propositionNumber);
+        emit voteOnProposition(msg.sender, _propositionNumber);
     }
 
         /// Vote for a candidate
@@ -206,7 +232,7 @@ contract voteOnExpenseProcedure is Procedure{
         propositionToVetoer[msg.sender].push(_propositionNumber);
 
         //  Create veto event
-        vetoProposition(msg.sender, _propositionNumber);
+        emit vetoProposition(msg.sender, _propositionNumber);
 
     }
 
@@ -239,7 +265,7 @@ contract voteOnExpenseProcedure is Procedure{
         propositionsWaitingEndOfVote[_propositionNumber] = false;
         propositionsWaitingPromulgation[_propositionNumber] = true;
 
-        countVotes(msg.sender, _propositionNumber);
+        emit countVotes(msg.sender, _propositionNumber);
     }
     function promulgateProposition(uint _propositionNumber, bool _promulgate) public
     {
@@ -283,7 +309,7 @@ contract voteOnExpenseProcedure is Procedure{
 
 
         // promulgation event
-        promulgatePropositionEvent(msg.sender, _propositionNumber, _promulgate);
+        emit promulgatePropositionEvent(msg.sender, _propositionNumber, _promulgate);
 
     }
 
