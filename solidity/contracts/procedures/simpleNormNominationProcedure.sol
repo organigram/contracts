@@ -3,7 +3,7 @@ pragma solidity >=0.4.22 <0.6.0;
 // Standard contract for a presidential election procedure
 
 import "../standardProcedure.sol";
-import "../standardOrgan.sol";
+import "../Organ.sol";
 
 contract simpleNormNominationProcedure is Procedure{
 
