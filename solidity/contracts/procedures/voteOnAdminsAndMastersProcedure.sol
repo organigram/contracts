@@ -274,13 +274,14 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         require(propositions[_propositionNumber].votingPeriodEndDate < now);
 
         Organ voterRegistryOrgan = Organ(votersOrganContract);
+        ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
 
         // We check that Quorum was obtained and that a majority of votes were cast in favor of the proposition
         if (propositions[_propositionNumber].wasVetoed )
             {hasBeenAccepted=false;
                 propositions[_propositionNumber].wasEnded = true;}
         else if
-            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*100 > propositions[_propositionNumber].totalVoteCount*majoritySize))
+            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterNumber) && (propositions[_propositionNumber].voteFor*100 > propositions[_propositionNumber].totalVoteCount*majoritySize))
             {hasBeenAccepted = true;}
         else 
             {hasBeenAccepted=false;
@@ -335,12 +336,12 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                         // Replacing
                         if (propositions[_propositionNumber].propositionType == 0)
                         {
-                        affectedOrgan.replaceMaster(propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].name);
+                        affectedOrgan.replaceMaster(propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete);
                         }
                         else if (propositions[_propositionNumber].propositionType == 1)
                         {
                         // Replacing an Admin
-                        affectedOrgan.replaceAdmin(propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend, propositions[_propositionNumber].name);
+                        affectedOrgan.replaceAdmin(propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend);
                         }
                         else if (propositions[_propositionNumber].propositionType == 2)
                         {
@@ -353,12 +354,12 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
                     // Adding
                         if (propositions[_propositionNumber].propositionType == 0)
                         {
-                        affectedOrgan.addMaster(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].name);
+                        affectedOrgan.addMaster(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete);
                         }
                         else if (propositions[_propositionNumber].propositionType == 1)
                         {
                         // Adding an Admin
-                        affectedOrgan.addAdmin(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend, propositions[_propositionNumber].name);
+                        affectedOrgan.addAdmin(propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend);
                         }
                         else if (propositions[_propositionNumber].propositionType == 2)
                         {
@@ -408,7 +409,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             (canAdd, canDelete) = targetOrganContract.isMaster(address(this));
         }
         else {
-            (canAdd, canDelete) = targetOrganContract.isAdmin(address(this));
+            (canAdd, canDelete, , ) = targetOrganContract.isAdmin(address(this));
         }
         
         if ((!canAdd && (propositions[_propositionNumber].contractToAdd != 0x0000)) || (!canDelete && (propositions[_propositionNumber].contractToRemove != 0x0000)) )

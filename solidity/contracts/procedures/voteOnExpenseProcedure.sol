@@ -246,13 +246,13 @@ contract voteOnExpenseProcedure is Procedure{
         require(propositions[_propositionNumber].votingPeriodEndDate < now);
 
         Organ voterRegistryOrgan = Organ(votersOrganContract);
-
+        ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
         // We check that Quorum was obtained and that a majority of votes were cast in favor of the proposition
         if (propositions[_propositionNumber].wasVetoed )
             {hasBeenAccepted=false;
                 propositions[_propositionNumber].wasEnded = true;}
         else if
-            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber()) && (propositions[_propositionNumber].voteFor*100 > propositions[_propositionNumber].totalVoteCount*majoritySize))
+            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterNumber) && (propositions[_propositionNumber].voteFor*100 > propositions[_propositionNumber].totalVoteCount*majoritySize))
             {hasBeenAccepted = true;}
         else 
             {hasBeenAccepted=false;

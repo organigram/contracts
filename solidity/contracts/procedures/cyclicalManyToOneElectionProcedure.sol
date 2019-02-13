@@ -307,7 +307,8 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
             Organ voterRegistryOrgan = Organ(referenceOrganContract);
 
             // Check if quorum is obtained. We avoiding divisions here, since Solidity is not good to calculate divisions
-            if (ballots[_ballotNumber].totalVoteCount*100 >= quorumSize*voterRegistryOrgan.getActiveNormNumber())
+            ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
+            if (ballots[_ballotNumber].totalVoteCount*100 >= quorumSize*voterNumber)
             {quorumIsObtained = true;}
 
             // Going through candidates list

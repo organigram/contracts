@@ -12,14 +12,12 @@ This library is used to hold all the logic to manage a simple organ.
 library organLibrary {
   
     struct Master {
-        string name; // Master name
         bool canAdd;  // if true, master can add admins
         bool canDelete;  // if true, master can delete admins
         uint rankInMasterList; // Rank in dynamic array masterList
     }
 
     struct Admin {
-        string name; // Admin name
         bool canAdd;  // if true, Admin can add norms
         bool canDelete;  // if true, Admin can delete norms
         bool canSpend;
@@ -39,11 +37,173 @@ library organLibrary {
         string organName;
         uint256 activeNormNumber;
         address[] masterList;
-        address[] adminList;
-        Norm[] norms;
         mapping(address => Master) masters;
+        address[] adminList;
         mapping(address => Admin) admins;
+        Norm[] norms;
+        mapping(address => uint) addressPositionInNorms;
     }
 
+    // Events
+    // Organ management events
+    event changeOrganName(address _from, string _newName);
+    event spendMoney(address _from, address _to, uint256 _amount);
+    event receiveMoney(address _from, uint256 _amount);
+
+    // Master management events
+    event addMasterEvent(address _from, address _newMaster, bool _canAdd, bool _canDelete);
+    event remMasterEvent(address _from, address _masterToRemove);
+
+    // Admin management events
+    event addAdminEvent(address _from, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend);
+    event remAdminEvent(address _from, address _adminToRemove);
+
+    // Norm management events
+    event addNormEvent(address _from, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
+    event remNormEvent(address _from, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
+
+    function initOrganLib(OrganInfo storage self, string _organName)
+    public
+    {
+        // Initializing with deployer as master
+        self.masters[msg.sender].canAdd = true;
+        self.masters[msg.sender].canDelete = true;
+        self.masterList.push(msg.sender);
+        self.organName = _organName;
+        Norm memory initNorm;
+        self.norms.push(initNorm);
+    }
+    function setNameLib(OrganInfo storage self, string _organName) 
+    public 
+    {
+        // Check sender is allowed
+        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canDelete));
+        self.organName = _organName;
+        emit changeOrganName(msg.sender, _organName);
+    }
+        // Money managing function
+    function payInLib(OrganInfo storage self) 
+    public  
+    {
+        require(self.admins[msg.sender].canDeposit);
+        emit receiveMoney(msg.sender, msg.value);
+    }
+    function payoutLib(OrganInfo storage self, address _to, uint _value) 
+    public 
+    {
+        require(self.admins[msg.sender].canSpend);
+        _to.transfer(_value);
+        emit spendMoney(msg.sender, _to, _value);
+    }
+    // ################# Master managing functions
+    function addMasterLib(OrganInfo storage self, address _newMasterAddress, bool _canAdd, bool _canDelete) 
+    public
+    {
+        // Check that the sender is allowed
+        require((self.masters[msg.sender].canAdd));
+        // Check new master is not already a master
+        require((!self.masters[_newMasterAddress].canAdd) && (!self.masters[_newMasterAddress].canDelete));
+
+        // Check new master has at least one permission activated
+        require(_canAdd || _canDelete);
+
+        // Adding master to master list and retrieving position
+        self.masters[_newMasterAddress].rankInMasterList = self.masterList.push(_newMasterAddress) - 1;
+
+        // Creating master privileges
+        self.masters[_newMasterAddress].canAdd = _canAdd;
+        self.masters[_newMasterAddress].canDelete = _canDelete;
+        emit addMasterEvent(msg.sender, _newMasterAddress, _canAdd, _canDelete);
+    }
+    function remMasterLib(OrganInfo storage self, address _masterToRemove) 
+    public 
+    {
+        // Check sender is allowed
+        require((self.masters[msg.sender].canDelete));
+        // Check affected account is a master
+        require((self.masters[_masterToRemove].canDelete) || (self.masters[_masterToRemove].canAdd) );
+        // Deleting entry in masterList
+        delete self.masterList[self.masters[_masterToRemove].rankInMasterList];
+        // Deleting master privileges
+        delete self.masters[_masterToRemove];
+        emit remMasterEvent(msg.sender, _masterToRemove);
+    }
+    function replaceMasterLib(OrganInfo storage self, address _masterToRemove, address _masterToAdd, bool _canAdd, bool _canDelete) 
+    public 
+    {
+        // Check sender is allowed
+        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canDelete));
+        // Check new master has at least one permission activated
+        require(_canAdd || _canDelete);
+
+        // Check if we are replacing a master with another, or if we are modifying permissions
+        if (_masterToRemove != _masterToAdd)
+        {
+            // Replacing a master
+            addMasterLib(self, _masterToAdd, _canAdd, _canDelete);
+            remMasterLib(self, _masterToRemove);
+        }
+        else
+        {
+            // Modifying permissions
+            // Triggering events
+            emit remMasterEvent(msg.sender, _masterToRemove);
+            emit addMasterEvent(msg.sender, _masterToAdd, _canAdd, _canDelete);
+
+            //Modifying permissions
+            self.masters[_masterToRemove].canAdd = _canAdd;
+            self.masters[_masterToRemove].canDelete = _canDelete;
+        }
+    }
+
+    // ################# Admin managing functions
+    function addAdminLib(OrganInfo storage self, address _newAdminAddress, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
+    public 
+    {
+        // Check the sender is allowed
+        require((self.masters[msg.sender].canAdd));
+        // Check new admin is not already an admin
+        require((!self.admins[_newAdminAddress].canAdd) && (!self.admins[_newAdminAddress].canDelete) && (!self.admins[_newAdminAddress].canDeposit) && (!self.admins[_newAdminAddress].canSpend));
+
+        // Check new admin has at least one permission activated
+        require(_canAdd || _canDelete || _canDeposit || _canSpend);
+
+        // Adding admin to admin list and retrieving position
+        self.admins[_newAdminAddress].rankInAdminList = self.adminList.push(_newAdminAddress) - 1;
+
+        // Creating master privileges
+        self.admins[_newAdminAddress].canAdd = _canAdd;
+        self.admins[_newAdminAddress].canDelete = _canDelete;
+        self.admins[_newAdminAddress].canDeposit = _canDeposit;
+        self.admins[_newAdminAddress].canSpend = _canSpend;
+        emit addAdminEvent(msg.sender, _newAdminAddress,  _canAdd,  _canDelete,  _canDeposit,  _canSpend);
+    }
+
+    function remAdminLib(OrganInfo storage self, address _adminToRemove) 
+    public 
+    {
+        // Check sender is allowed
+        require((self.masters[msg.sender].canDelete));
+        // Check affected account is admin
+        require((self.admins[_adminToRemove].canDelete) || (self.admins[_adminToRemove].canAdd) || (self.admins[_adminToRemove].canDeposit) || (self.admins[_adminToRemove].canSpend));
+        // Deleting entry in adminList
+        delete self.adminList[self.admins[_adminToRemove].rankInAdminList];
+        // Deleting admin privileges
+        delete self.admins[_adminToRemove];
+
+        emit remAdminEvent(msg.sender, _adminToRemove);
+    }
+
+    function replaceAdminLib(OrganInfo storage self, address _adminToRemove, address _adminToAdd, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
+    public 
+    {
+        // Check sender is allowed
+        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canDelete));
+        // Check new admin has at least one permission activated
+        require(_canAdd || _canDelete || _canDeposit || _canSpend);
+        
+        remAdminLib(self, _adminToRemove);
+        addAdminLib(self, _adminToAdd, _canAdd, _canDelete, _canDeposit, _canSpend);
+    }
 
 }

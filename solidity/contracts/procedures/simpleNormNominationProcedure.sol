@@ -47,7 +47,7 @@ contract simpleNormNominationProcedure is Procedure{
         Organ targetOrganInstance = Organ(_targetOrgan);
         bool canAdd;
         bool canDelete;
-        (canAdd, canDelete) = targetOrganInstance.isAdmin(address(this));
+        (canAdd, canDelete, , ) = targetOrganInstance.isAdmin(address(this));
 
         
         // Adding a norm if the procedure is allowed
@@ -68,7 +68,7 @@ contract simpleNormNominationProcedure is Procedure{
         Organ targetOrganInstance = Organ(_targetOrgan);
         bool canAdd;
         bool canDelete;
-        (canAdd, canDelete) = targetOrganInstance.isAdmin(address(this));
+        (canAdd, canDelete , , ) = targetOrganInstance.isAdmin(address(this));
 
         
         // Removing a norm if the procedure is allowed
@@ -89,7 +89,7 @@ contract simpleNormNominationProcedure is Procedure{
         Organ targetOrganInstance = Organ(_targetOrgan);
         bool canAdd;
         bool canDelete;
-        (canAdd, canDelete) = targetOrganInstance.isAdmin(address(this));
+        (canAdd, canDelete, , ) = targetOrganInstance.isAdmin(address(this));
 
         // Replacing an admin if the procedure is allowed
         if (canAdd && canDelete) {

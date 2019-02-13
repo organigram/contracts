@@ -38,7 +38,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     
     }
 
-    function addAdmin(address _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name) public returns (bool _success){
+    function addAdmin(address _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) public returns (bool _success){
 
         // Checking if caller is an admin
         Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
@@ -55,7 +55,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         // Adding an admin if the procedure is allowed
         if (canAdd) {
 
-            organToReformInstance.addAdmin(_newAdmin, _canAdd, _canDelete, _canDeposit, _canSpend, _name);
+            organToReformInstance.addAdmin(_newAdmin, _canAdd, _canDelete, _canDeposit, _canSpend);
             _success = true;
         }
         else { _success = false;}
@@ -92,7 +92,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         return _success;
 
     }
-    function replaceAdmin(address _organToReform, address _oldAdmin, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name) public returns (bool _success){
+    function replaceAdmin(address _organToReform, address _oldAdmin, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) public returns (bool _success){
 
         // Checking if caller is an admin
         Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
@@ -108,7 +108,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         // Replacing an admin if the procedure is allowed
         if (canAdd && canDelete) {
 
-            organToReformInstance.replaceAdmin(_oldAdmin, _newAdmin, _canAdd, _canDelete, _canDeposit, _canSpend, _name );
+            organToReformInstance.replaceAdmin(_oldAdmin, _newAdmin, _canAdd, _canDelete, _canDeposit, _canSpend );
             _success = true;
         }
         else { _success = false;}
@@ -119,7 +119,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
 
     }
 
-    function addMaster(address _organToReform, address _newMaster, bool _canAdd, bool _canDelete, string _name) public returns (bool _success){
+    function addMaster(address _organToReform, address _newMaster, bool _canAdd, bool _canDelete) public returns (bool _success){
 
         // Checking if caller is an admin
         Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
@@ -136,7 +136,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         // Adding an master if the procedure is allowed
         if (canAdd) {
 
-            organToReformInstance.addMaster(_newMaster, _canAdd, _canDelete, _name);
+            organToReformInstance.addMaster(_newMaster, _canAdd, _canDelete);
             _success = true;
         }
         else { _success = false;}
@@ -173,7 +173,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         return _success;
 
     }
-    function replaceMaster(address _organToReform, address _oldMaster, address _newMaster, bool _canAdd, bool _canDelete, string _name) public returns (bool _success){
+    function replaceMaster(address _organToReform, address _oldMaster, address _newMaster, bool _canAdd, bool _canDelete) public returns (bool _success){
         // Checking if caller is an admin
         Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
         require(authorizedReformersInstance.isNorm(msg.sender));
@@ -188,7 +188,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
         // Replacing an master if the procedure is allowed
         if (canAdd && canDelete) {
 
-            organToReformInstance.replaceMaster(_oldMaster, _newMaster, _canAdd, _canDelete, _name );
+            organToReformInstance.replaceMaster(_oldMaster, _newMaster, _canAdd, _canDelete);
             _success = true;
         }
         else { _success = false;}
