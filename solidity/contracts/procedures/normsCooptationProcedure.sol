@@ -336,7 +336,7 @@ contract normsCooptationProcedure is Procedure{
 
         Organ membersOrgan = Organ(membersOrganContract);
          // Adding a new norm
-        membersOrgan.addNorm(propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
+        membersOrgan.addNorm(propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
                 
             
 

@@ -93,11 +93,11 @@ contract Organ is Kelsen{
 
     // ################# Norms managing functions
 
-    function addNorm (address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function addNorm (address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public  
     returns (uint _normPosition)
     {
-        return organInfos.addNormLib(_normAddress, _name, _ipfsHash, _hash_function, _size);
+        return organInfos.addNormLib(_normAddress, _ipfsHash, _hash_function, _size);
     }
 
     function remNorm (uint _normNumber) 
@@ -106,10 +106,10 @@ contract Organ is Kelsen{
        organInfos.remNormLib(_normNumber);
     }
 
-    function replaceNorm (uint _normNumber, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function replaceNorm (uint _normNumber, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public
     {
-       organInfos.replaceNormLib(_normNumber, _normAddress, _name, _ipfsHash, _hash_function, _size);
+       organInfos.replaceNormLib(_normNumber, _normAddress, _ipfsHash, _hash_function, _size);
     }
 
     //////////////////////// Functions to communicate with other contracts
@@ -162,9 +162,9 @@ contract Organ is Kelsen{
     function getSingleNorm(uint _desiredNormPosition) 
     public 
     view 
-    returns (string name, address normAddress, bytes32 ipfsHash, uint8 hash_function, uint8 size)
+    returns (address normAddress, bytes32 ipfsHash, uint8 hash_function, uint8 size)
     {
-        return (organInfos.norms[_desiredNormPosition].name, organInfos.norms[_desiredNormPosition].normAddress, organInfos.norms[_desiredNormPosition].ipfsHash, organInfos.norms[_desiredNormPosition].hash_function, organInfos.norms[_desiredNormPosition].size);
+        return (organInfos.norms[_desiredNormPosition].normAddress, organInfos.norms[_desiredNormPosition].ipfsHash, organInfos.norms[_desiredNormPosition].hash_function, organInfos.norms[_desiredNormPosition].size);
     }
 
     // Retrieve lists of adresses

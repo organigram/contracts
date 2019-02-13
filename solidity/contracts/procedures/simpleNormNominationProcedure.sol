@@ -36,7 +36,7 @@ contract simpleNormNominationProcedure is Procedure{
 
     }
 
-    function addNorm(address _targetOrgan, address _normAdress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  public returns (uint newNormNumber) {
+    function addNorm(address _targetOrgan, address _normAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  public returns (uint newNormNumber) {
 
         // Checking if caller is an admin
         Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
@@ -53,7 +53,7 @@ contract simpleNormNominationProcedure is Procedure{
         // Adding a norm if the procedure is allowed
         if (canAdd) {
 
-            return targetOrganInstance.addNorm(_normAdress, _name, _ipfsHash, _hash_function, _size);
+            return targetOrganInstance.addNorm(_normAdress, _ipfsHash, _hash_function, _size);
         }
 
     }
@@ -78,7 +78,7 @@ contract simpleNormNominationProcedure is Procedure{
         }
 
     }
-    function replaceNorm(address _targetOrgan, uint _oldNormNumber, address _newNormAdress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
+    function replaceNorm(address _targetOrgan, uint _oldNormNumber, address _newNormAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
 
         // Checking if caller is an admin
         Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
@@ -94,7 +94,7 @@ contract simpleNormNominationProcedure is Procedure{
         // Replacing an admin if the procedure is allowed
         if (canAdd && canDelete) {
 
-            targetOrganInstance.replaceNorm(_oldNormNumber, _newNormAdress, _name, _ipfsHash, _hash_function, _size);
+            targetOrganInstance.replaceNorm(_oldNormNumber, _newNormAdress, _ipfsHash, _hash_function, _size);
 
         }
         

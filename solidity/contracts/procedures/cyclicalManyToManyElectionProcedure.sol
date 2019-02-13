@@ -448,7 +448,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
         for (uint p = 0; p < ballots[_ballotNumber].winningCandidates.length; p++)
             {
                 Candidacy memory newModerator = ballots[_ballotNumber].candidacies[ballots[_ballotNumber].winningCandidates[p]];
-                moderatorsOrgan.addNorm(ballots[_ballotNumber].winningCandidates[p], newModerator.name, newModerator.ipfsHash, newModerator.hash_function, newModerator.size  );
+                moderatorsOrgan.addNorm(ballots[_ballotNumber].winningCandidates[p], newModerator.ipfsHash, newModerator.hash_function, newModerator.size  );
                 cumulatedCandidacies[ballots[_ballotNumber].winningCandidates[p]] += 1;
                 if (p < currentModerators.length )
                 {

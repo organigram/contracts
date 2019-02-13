@@ -379,7 +379,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         if (newPresidentAddress != currentPresident)
             {
             Candidacy memory newPresident = ballots[_ballotNumber].candidacies[newPresidentAddress];
-            presidentialOrgan.addNorm(newPresidentAddress, newPresident.name, newPresident.ipfsHash, newPresident.hash_function, newPresident.size );
+            presidentialOrgan.addNorm(newPresidentAddress, newPresident.ipfsHash, newPresident.hash_function, newPresident.size );
 
             
 

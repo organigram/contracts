@@ -26,7 +26,6 @@ library organLibrary {
     }
 
     struct Norm {
-        string name; // Master name
         address normAddress; // Address if norm is a member or a contract
         bytes32 ipfsHash; // ID of proposal on IPFS
         uint8 hash_function;
@@ -59,8 +58,8 @@ library organLibrary {
     event remAdminEvent(address _from, address _adminToRemove);
 
     // Norm management events
-    event addNormEvent(address _from, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
-    event remNormEvent(address _from, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
+    event addNormEvent(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
+    event remNormEvent(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
 
     function initOrganLib(OrganInfo storage self, string _organName)
     public
@@ -206,7 +205,7 @@ library organLibrary {
         addAdminLib(self, _adminToAdd, _canAdd, _canDelete, _canDeposit, _canSpend);
     }
 
-    function addNormLib(OrganInfo storage self, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function addNormLib(OrganInfo storage self, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public 
     returns (uint _normPosition)
     {
@@ -218,7 +217,6 @@ library organLibrary {
 
         // Adding the norm
         self.norms.push(organLibrary.Norm({
-                name: _name,
                 normAddress: _normAddress,
                 ipfsHash: _ipfsHash,
                 hash_function: _hash_function,
@@ -228,7 +226,7 @@ library organLibrary {
         self.addressPositionInNorms[_normAddress] = self.norms.length -1;
         // Incrementing active norm number and total norm number trackers
         self.activeNormNumber += 1;
-        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
+        emit addNormEvent(msg.sender, _normAddress,  _ipfsHash,  _hash_function,  _size);
 
         // Registering the address as active
         return self.addressPositionInNorms[_normAddress] ;
@@ -244,25 +242,24 @@ library organLibrary {
         // Deleting norm position from addressPositionInNorms
         delete self.addressPositionInNorms[self.norms[_normNumber].normAddress];
         // Logging event
-        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].name, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
+        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
 
         // Removing norm from norms
         delete self.norms[_normNumber];
         self.activeNormNumber -= 1;
     }
 
-    function replaceNormLib(OrganInfo storage self, uint _normNumber, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function replaceNormLib(OrganInfo storage self, uint _normNumber, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public
     {
         require((self.admins[msg.sender].canDelete) && (self.admins[msg.sender].canAdd));
         if (_normAddress != 0x0000) { require(self.addressPositionInNorms[_normAddress] != 0);}
         
         self.addressPositionInNorms[self.norms[_normNumber].normAddress] = 0;
-        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].name, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
+        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
 
         delete self.norms[_normNumber];
         self.norms[_normNumber] = organLibrary.Norm({
-                name: _name,
                 normAddress: _normAddress,
                 ipfsHash: _ipfsHash,
                 hash_function: _hash_function,
@@ -270,6 +267,6 @@ library organLibrary {
             });
         
         self.addressPositionInNorms[_normAddress] = _normNumber;
-        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
+        emit addNormEvent(msg.sender, _normAddress,  _ipfsHash,  _hash_function,  _size);
     }
 }
