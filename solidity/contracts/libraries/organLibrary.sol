@@ -206,4 +206,70 @@ library organLibrary {
         addAdminLib(self, _adminToAdd, _canAdd, _canDelete, _canDeposit, _canSpend);
     }
 
+    function addNormLib(OrganInfo storage self, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    public 
+    returns (uint _normPosition)
+    {
+        // Check sender is allowed
+        require(self.admins[msg.sender].canAdd);
+
+        // If the norm has an address, we check that the address has not been used before.
+        if (_normAddress != 0x0000) { require(self.addressPositionInNorms[_normAddress] != 0);}
+
+        // Adding the norm
+        self.norms.push(organLibrary.Norm({
+                name: _name,
+                normAddress: _normAddress,
+                ipfsHash: _ipfsHash,
+                hash_function: _hash_function,
+                size: _size
+            }));
+        // Registering norm position relative to its address
+        self.addressPositionInNorms[_normAddress] = self.norms.length -1;
+        // Incrementing active norm number and total norm number trackers
+        self.activeNormNumber += 1;
+        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
+
+        // Registering the address as active
+        return self.addressPositionInNorms[_normAddress] ;
+    }
+
+    function remNormLib(OrganInfo storage self, uint _normNumber) 
+    public
+    {
+        // Check sender is allowed:
+        // - Sender is admin
+        // - Norm number is trying to delete himself
+        require(self.admins[msg.sender].canDelete || (self.addressPositionInNorms[self.norms[_normNumber].normAddress] != 0 && msg.sender == self.norms[_normNumber].normAddress));
+        // Deleting norm position from addressPositionInNorms
+        delete self.addressPositionInNorms[self.norms[_normNumber].normAddress];
+        // Logging event
+        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].name, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
+
+        // Removing norm from norms
+        delete self.norms[_normNumber];
+        self.activeNormNumber -= 1;
+    }
+
+    function replaceNormLib(OrganInfo storage self, uint _normNumber, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    public
+    {
+        require((self.admins[msg.sender].canDelete) && (self.admins[msg.sender].canAdd));
+        if (_normAddress != 0x0000) { require(self.addressPositionInNorms[_normAddress] != 0);}
+        
+        self.addressPositionInNorms[self.norms[_normNumber].normAddress] = 0;
+        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].name, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
+
+        delete self.norms[_normNumber];
+        self.norms[_normNumber] = organLibrary.Norm({
+                name: _name,
+                normAddress: _normAddress,
+                ipfsHash: _ipfsHash,
+                hash_function: _hash_function,
+                size: _size
+            });
+        
+        self.addressPositionInNorms[_normAddress] = _normNumber;
+        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
+    }
 }

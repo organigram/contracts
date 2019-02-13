@@ -93,70 +93,23 @@ contract Organ is Kelsen{
 
     // ################# Norms managing functions
 
-    function addNorm (address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public  returns (uint _normPosition)
+    function addNorm (address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    public  
+    returns (uint _normPosition)
     {
-        // Check sender is allowed
-        require(organInfos.admins[msg.sender].canAdd);
-
-        // If the norm has an address, we check that the address has not been used before.
-        if (_normAddress != 0x0000) { require(organInfos.addressPositionInNorms[_normAddress] != 0);}
-
-        // Adding the norm
-        organInfos.norms.push(organLibrary.Norm({
-                name: _name,
-                normAddress: _normAddress,
-                ipfsHash: _ipfsHash,
-                hash_function: _hash_function,
-                size: _size
-            }));
-        // Registering norm position relative to its address
-        organInfos.addressPositionInNorms[_normAddress] = organInfos.norms.length -1;
-        // Incrementing active norm number and total norm number trackers
-        organInfos.activeNormNumber += 1;
-        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
-
-        // Registering the address as active
-        return organInfos.addressPositionInNorms[_normAddress] ;
+        return organInfos.addNormLib(_normAddress, _name, _ipfsHash, _hash_function, _size);
     }
 
-    function replaceNorm (uint _normNumber, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public
+    function remNorm (uint _normNumber) 
+    public
     {
-        require((organInfos.admins[msg.sender].canDelete) && (organInfos.admins[msg.sender].canAdd));
-        if (_normAddress != 0x0000) { require(organInfos.addressPositionInNorms[_normAddress] != 0);}
-        
-        organInfos.addressPositionInNorms[organInfos.norms[_normNumber].normAddress] = 0;
-        emit remNormEvent(msg.sender, organInfos.norms[_normNumber].normAddress, organInfos.norms[_normNumber].name, organInfos.norms[_normNumber].ipfsHash,  organInfos.norms[_normNumber].hash_function,  organInfos.norms[_normNumber].size);
-
-        delete organInfos.norms[_normNumber];
-        organInfos.norms[_normNumber] = organLibrary.Norm({
-                name: _name,
-                normAddress: _normAddress,
-                ipfsHash: _ipfsHash,
-                hash_function: _hash_function,
-                size: _size
-            });
-        
-        organInfos.addressPositionInNorms[_normAddress] = _normNumber;
-        emit addNormEvent(msg.sender, _normAddress,  _name,  _ipfsHash,  _hash_function,  _size);
-
+       organInfos.remNormLib(_normNumber);
     }
 
-    function remNorm (uint _normNumber) public
+    function replaceNorm (uint _normNumber, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    public
     {
-        // Check sender is allowed:
-        // - Sender is admin
-        // - Norm number is trying to delete himself
-        require(organInfos.admins[msg.sender].canDelete || (organInfos.addressPositionInNorms[organInfos.norms[_normNumber].normAddress] != 0 && msg.sender == organInfos.norms[_normNumber].normAddress));
-        // Deleting norm position from addressPositionInNorms
-        delete organInfos.addressPositionInNorms[organInfos.norms[_normNumber].normAddress];
-        // Logging event
-        emit remNormEvent(msg.sender, organInfos.norms[_normNumber].normAddress, organInfos.norms[_normNumber].name, organInfos.norms[_normNumber].ipfsHash,  organInfos.norms[_normNumber].hash_function,  organInfos.norms[_normNumber].size);
-
-        // Removing norm from norms
-        delete organInfos.norms[_normNumber];
-        organInfos.activeNormNumber -= 1;
-
-
+       organInfos.replaceNormLib(_normNumber, _normAddress, _name, _ipfsHash, _hash_function, _size);
     }
 
     //////////////////////// Functions to communicate with other contracts
