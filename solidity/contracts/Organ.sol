@@ -123,18 +123,6 @@ contract Organ is Kelsen{
         return (organInfos.admins[_adressToCheck].canAdd, organInfos.admins[_adressToCheck].canDelete, organInfos.admins[_adressToCheck].canDeposit, organInfos.admins[_adressToCheck].canSpend);
     }
 
-    // Todo remove
-/*    function isNorm (address _adressToCheck) 
-    public 
-    view 
-    returns (bool isAddressInNorm) 
-    {
-        if (organInfos.addressPositionInNorms[_adressToCheck] != 0)
-            {return true;}
-        else
-            {return false;}
-    }
-*/
     // Retrieve contract state info
     // Size of norm array, to list elements
     function getNormListSize() 

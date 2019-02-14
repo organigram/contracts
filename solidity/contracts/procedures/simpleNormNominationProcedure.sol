@@ -15,10 +15,8 @@ contract simpleNormNominationProcedure is Procedure{
     // 6: Vote on masters and admins 
     // 7: Cooptation
 
-
     // address public affectedOrganContract;
     address public authorizedNominatersOrgan;
-
 
     constructor (address _authorizedNominatersOrgan, string _name) 
     public
@@ -27,70 +25,39 @@ contract simpleNormNominationProcedure is Procedure{
     procedureInfo.procedureName = _name;
     procedureInfo.procedureTypeNumber = 3;
     procedureInfo.linkedOrgans = [authorizedNominatersOrgan];
-
     }
 
     function addNorm(address _targetOrgan, address _normAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  
     public 
     returns (uint newNormNumber) 
     {
-
         // Checking if caller is an admin
         authorizedNominatersOrgan.isAllowed();
 
-        // Checking that the nomination procedure is an admin to the target organ
+        // Sending the addNorm command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ targetOrganInstance = Organ(_targetOrgan);
-        bool canAdd;
-        bool canDelete;
-        (canAdd, canDelete, , ) = targetOrganInstance.isAdmin(address(this));
-
-        
-        // Adding a norm if the procedure is allowed
-        if (canAdd) {
-
-            return targetOrganInstance.addNorm(_normAdress, _ipfsHash, _hash_function, _size);
-        }
-
+        return targetOrganInstance.addNorm(_normAdress, _ipfsHash, _hash_function, _size);
     }
-    function remNorm(address _targetOrgan, uint _normNumber) public {
 
+    function remNorm(address _targetOrgan, uint _normNumber) 
+    public 
+    {
         // Checking if caller is an admin
         authorizedNominatersOrgan.isAllowed();
 
-        // Checking that the nomination procedure is an admin to the target organ
+        // Sending the addNorm command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ targetOrganInstance = Organ(_targetOrgan);
-        bool canAdd;
-        bool canDelete;
-        (canAdd, canDelete , , ) = targetOrganInstance.isAdmin(address(this));
-
-        
-        // Removing a norm if the procedure is allowed
-        if (canDelete) {
-
-            targetOrganInstance.remNorm(_normNumber);
-        }
-
+        targetOrganInstance.remNorm(_normNumber);
     }
-    function replaceNorm(address _targetOrgan, uint _oldNormNumber, address _newNormAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
 
+    function replaceNorm(address _targetOrgan, uint _oldNormNumber, address _newNormAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    public 
+    {
         // Checking if caller is an admin
         authorizedNominatersOrgan.isAllowed();
 
-        // Checking that the nomination procedure is an admin to the target organ
+        // Sending the replaceNorm command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ targetOrganInstance = Organ(_targetOrgan);
-        bool canAdd;
-        bool canDelete;
-        (canAdd, canDelete, , ) = targetOrganInstance.isAdmin(address(this));
-
-        // Replacing an admin if the procedure is allowed
-        if (canAdd && canDelete) {
-
-            targetOrganInstance.replaceNorm(_oldNormNumber, _newNormAdress, _ipfsHash, _hash_function, _size);
-
-        }
-        
+        targetOrganInstance.replaceNorm(_oldNormNumber, _newNormAdress, _ipfsHash, _hash_function, _size);        
     }
-
-  
-
 }
