@@ -144,9 +144,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     function createProposition(address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) public returns (uint propositionNumber){
 
             // Check the proposition creator is able to make a proposition
-            Organ voterRegistryOrgan = Organ(votersOrganContract);
-            require(voterRegistryOrgan.isNorm(msg.sender));
-            delete voterRegistryOrgan;
+            votersOrganContract.isAllowed();
 
             // Retrieving proposition details
             Proposition memory newProposition;
@@ -209,10 +207,8 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     /// Vote for a proposition
     function vote(uint _propositionNumber, bool _acceptProposition) public {
         // Check the voter is able to vote on a proposition
-        Organ voterRegistryOrgan = Organ(votersOrganContract);
-        require(voterRegistryOrgan.isNorm(msg.sender));
-        delete voterRegistryOrgan;
-        
+        votersOrganContract.isAllowed();
+
         // Check if voter already voted
         require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
 
@@ -243,9 +239,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     function veto(uint _propositionNumber) public {
 
         // Check the voter is able to veto the proposition
-        Organ membersWithVetoOrgan = Organ(membersWithVetoOrganContract);
-        require(membersWithVetoOrgan.isNorm(msg.sender));
-        delete membersWithVetoOrgan;
+        membersWithVetoOrganContract.isAllowed();
         
         // Check if vote is still active
         require(!propositions[_propositionNumber].wasCounted);
@@ -306,10 +300,9 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
 
         // If promulgation is happening before endOfVote + promulgationPeriodDuration, check caller is an official promulgator
         if (now < propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration)
-            {        // Check the voter is able to promulgate the proposition
-            Organ promulgatorsOrgan = Organ(finalPromulgatorsOrganContract);
-            require(promulgatorsOrgan.isNorm(msg.sender));
-            delete promulgatorsOrgan;
+            {        
+            // Check the voter is able to promulgate the proposition
+            finalPromulgatorsOrganContract.isAllowed();
             }
         else { // If Promulgator did not promulgate, the only option is validating
             require(_promulgate);

@@ -17,19 +17,19 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     // 7: Cooptation
     int public procedureTypeNumber = 4;
     // address public affectedOrganContract;
-    address public authorizedReformersOrgan;
+    address public authorizedNominatersOrgan;
 
     // // Storage for procedure name
     // string public procedureName;
 
     // // Gathering connected organs for easier DAO mapping
     // address[] public linkedOrgans;
-    constructor(address _authorizedReformersOrgan, string _name) 
+    constructor(address _authorizedNominatersOrgan, string _name) 
     public 
     {
 
-    authorizedReformersOrgan = _authorizedReformersOrgan;
-    linkedOrgans = [authorizedReformersOrgan];
+    authorizedNominatersOrgan = _authorizedNominatersOrgan;
+    linkedOrgans = [authorizedNominatersOrgan];
 
     // Procedure name 
     procedureName = _name;
@@ -41,9 +41,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     function addAdmin(address _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) public returns (bool _success){
 
         // Checking if caller is an admin
-        Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
-        require(authorizedReformersInstance.isNorm(msg.sender));
-        delete authorizedReformersInstance;
+        authorizedNominatersOrgan.isAllowed();
 
         // Checking that the constitutionnal procedure is a master to the target organ
         Organ organToReformInstance = Organ(_organToReform);
@@ -68,9 +66,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     function remAdmin(address _organToReform, address _oldAdmin) public returns (bool _success){
 
         // Checking if caller is an admin
-        Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
-        require(authorizedReformersInstance.isNorm(msg.sender));
-        delete authorizedReformersInstance;
+        authorizedNominatersOrgan.isAllowed();
 
         // Checking that the constitutionnal procedure is a master to the target organ
         Organ organToReformInstance = Organ(_organToReform);
@@ -95,9 +91,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     function replaceAdmin(address _organToReform, address _oldAdmin, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) public returns (bool _success){
 
         // Checking if caller is an admin
-        Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
-        require(authorizedReformersInstance.isNorm(msg.sender));
-        delete authorizedReformersInstance;
+        authorizedNominatersOrgan.isAllowed();
 
         // Checking that the constitutionnal procedure is a master to the target organ
         Organ organToReformInstance = Organ(_organToReform);
@@ -122,9 +116,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     function addMaster(address _organToReform, address _newMaster, bool _canAdd, bool _canDelete) public returns (bool _success){
 
         // Checking if caller is an admin
-        Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
-        require(authorizedReformersInstance.isNorm(msg.sender));
-        delete authorizedReformersInstance;
+        authorizedNominatersOrgan.isAllowed();
 
         // Checking that the constitutionnal procedure is a master to the target organ
         Organ organToReformInstance = Organ(_organToReform);
@@ -149,9 +141,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     function remMaster(address _organToReform, address _oldMaster) public returns (bool _success){
 
         // Checking if caller is an admin
-        Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
-        require(authorizedReformersInstance.isNorm(msg.sender));
-        delete authorizedReformersInstance;
+        authorizedNominatersOrgan.isAllowed();
                 
         // Checking that the constitutionnal procedure is a master to the target organ
         Organ organToReformInstance = Organ(_organToReform);
@@ -175,9 +165,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     }
     function replaceMaster(address _organToReform, address _oldMaster, address _newMaster, bool _canAdd, bool _canDelete) public returns (bool _success){
         // Checking if caller is an admin
-        Organ authorizedReformersInstance = Organ(authorizedReformersOrgan);
-        require(authorizedReformersInstance.isNorm(msg.sender));
-        delete authorizedReformersInstance;
+        authorizedNominatersOrgan.isAllowed();
         
         // Checking that the constitutionnal procedure is a master to the target organ
         Organ organToReformInstance = Organ(_organToReform);

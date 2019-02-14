@@ -63,17 +63,12 @@ contract depositWithdrawFundsProcedure is Procedure{
 
     function () public payable {
 
-        // Instanciating Organ
-        Organ authorizedDepositorsOrgan = Organ(authorizedDepositorsOrganContract);
-
         // Checking if depositors are restricted
-        if (authorizedDepositorsOrganContract != 0x0000) {
-
-            require(authorizedDepositorsOrgan.isNorm(msg.sender));
-            
+        if (authorizedDepositorsOrganContract != 0x0000) 
+        {
+            authorizedDepositorsOrganContract.isAllowed();            
         }
 
-        delete authorizedDepositorsOrgan;
 
         // Sending funds to organ
         defaultReceivingOrganContract.transfer(msg.value);
@@ -88,19 +83,17 @@ contract depositWithdrawFundsProcedure is Procedure{
 
     }
 
-        function depositToOrgan(address _targetOrgan) public payable {
-
-        // Instanciating Organ
-        Organ authorizedDepositorsOrgan = Organ(authorizedDepositorsOrganContract);
+        function depositToOrgan(address _targetOrgan) 
+        public 
+        payable 
+        {
 
         // Checking if depositors are restricted
-        if (authorizedDepositorsOrganContract != 0x0000) {
-
-            require(authorizedDepositorsOrgan.isNorm(msg.sender));
-            
+        if (authorizedDepositorsOrganContract != 0x0000) 
+        {
+            authorizedDepositorsOrganContract.isAllowed();   
         }
 
-        delete authorizedDepositorsOrgan;
 
         // Sending funds to organ
         _targetOrgan.transfer(msg.value);
@@ -117,15 +110,9 @@ contract depositWithdrawFundsProcedure is Procedure{
 
     function withdrawOnOrgan(address _targetOrgan, address _receiver, uint _amount) public {
 
-        // Instanciating Organ
-        Organ authorizedWithdrawersOrgan = Organ(authorizedWithdrawersOrganContract);
-
         // Checking if withdrawers are restricted
-		require(authorizedWithdrawersOrgan.isNorm(msg.sender));
-            
+        authorizedWithdrawersOrganContract.isAllowed();    
    
-        delete authorizedWithdrawersOrgan;
-
         // Instanciating target organ for withdrawal
         Organ organToWithdrawFrom = Organ(_targetOrgan);
 

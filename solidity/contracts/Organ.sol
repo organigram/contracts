@@ -17,17 +17,10 @@ contract Organ is Kelsen{
     // Norms are sets of adresses, contracts or references gathered by the organ
     bool public isAnOrgan = true;
     bool public isAProcedure = false;
-    int public kelsenVersionNumber = 2;
     
     using organLibrary for organLibrary.OrganInfo;
     // Storing organ infos
     organLibrary.OrganInfo public organInfos;
-
-    // Events
-    // Norm management events
-    event addNormEvent(address _from, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
-    event remNormEvent(address _from, address _normAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
-
 
     // Organ declaration
     constructor(string _organName) public {
@@ -130,7 +123,8 @@ contract Organ is Kelsen{
         return (organInfos.admins[_adressToCheck].canAdd, organInfos.admins[_adressToCheck].canDelete, organInfos.admins[_adressToCheck].canDeposit, organInfos.admins[_adressToCheck].canSpend);
     }
 
-    function isNorm (address _adressToCheck) 
+    // Todo remove
+/*    function isNorm (address _adressToCheck) 
     public 
     view 
     returns (bool isAddressInNorm) 
@@ -140,7 +134,7 @@ contract Organ is Kelsen{
         else
             {return false;}
     }
-
+*/
     // Retrieve contract state info
     // Size of norm array, to list elements
     function getNormListSize() 

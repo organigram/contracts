@@ -215,9 +215,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     function presentCandidacy(uint _ballotNumber, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
 
         // Check the candidate is a member of the reference organ
-        Organ voterRegistryOrgan = Organ(referenceOrganContract);
-        require(voterRegistryOrgan.isNorm(msg.sender));
-        delete voterRegistryOrgan;
+        referenceOrganContract.isAllowed();
 
         // Check that the ballot is still active
         require(!ballots[_ballotNumber].wasEnded);
@@ -249,11 +247,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     /// Vote for a candidate
     function vote(uint _ballotNumber, address[] _candidateAddresses) public {
 
-        Organ voterRegistryOrgan = Organ(referenceOrganContract);
-        require(voterRegistryOrgan.isNorm(msg.sender));
-
-        delete voterRegistryOrgan;
-
+        referenceOrganContract.isAllowed();
         // Check if voter already voted
         require(!ballots[_ballotNumber].voters[msg.sender].voted);
 

@@ -14,34 +14,29 @@ contract simpleNormNominationProcedure is Procedure{
     // 5: Vote on Norms 
     // 6: Vote on masters and admins 
     // 7: Cooptation
-    int public procedureTypeNumber = 3;
+
+
     // address public affectedOrganContract;
     address public authorizedNominatersOrgan;
 
-    // // Gathering connected organs for easier DAO mapping
-    // address[] public linkedOrgans;
 
-    // // Storage for procedure name
-    // string public procedureName;
     constructor (address _authorizedNominatersOrgan, string _name) 
     public
     {
-
     authorizedNominatersOrgan = _authorizedNominatersOrgan;
-    linkedOrgans = [authorizedNominatersOrgan];
-    kelsenVersionNumber = 1;
-    
-    // Procedure name 
-    procedureName = _name;
+    procedureInfo.procedureName = _name;
+    procedureInfo.procedureTypeNumber = 3;
+    procedureInfo.linkedOrgans = [authorizedNominatersOrgan];
 
     }
 
-    function addNorm(address _targetOrgan, address _normAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  public returns (uint newNormNumber) {
+    function addNorm(address _targetOrgan, address _normAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  
+    public 
+    returns (uint newNormNumber) 
+    {
 
         // Checking if caller is an admin
-        Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
-        require(authorizedNominatorsInstance.isNorm(msg.sender));
-        delete authorizedNominatorsInstance;
+        authorizedNominatersOrgan.isAllowed();
 
         // Checking that the nomination procedure is an admin to the target organ
         Organ targetOrganInstance = Organ(_targetOrgan);
@@ -60,9 +55,7 @@ contract simpleNormNominationProcedure is Procedure{
     function remNorm(address _targetOrgan, uint _normNumber) public {
 
         // Checking if caller is an admin
-        Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
-        require(authorizedNominatorsInstance.isNorm(msg.sender));
-        delete authorizedNominatorsInstance;
+        authorizedNominatersOrgan.isAllowed();
 
         // Checking that the nomination procedure is an admin to the target organ
         Organ targetOrganInstance = Organ(_targetOrgan);
@@ -81,9 +74,7 @@ contract simpleNormNominationProcedure is Procedure{
     function replaceNorm(address _targetOrgan, uint _oldNormNumber, address _newNormAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
 
         // Checking if caller is an admin
-        Organ authorizedNominatorsInstance = Organ(authorizedNominatersOrgan);
-        require(authorizedNominatorsInstance.isNorm(msg.sender));
-        delete authorizedNominatorsInstance;
+        authorizedNominatersOrgan.isAllowed();
 
         // Checking that the nomination procedure is an admin to the target organ
         Organ targetOrganInstance = Organ(_targetOrgan);
@@ -99,10 +90,6 @@ contract simpleNormNominationProcedure is Procedure{
         }
         
     }
-    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    // {return linkedOrgans;}
-    // function getProcedureName() public view returns (string _procedureName)
-    // {return procedureName;}
 
   
 

@@ -144,8 +144,7 @@ contract normsCooptationProcedure is Procedure{
 
             // Checking that the proposition is not made on an existing member
             Organ membersOrgan = Organ(membersOrganContract);
-            require(!membersOrgan.isNorm(msg.sender));
-
+            require(membersOrgan.getAddressPositionInNorm(msg.sender) == 0);
             ( ,uint voterNumber) = membersOrgan.organInfos();
             // Check that deposit size is enough
             require(msg.value > minimumDepositSize * voterNumber);
@@ -203,9 +202,7 @@ contract normsCooptationProcedure is Procedure{
     function vote(uint _propositionNumber, bool _acceptProposition) public {
 
         // Check the voter is able to vote on a proposition
-        Organ membersOrgan = Organ(membersOrganContract);
-        require(membersOrgan.isNorm(msg.sender));
-        delete membersOrgan;
+        membersOrganContract.isAllowed();
         
         // Check if voter already voted
         require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
@@ -240,9 +237,7 @@ contract normsCooptationProcedure is Procedure{
         require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
 
         // Check the voter is able to veto the proposition
-        Organ membersWithVetoOrgan = Organ(membersWithVetoOrganContract);
-        require(membersWithVetoOrgan.isNorm(msg.sender));
-        delete membersWithVetoOrgan;
+        membersWithVetoOrganContract.isAllowed();
         
         // Check if vote is still active
         require(!propositions[_propositionNumber].wasCounted);
@@ -323,10 +318,9 @@ contract normsCooptationProcedure is Procedure{
 
         // If promulgation is happening before endOfVote + promulgationPeriodDuration, check caller is an official promulgator
         if (now < propositions[_propositionNumber].startDate + votingPeriodDuration + promulgationPeriodDuration)
-            {        // Check the voter is able to promulgate the proposition
-            Organ promulgatorsOrgan = Organ(finalPromulgatorsOrganContract);
-            require(promulgatorsOrgan.isNorm(msg.sender));
-            delete promulgatorsOrgan;
+            {        
+            // Check the voter is able to promulgate the proposition
+            finalPromulgatorsOrganContract.isAllowed();
             }
 
         // Checking the ballot was accepted
