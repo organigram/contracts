@@ -16,24 +16,24 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     // 6: Vote on masters and admins 
     // 7: Cooptation
 
-    // address public affectedOrganContract;
-    address public authorizedNominatersOrgan;
+    using procedureLibrary for procedureLibrary.oneRegisteredOrgan;
+    
+    // First stakeholder address is authorizedNominatersOrgan
+    procedureLibrary.oneRegisteredOrgan public linkedOrgans;
+    
 
     constructor(address _authorizedNominatersOrgan, string _name) 
     public 
     {
-
-    authorizedNominatersOrgan = _authorizedNominatersOrgan;
-    procedureInfo.linkedOrgans = [authorizedNominatersOrgan];
-    procedureInfo.procedureName = _name;
-    procedureInfo.procedureTypeNumber = 4;
+        procedureInfo.initProcedure(4, _name, 1);
+        linkedOrgans.initOneRegisteredOrgan(_authorizedNominatersOrgan);
     }
 
     function addAdmin(address _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
     public 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
@@ -44,7 +44,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     public 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
@@ -55,7 +55,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     public 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
@@ -66,7 +66,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     public 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
@@ -78,7 +78,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     {
 
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
                 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
@@ -89,7 +89,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     public 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
         
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);

@@ -11,6 +11,8 @@ contract Procedure is Kelsen {
 
     procedureLibrary.ProcedureData public procedureInfo;
     using procedureLibrary for address;
+    using procedureLibrary for procedureLibrary.ProcedureData;
+
     // Identifiers to adapt procedure interface
     bool public isAnOrgan = false;
     bool public isAProcedure = true;
@@ -20,6 +22,4 @@ contract Procedure is Kelsen {
     int public procedureTypeNumber;
     address[] public linkedOrgans;
 
-    function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    {return procedureInfo.linkedOrgans;}
 }

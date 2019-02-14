@@ -17,14 +17,12 @@ contract depositWithdrawFundsProcedure is Procedure{
     // 8: Vote on an expense
     // 9: Deposit/Withdraw funds on an organ
 
-    // Where are authorized depositors registered. If authorizedDepositorsOrganContract is set to 0, anyone can deposit funds
-    address public authorizedDepositorsOrganContract;
+    using procedureLibrary for procedureLibrary.threeRegisteredOrgans;
 
-    // Where are authorized depositors registered. If authorizedDepositorsOrganContract is set to 0, anyone can deposit funds
-    address public authorizedWithdrawersOrganContract;
-
-    // Default organ to which deposits are sent
-    address public defaultReceivingOrganContract;
+    // First stakeholder address is authorizedDepositorsOrganContract
+    // Second stakeholder address is authorizedWithdrawersOrganContract
+    // Third stakeholder address is defaultReceivingOrganContract
+    procedureLibrary.threeRegisteredOrgans public linkedOrgans;
 
     // Events
     event depositedFunds(address _from, address _payoutAddress, uint _amount);
@@ -33,20 +31,15 @@ contract depositWithdrawFundsProcedure is Procedure{
     constructor (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, string _name) 
     public 
     {
-        authorizedDepositorsOrganContract = _authorizedDepositors;
-        authorizedWithdrawersOrganContract = _authorizedWithdrawers;
-        defaultReceivingOrganContract = _defaultReceivingOrgan;
-
-        procedureInfo.linkedOrgans = [defaultReceivingOrganContract,authorizedDepositorsOrganContract];
-        procedureInfo.procedureName = _name;
-        procedureInfo.procedureTypeNumber = 9;
+        procedureInfo.initProcedure(9, _name, 3);
+        linkedOrgans.initThreeRegisteredOrgans(_authorizedDepositors, _authorizedWithdrawers, _defaultReceivingOrgan);
     }
 
     function () 
     public 
     payable 
     {
-        depositToOrgan(defaultReceivingOrganContract);
+        depositToOrgan(linkedOrgans.thirdOrganAddress);
     }
 
     function depositToOrgan(address _targetOrgan) 
@@ -54,9 +47,9 @@ contract depositWithdrawFundsProcedure is Procedure{
     payable 
     {
         // Checking if depositors are restricted
-        if (authorizedDepositorsOrganContract != 0x0000) 
+        if (linkedOrgans.firstOrganAddress != 0x0000) 
         {
-            authorizedDepositorsOrganContract.isAllowed();   
+            linkedOrgans.firstOrganAddress.isAllowed();   
         }
 
         // Sending funds to organ
@@ -71,7 +64,7 @@ contract depositWithdrawFundsProcedure is Procedure{
     {
 
         // Checking if withdrawers are restricted
-        authorizedWithdrawersOrganContract.isAllowed();    
+        linkedOrgans.secondOrganAddress.isAllowed();    
    
         // Instanciating target organ for withdrawal
         Organ organToWithdrawFrom = Organ(_targetOrgan);

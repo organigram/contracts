@@ -15,16 +15,15 @@ contract simpleNormNominationProcedure is Procedure{
     // 6: Vote on masters and admins 
     // 7: Cooptation
 
-    // address public affectedOrganContract;
-    address public authorizedNominatersOrgan;
-
+    using procedureLibrary for procedureLibrary.oneRegisteredOrgan;
+    // First stakeholder address is authorizedNominatersOrgan
+    procedureLibrary.oneRegisteredOrgan public linkedOrgans;
+    
     constructor (address _authorizedNominatersOrgan, string _name) 
     public
     {
-    authorizedNominatersOrgan = _authorizedNominatersOrgan;
-    procedureInfo.procedureName = _name;
-    procedureInfo.procedureTypeNumber = 3;
-    procedureInfo.linkedOrgans = [authorizedNominatersOrgan];
+        procedureInfo.initProcedure(3, _name, 1);
+        linkedOrgans.initOneRegisteredOrgan(_authorizedNominatersOrgan);
     }
 
     function addNorm(address _targetOrgan, address _normAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)  
@@ -32,7 +31,7 @@ contract simpleNormNominationProcedure is Procedure{
     returns (uint newNormNumber) 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Sending the addNorm command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ targetOrganInstance = Organ(_targetOrgan);
@@ -43,7 +42,7 @@ contract simpleNormNominationProcedure is Procedure{
     public 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Sending the addNorm command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ targetOrganInstance = Organ(_targetOrgan);
@@ -54,7 +53,7 @@ contract simpleNormNominationProcedure is Procedure{
     public 
     {
         // Checking if caller is an admin
-        authorizedNominatersOrgan.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Sending the replaceNorm command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ targetOrganInstance = Organ(_targetOrgan);
