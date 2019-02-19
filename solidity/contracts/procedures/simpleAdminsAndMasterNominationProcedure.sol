@@ -22,7 +22,7 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     procedureLibrary.oneRegisteredOrgan public linkedOrgans;
     
 
-    constructor(address _authorizedNominatersOrgan, string _name) 
+    constructor(address _authorizedNominatersOrgan, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(4, _name, 1);

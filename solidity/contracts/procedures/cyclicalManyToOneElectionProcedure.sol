@@ -4,10 +4,11 @@ pragma solidity >=0.4.22 <0.6.0;
 
 import "../standardProcedure.sol";
 import "../Organ.sol";
+import "../libraries/votingLibrary.sol";
 
 
-contract cyclicalManyToOneElectionProcedure is Procedure{
-
+contract cyclicalManyToOneElectionProcedure is Procedure
+{
     // 1: Cyclical many to one election (Presidential Election)
     // 2: Cyclical many to many election (Moderators Election)
     // 3: Simple norm nomination 
@@ -15,85 +16,27 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     // 5: Vote on Norms 
     // 6: Vote on masters and admins 
     // 7: Cooptation
+    using procedureLibrary for procedureLibrary.twoRegisteredOrgans;
+    using votingLibrary for votingLibrary.recurringElectionInfo;
+    using votingLibrary for votingLibrary.Candidacy;
 
-    int public procedureTypeNumber = 1;
-
-    // // Storage for procedure name
-    // string public procedureName;
-    
-    // // Gathering connected organs for easier DAO mapping
-    // address[] public linkedOrgans;
-
-    // Which contract will be affected
-    address public affectedOrganContract;
-
-    // Where are the voter registered
-    address public referenceOrganContract;
-
-
+    // First stakeholder address is referenceOrganContract
+    // Second stakeholder address is affectedOrganContract
+    procedureLibrary.twoRegisteredOrgans public linkedOrgans;
+    votingLibrary.recurringElectionInfo public electionParameters;
 
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
-    // Election frequency
-    uint public ballotFrequency;
-    // Max parallel election running
-    uint public nextElectionDate;
 
     // current President address
     address public currentPresident;
-
-    // ####### Voting process
-    // Time to vote
-    uint public ballotDuration;
-
-    // Is blank vote accepted
-    bool public neutralVoteAccepted;
-
-    // ####### Candidacy process
-    // Time to declare as a candidate
-    uint public candidacyDuration;
-    // Maximum time someone can be candidate
-    uint public reelectionMaximum;
-
-    // ####### Resolution process
-    // Minimum participation to validate election
-    uint public quorumSize;
-
-
-    // Variable of the procedure to keep track of events
-    bool public isBallotCurrentlyRunning;
-    uint public totalBallotNumber;
-    uint public lastElectionNumber;
-
-    // List of open ballots
-    // uint[] public openBallotList;
-    // uint public currentBallot;
-
-    // Structure declaration
-
-    // Voter structure, to keep track of who voted for the current election
-    struct Voter {
-        bool voted;  // if true, that person already voted
-        bool isCandidate;
-    }
-
-
-
-    // Candidacies structure, to keep track of candidacies for an election
-    struct Candidacy {
-        string name;
-        bytes32 ipfsHash; // ID of proposal on IPFS
-        uint8 hash_function;
-        uint8 size;
-        uint voteNumber;
-    }
 
     // Ballot structure, instanciated once for every election cycle
     struct Ballot {
         address creator;
         string name;   // short name (up to 32 bytes)
-        mapping(address => Voter) voters;
-        mapping(address => Candidacy) candidacies;
+        mapping(address => bool) hasUserVoted;
+        mapping(address => votingLibrary.Candidacy) candidacies;
         address[] candidateList;
         uint startDate;
         uint candidacyEndDate;
@@ -102,10 +45,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         bool wasEnforced;
         address winningCandidate;
         uint totalVoteCount;
-
     }
-
-
 
     // A dynamically-sized array of `Ballot` structs.
     Ballot[] public ballots;
@@ -113,74 +53,45 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     // A mapping of candidacy status and number of candidacies per member
     mapping(address => uint) public cumulatedCandidacies;
 
-    // Mapping each proposition to the user creating it
-    mapping (address => uint[]) public ballotToCreator;   
-
-    // Mapping each proposition to the user creating it
-    mapping (address => uint[]) public ballotToVoter;
-
-    // Mapping each proposition to the user counting it
-    mapping (address => uint[]) public ballotToCounter;
-
-    // Mapping each proposition to the user enforcing it
-    mapping (address => uint[]) public ballotToEnforcer;
-
     // Events
     event ballotCreationEvent(address _from, string _name, uint _startDate, uint _candidacyEndDate, uint _endDate, uint _ballotNumber);
-    event presentCandidacyEvent(uint _ballotNumber, address _candidateAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
+    event presentCandidacyEvent(uint _ballotNumber, address _candidateAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
     event votedOnElectionEvent(address _from, uint _ballotNumber);
     event ballotWasCounted(uint _ballotNumber, address[] _candidateList, address _winningCandidate, uint _totalVoteCount);
     event ballotResultException(uint _ballotNumber, bool _wasRebooted);
     event ballotWasEnforced(address _winningCandidate, uint _ballotNumber);
 
-    constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, string _name) 
+    constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, bytes32 _name) 
     public 
     {
+        procedureInfo.initProcedure(1, _name, 2);
+        linkedOrgans.initTwoRegisteredOrgans(_referenceOrganContract, _affectedOrganContract);
 
-        // Variables for testing
-        // Adress of voter registry organ
-    referenceOrganContract = _referenceOrganContract;
-    // Adress of president registry organ
-    affectedOrganContract = _affectedOrganContract;
-    
-    // Procedure name 
-    procedureName = _name;
-
-    linkedOrgans = [referenceOrganContract,affectedOrganContract];
-    
-    ballotFrequency = _ballotFrequency;
-    ballotDuration = _ballotDuration;
-    quorumSize = _quorumSize;
-    reelectionMaximum = _reelectionMaximum;
-
-    candidacyDuration = 2*ballotDuration;
-    nextElectionDate = now;
-    neutralVoteAccepted = true;
-    
-    totalBallotNumber = 0;
-
-
-    kelsenVersionNumber = 1;
-    lastElectionNumber = 0;
+        electionParameters.ballotFrequency = _ballotFrequency;
+        electionParameters.nextElectionDate = now;
+        electionParameters.ballotDuration = _ballotDuration;
+        electionParameters.quorumSize = _quorumSize;
+        electionParameters.reelectionMaximum = _reelectionMaximum;
+        electionParameters.candidacyDuration = 2*_ballotDuration;
+        electionParameters.neutralVoteAccepted = true;
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
     function createBallot(string _ballotName) public returns (uint ballotNumber){
-            // Checking no ballot is currently running
-            require (isBallotCurrentlyRunning == false);
+
             // Checking that election date has passed
-            require (now > nextElectionDate);
+            require (now > electionParameters.nextElectionDate);
             // Checking if previous ballot was counted
             if (ballots.length > 0) {
-                require(ballots[lastElectionNumber].wasEnded);
+                require(ballots[ballots.length - 1].wasEnded);
             }
 
             Ballot memory newBallot;
             newBallot.creator = msg.sender;
             newBallot.name = _ballotName;
             newBallot.startDate = now;
-            newBallot.candidacyEndDate = now + candidacyDuration;
-            newBallot.electionEndDate = now + candidacyDuration+ballotDuration;
+            newBallot.candidacyEndDate = now + electionParameters.candidacyDuration;
+            newBallot.electionEndDate = now + electionParameters.candidacyDuration+electionParameters.ballotDuration;
             newBallot.wasEnded = false;
             newBallot.winningCandidate = 0x0000;
             newBallot.totalVoteCount =0;
@@ -189,23 +100,17 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
             ballotNumber = ballots.length - 1;
             // openBallotList.push(ballotNumber);
             // currentBallot = ballotNumber;
-            totalBallotNumber += 1;
-            isBallotCurrentlyRunning = true;
-            nextElectionDate = now + ballotFrequency;
-            lastElectionNumber = ballotNumber;
+            electionParameters.nextElectionDate = now + electionParameters.ballotFrequency;
 
             // Ballot creation event
             emit ballotCreationEvent(msg.sender, newBallot.name, newBallot.startDate, newBallot.candidacyEndDate, newBallot.electionEndDate, ballotNumber);
-            
-            // Loggin that ballot creator did create this ballot
-            ballotToCreator[msg.sender].push(ballotNumber);
-
             }
 
-    function presentCandidacy(uint _ballotNumber, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
+    function presentCandidacy(uint _ballotNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public {
 
         // Check the candidate is a member of the reference organ
-        referenceOrganContract.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
+
 
         // Check that the ballot is still active
         require(!ballots[_ballotNumber].wasEnded);
@@ -214,21 +119,21 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         require(ballots[_ballotNumber].candidacyEndDate > now);
 
         // Check that sender is not over the mandate limit
-        require(cumulatedCandidacies[msg.sender] < reelectionMaximum);
+        require(cumulatedCandidacies[msg.sender] < electionParameters.reelectionMaximum);
 
         // Check if the candidate is already candidate
-        require(!ballots[_ballotNumber].voters[msg.sender].isCandidate);
+        require(ballots[_ballotNumber].candidacies[msg.sender].candidateAddress != msg.sender);
 
         ballots[_ballotNumber].candidateList.push(msg.sender);
-        ballots[_ballotNumber].voters[msg.sender].isCandidate = true;
 
-        ballots[_ballotNumber].candidacies[msg.sender].name = _name;
+        ballots[_ballotNumber].candidacies[msg.sender].candidateAddress = msg.sender;
+
         ballots[_ballotNumber].candidacies[msg.sender].ipfsHash = _ipfsHash;
         ballots[_ballotNumber].candidacies[msg.sender].hash_function = _hash_function;
         ballots[_ballotNumber].candidacies[msg.sender].size = _size;
         ballots[_ballotNumber].candidacies[msg.sender].voteNumber = 0;
          // Candidacy event is turned off for now
-        emit presentCandidacyEvent(_ballotNumber, msg.sender, _name, _ipfsHash, _hash_function, _size);
+        emit presentCandidacyEvent(_ballotNumber, msg.sender, _ipfsHash, _hash_function, _size);
 
 
 
@@ -238,10 +143,10 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     /// Vote for a candidate
     function vote(uint _ballotNumber, address _candidateAddress) public {
 
-        referenceOrganContract.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
         
         // Check if voter already votred
-        require(!ballots[_ballotNumber].voters[msg.sender].voted);
+        require(!ballots[_ballotNumber].hasUserVoted[msg.sender]);
 
         // Check if vote is still active
         require(!ballots[_ballotNumber].wasEnded);
@@ -253,18 +158,15 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         require(ballots[_ballotNumber].electionEndDate > now);
 
         // Check if candidate for whom we voted for is declared
-        if(ballots[_ballotNumber].voters[_candidateAddress].isCandidate)
+        if(ballots[_ballotNumber].candidacies[_candidateAddress].candidateAddress != 0x0000)
         {ballots[_ballotNumber].candidacies[_candidateAddress].voteNumber += 1;}
         else
             // If candidate does not exist, this is a neutral vote
         {ballots[_ballotNumber].candidacies[0x0000].voteNumber += 1;}
 
-        ballots[_ballotNumber].voters[msg.sender].voted = true;
+        ballots[_ballotNumber].hasUserVoted[msg.sender] = true;
         
         ballots[_ballotNumber].totalVoteCount += 1;
-
-        // Associating vote with voter for gamification purposes
-        ballotToVoter[msg.sender].push(_ballotNumber);
 
         // Event
         emit votedOnElectionEvent(msg.sender, _ballotNumber);
@@ -287,8 +189,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
                     ballots[_ballotNumber].wasEnforced = true;
                     ballots[_ballotNumber].wasEnded = true;
                     emit ballotResultException(_ballotNumber, true);
-                    nextElectionDate = now -1;
-                    isBallotCurrentlyRunning = false;
+                    electionParameters.nextElectionDate = now -1;
                     createBallot(ballots[_ballotNumber].name);
                     return 0;
             }
@@ -299,11 +200,11 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
             bool isADraw = false;
             bool quorumIsObtained = false;
 
-            Organ voterRegistryOrgan = Organ(referenceOrganContract);
+            Organ voterRegistryOrgan = Organ(linkedOrgans.firstOrganAddress);
 
             // Check if quorum is obtained. We avoiding divisions here, since Solidity is not good to calculate divisions
             ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
-            if (ballots[_ballotNumber].totalVoteCount*100 >= quorumSize*voterNumber)
+            if (ballots[_ballotNumber].totalVoteCount*100 >= electionParameters.quorumSize*voterNumber)
             {quorumIsObtained = true;}
 
             // Going through candidates list
@@ -322,7 +223,6 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
 
             // ############## Updating ballot values if vote concluded
             ballots[_ballotNumber].wasEnded = true;
-            isBallotCurrentlyRunning = false;
 
             if (!isADraw && quorumIsObtained)
                 // The ballot completed succesfully
@@ -338,16 +238,11 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
                 {
                     ballots[_ballotNumber].wasEnforced = true;
                     emit ballotResultException(_ballotNumber, true);
-                    nextElectionDate = now -1;
+                    electionParameters.nextElectionDate = now -1;
                     ballots[_ballotNumber].wasEnded = true;
-                    isBallotCurrentlyRunning = false;
                     createBallot(ballots[_ballotNumber].name);
                 }
-
-                ballotToCounter[msg.sender].push(_ballotNumber);
-                            
-                
-
+                        
             }
     
     function enforceBallot(uint _ballotNumber) public {
@@ -356,7 +251,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         // Checking the ballot was closed
         require(ballots[_ballotNumber].wasEnded);
         // Checking that the enforcing date is not later than the end of his supposed mandate
-        if (now > ballots[_ballotNumber].startDate + ballotFrequency)
+        if (now > ballots[_ballotNumber].startDate + electionParameters.ballotFrequency)
         {
             ballots[_ballotNumber].wasEnforced = true;
             // TODO add event to log this  
@@ -366,20 +261,20 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
 
         // We initiate the Organ interface to add a presidential norm
 
-        Organ presidentialOrgan = Organ(affectedOrganContract);
+        Organ presidentialOrgan = Organ(linkedOrgans.secondOrganAddress);
         address newPresidentAddress = ballots[_ballotNumber].winningCandidate;
 
         // Adding new president first
             // function addNorm (string _name, address _normAdress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public  returns (bool success);
         if (newPresidentAddress != currentPresident)
             {
-            Candidacy memory newPresident = ballots[_ballotNumber].candidacies[newPresidentAddress];
+            votingLibrary.Candidacy memory newPresident = ballots[_ballotNumber].candidacies[newPresidentAddress];
             presidentialOrgan.addNorm(newPresidentAddress, newPresident.ipfsHash, newPresident.hash_function, newPresident.size );
 
             
 
             // Removing former president, only if a former election was conducted.
-            if (totalBallotNumber > 1){
+            if (ballots.length > 0){
             presidentialOrgan.remNorm(presidentialOrgan.getAddressPositionInNorm(currentPresident));
                 }
 
@@ -396,8 +291,6 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
         // Adjusting mandate duration
         // nextElectionDate = now + ballotFrequency - candidacyDuration - ballotDuration;
         emit ballotWasEnforced( newPresidentAddress, _ballotNumber);
-        ballotToEnforcer[msg.sender].push(_ballotNumber);                
-
          }
         //////////////////////// Functions to communicate with other contracts
     
@@ -420,21 +313,10 @@ contract cyclicalManyToOneElectionProcedure is Procedure{
     { return (ballots[_ballotNumber].totalVoteCount, ballots[_ballotNumber].totalVoteCount);}
 
     function haveIVoted(uint _ballotNumber) public view returns (bool IHaveVoted)
-    {return ballots[_ballotNumber].voters[msg.sender].voted;}
+    {return ballots[_ballotNumber].hasUserVoted[msg.sender];}
     function getCandidateVoteNumber(uint _ballotNumber, address _candidateAddress) public view returns (uint voteReceived){
         require(ballots[_ballotNumber].wasEnded);
         return ballots[_ballotNumber].candidacies[_candidateAddress].voteNumber;
     }
-    function getBallotToCreator(address _userAddress) public view returns (uint[])
-    {return ballotToCreator[_userAddress];}    
-    function getBallotToCounter(address _userAddress) public view returns (uint[])
-    {return ballotToCounter[_userAddress];}  
-    function getBallotToEnforcer(address _userAddress) public view returns (uint[])
-    {return ballotToEnforcer[_userAddress];}  
-    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    // {return linkedOrgans;}
-    // function getProcedureName() public view returns (string _procedureName)
-    // {return procedureName;}
-
 }
 

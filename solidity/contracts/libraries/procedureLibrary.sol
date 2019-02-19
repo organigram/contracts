@@ -13,8 +13,8 @@ library procedureLibrary {
   
     struct ProcedureData 
     {
-        int procedureTypeNumber;
-        string procedureName;
+        uint procedureTypeNumber;
+        bytes32 procedureName;
         uint linkedOrgans;
     }
 
@@ -44,7 +44,7 @@ library procedureLibrary {
         address fourthOrganAddress;
     }
 
-    function initProcedure(ProcedureData storage self, int _procedureTypeNumber, string _procedureName, uint _linkedOrgans)
+    function initProcedure(ProcedureData storage self, uint _procedureTypeNumber, bytes32 _procedureName, uint _linkedOrgans)
     public
     {
         self.procedureTypeNumber = _procedureTypeNumber;
@@ -83,7 +83,7 @@ library procedureLibrary {
     }
 
     function isAllowed(address _organAddress)
-    public
+    internal
     view
     {
       // Verifying the evaluator is an admin

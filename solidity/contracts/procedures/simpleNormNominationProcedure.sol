@@ -19,7 +19,7 @@ contract simpleNormNominationProcedure is Procedure{
     // First stakeholder address is authorizedNominatersOrgan
     procedureLibrary.oneRegisteredOrgan public linkedOrgans;
     
-    constructor (address _authorizedNominatersOrgan, string _name) 
+    constructor (address _authorizedNominatersOrgan, bytes32 _name) 
     public
     {
         procedureInfo.initProcedure(3, _name, 1);

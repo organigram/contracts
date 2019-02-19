@@ -28,7 +28,7 @@ contract depositWithdrawFundsProcedure is Procedure{
     event depositedFunds(address _from, address _payoutAddress, uint _amount);
     event withdrewFunds(address _from, address _payoutAddress, uint _amount);
 
-    constructor (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, string _name) 
+    constructor (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(9, _name, 3);
