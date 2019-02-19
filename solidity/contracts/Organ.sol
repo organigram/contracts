@@ -23,13 +23,13 @@ contract Organ is Kelsen{
     organLibrary.OrganInfo public organInfos;
 
     // Organ declaration
-    constructor(string _organName) public {
+    constructor(bytes32 _organName) public {
         organInfos.initOrganLib(_organName);
     }
 
     // ################# Organ managing functions
 
-    function setName(string _organName) 
+    function setName(bytes32 _organName) 
     public 
     {
         organInfos.setNameLib(_organName);
@@ -147,23 +147,6 @@ contract Organ is Kelsen{
     returns (address normAddress, bytes32 ipfsHash, uint8 hash_function, uint8 size)
     {
         return (organInfos.norms[_desiredNormPosition].normAddress, organInfos.norms[_desiredNormPosition].ipfsHash, organInfos.norms[_desiredNormPosition].hash_function, organInfos.norms[_desiredNormPosition].size);
-    }
-
-    // Retrieve lists of adresses
-    function getMasterList() 
-    public 
-    view 
-    returns (address[] _masterList)
-    {
-        return organInfos.masterList;
-    }
-
-    function getAdminList() 
-    public 
-    view 
-    returns (address[] _adminList)
-    {
-        return organInfos.adminList;
     }
 
     function getKelsenVersion() 

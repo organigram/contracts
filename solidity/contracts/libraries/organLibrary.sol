@@ -14,7 +14,6 @@ library organLibrary {
     struct Master {
         bool canAdd;  // if true, master can add admins
         bool canDelete;  // if true, master can delete admins
-        uint rankInMasterList; // Rank in dynamic array masterList
     }
 
     struct Admin {
@@ -22,7 +21,6 @@ library organLibrary {
         bool canDelete;  // if true, Admin can delete norms
         bool canSpend;
         bool canDeposit;
-        uint rankInAdminList; // Rank in dynamic array adminList
     }
 
     struct Norm {
@@ -33,11 +31,9 @@ library organLibrary {
     }
 
     struct OrganInfo {
-        string organName;
+        bytes32 organName;
         uint256 activeNormNumber;
-        address[] masterList;
         mapping(address => Master) masters;
-        address[] adminList;
         mapping(address => Admin) admins;
         Norm[] norms;
         mapping(address => uint) addressPositionInNorms;
@@ -45,7 +41,7 @@ library organLibrary {
 
     // Events
     // Organ management events
-    event changeOrganName(address _from, string _newName);
+    event changeOrganName(address _from, bytes32 _newName);
     event spendMoney(address _from, address _to, uint256 _amount);
     event receiveMoney(address _from, uint256 _amount);
 
@@ -61,18 +57,17 @@ library organLibrary {
     event addNormEvent(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
     event remNormEvent(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
 
-    function initOrganLib(OrganInfo storage self, string _organName)
+    function initOrganLib(OrganInfo storage self, bytes32 _organName)
     public
     {
         // Initializing with deployer as master
         self.masters[msg.sender].canAdd = true;
         self.masters[msg.sender].canDelete = true;
-        self.masterList.push(msg.sender);
         self.organName = _organName;
         Norm memory initNorm;
         self.norms.push(initNorm);
     }
-    function setNameLib(OrganInfo storage self, string _organName) 
+    function setNameLib(OrganInfo storage self, bytes32 _organName) 
     public 
     {
         // Check sender is allowed
@@ -106,9 +101,6 @@ library organLibrary {
         // Check new master has at least one permission activated
         require(_canAdd || _canDelete);
 
-        // Adding master to master list and retrieving position
-        self.masters[_newMasterAddress].rankInMasterList = self.masterList.push(_newMasterAddress) - 1;
-
         // Creating master privileges
         self.masters[_newMasterAddress].canAdd = _canAdd;
         self.masters[_newMasterAddress].canDelete = _canDelete;
@@ -121,8 +113,6 @@ library organLibrary {
         require((self.masters[msg.sender].canDelete));
         // Check affected account is a master
         require((self.masters[_masterToRemove].canDelete) || (self.masters[_masterToRemove].canAdd) );
-        // Deleting entry in masterList
-        delete self.masterList[self.masters[_masterToRemove].rankInMasterList];
         // Deleting master privileges
         delete self.masters[_masterToRemove];
         emit remMasterEvent(msg.sender, _masterToRemove);
@@ -167,9 +157,6 @@ library organLibrary {
         // Check new admin has at least one permission activated
         require(_canAdd || _canDelete || _canDeposit || _canSpend);
 
-        // Adding admin to admin list and retrieving position
-        self.admins[_newAdminAddress].rankInAdminList = self.adminList.push(_newAdminAddress) - 1;
-
         // Creating master privileges
         self.admins[_newAdminAddress].canAdd = _canAdd;
         self.admins[_newAdminAddress].canDelete = _canDelete;
@@ -185,8 +172,7 @@ library organLibrary {
         require((self.masters[msg.sender].canDelete));
         // Check affected account is admin
         require((self.admins[_adminToRemove].canDelete) || (self.admins[_adminToRemove].canAdd) || (self.admins[_adminToRemove].canDeposit) || (self.admins[_adminToRemove].canSpend));
-        // Deleting entry in adminList
-        delete self.adminList[self.admins[_adminToRemove].rankInAdminList];
+
         // Deleting admin privileges
         delete self.admins[_adminToRemove];
 
