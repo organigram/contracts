@@ -35,15 +35,12 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     // A dynamically-sized array of `Ballot` structs.
     votingLibrary.ElectionBallot[] public ballots;
 
-    // Events
-    event ballotResultException(uint _ballotNumber);
-
     constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(1, _name, 2);
         linkedOrgans.initTwoRegisteredOrgans(_referenceOrganContract, _affectedOrganContract);
-        electionParameters.initElectionParameters(_ballotFrequency, _ballotDuration, _quorumSize, _reelectionMaximum, 2*_ballotDuration);
+        electionParameters.initElectionParameters(_ballotFrequency, _ballotDuration, _quorumSize, _reelectionMaximum, 2*_ballotDuration, 0);
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
@@ -70,7 +67,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     public 
     {
         linkedOrgans.firstOrganAddress.isAllowed();
-        ballots[_ballotNumber].voteManyToOne(_ballotNumber, _candidateAddress);
+        electionParameters.voteManyToOne(ballots[_ballotNumber], _ballotNumber, _candidateAddress);
     }
 
     // The vote is finished and we close it. This triggers the outcome of the vote.
@@ -79,25 +76,23 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     public 
     returns (address electionWinner)
     {
-        electionWinner = electionParameters.countManyToOne(ballots[_ballotNumber], linkedOrgans.firstOrganAddress, _ballotNumber);   
+       electionWinner = electionParameters.countManyToOne(ballots[_ballotNumber], linkedOrgans.firstOrganAddress, _ballotNumber);   
 
-        if (electionWinner == 0x0000)
+        if (electionWinner != 0x0000)
         {
-            emit ballotResultException(_ballotNumber); 
-        }  
-
-        else  
-        {
-            electionParameters.cumulatedCandidacies[electionWinner] += 1;
+            electionParameters.cumulatedMandates[electionWinner] += 1;
 
             if (electionWinner != currentPresident)
             {
-                ballots[_ballotNumber].givePowerToNewPresident(electionWinner, currentPresident, linkedOrgans.secondOrganAddress, _ballotNumber);
-                // Modifying procedure variable to count new president
-                currentPresident = electionWinner;
+                electionParameters.givePowerToNewPresident(electionWinner, currentPresident, linkedOrgans.secondOrganAddress, _ballotNumber);
             }
+
+            delete electionParameters.candidacies[electionWinner];
         }
-            
+
+        // Cleaning contract state from election
+        delete ballots[_ballotNumber];
+
         return electionWinner;          
     }
         
@@ -111,30 +106,20 @@ contract cyclicalManyToOneElectionProcedure is Procedure
         return ballots[_ballotNumber].candidateList;
     }
 
-    function haveIVoted(uint _ballotNumber) 
+    function nextElectionICanVoteIn() 
     public 
     view 
-    returns (bool IHaveVoted)
+    returns (uint lastElectionIParticipatedIn)
     {
-        return ballots[_ballotNumber].hasUserVoted[msg.sender];
+        return electionParameters.nextElectionUserCanVoteIn[msg.sender];
     }
 
-    function getCandidateVoteNumber(uint _ballotNumber, address _candidateAddress) 
-    public 
-    view 
-    returns (uint voteReceived)
-    {
-        require(ballots[_ballotNumber].wasEnded);
-        return ballots[_ballotNumber].candidacies[_candidateAddress].voteNumber;
-    }
-
-    function getCandidacyInfo(uint _ballotNumber, address _candidateAddress) 
+    function getCandidacyInfo(address _candidateAddress) 
     public 
     view
     returns (bytes32 _ipfsHash, uint8 _hash_function, uint8 _size)
     {
-        require(ballots[_ballotNumber].wasEnded);
-        return (ballots[_ballotNumber].candidacies[_candidateAddress].ipfsHash, ballots[_ballotNumber].candidacies[_candidateAddress].hash_function , ballots[_ballotNumber].candidacies[_candidateAddress].size);
+        return (electionParameters.candidacies[_candidateAddress].ipfsHash, electionParameters.candidacies[_candidateAddress].hash_function , electionParameters.candidacies[_candidateAddress].size);
     }
 }
 

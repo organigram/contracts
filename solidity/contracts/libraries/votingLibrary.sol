@@ -21,7 +21,6 @@ library votingLibrary {
         bool wasEnded;
         uint voteFor;
         uint totalVoteCount;
-        mapping(address => bool) hasUserVoted;
     }
 
     struct RecurringElectionInfo 
@@ -37,10 +36,15 @@ library votingLibrary {
         uint reelectionMaximum;
         // Minimum participation to validate election
         uint quorumSize;
+        // Number of candidate per voter. Not used for many to one election
+        uint voterToCandidateRatio;
         // A mapping of candidacy status and number of candidacies per member
-        mapping(address => uint) cumulatedCandidacies;
+        mapping(address => uint) cumulatedMandates;
         // // Is blank vote accepted
         // bool neutralVoteAccepted;
+        mapping(address => uint) nextElectionUserCanVoteIn;
+
+        mapping(address => Candidacy) candidacies;
     }
 
     // Candidacies structure, to keep track of candidacies for an election
@@ -61,20 +65,23 @@ library votingLibrary {
         uint electionEndDate;
         bool wasEnded;
         uint totalVoteCount;
+        uint totalVoters;
+        uint electedOfficialSlotNumber;
         address[] candidateList;
-        mapping(address => bool) hasUserVoted;
-        mapping(address => Candidacy) candidacies;
     }
 
     // Events
     event ballotCreationEvent(address _from, bytes32 _name, uint _startDate, uint _candidacyEndDate, uint _endDate, uint _ballotNumber);
     event presentCandidacyEvent(uint _ballotNumber, address _candidateAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
     event votedOnElectionEvent(address _from, uint _ballotNumber);
-    event ballotWasCounted(uint _ballotNumber, address[] _candidateList, address _winningCandidate, uint _totalVoteCount);
+    event ballotWasCounted(uint _ballotNumber, address _winningCandidate, uint _totalVoteCount);
     event ballotResultException(uint _ballotNumber);
     event ballotWasEnforced(address _winningCandidate, uint _ballotNumber);
+    event candidateVotesWereCounted(address _countedCandidate, uint _ballotNumber);
+    event m2mBallotWasCounted(uint _ballotNumber, uint _totalVoteCount);
+    event m2mBallotWasEnforced(address[] _winningCandidates, uint _ballotNumber);
 
-    function initElectionParameters(RecurringElectionInfo storage self, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, uint _candidacyDuration)
+    function initElectionParameters(RecurringElectionInfo storage self, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, uint _candidacyDuration, uint _voterToCandidateRatio)
     public
     {
         self.ballotFrequency = _ballotFrequency;
@@ -83,6 +90,7 @@ library votingLibrary {
         self.quorumSize = _quorumSize;
         self.reelectionMaximum = _reelectionMaximum;
         self.candidacyDuration = _candidacyDuration;
+        self.voterToCandidateRatio = _voterToCandidateRatio;
     }
 
     function createRecurrentBallotManyToOne(RecurringElectionInfo storage self, ElectionBallot[] storage ballots, bytes32 _ballotName) 
@@ -102,7 +110,6 @@ library votingLibrary {
         newBallot.startDate = now;
         newBallot.candidacyEndDate = now + self.candidacyDuration;
         newBallot.electionEndDate = now + self.candidacyDuration+self.ballotDuration;
-        newBallot.wasEnded = false;
         ballots.push(newBallot);
 
         ballotNumber = ballots.length - 1;
@@ -127,37 +134,36 @@ library votingLibrary {
         require(ballot.candidacyEndDate > now);
 
         // Check that sender is not over the mandate limit
-        require(self.cumulatedCandidacies[msg.sender] < self.reelectionMaximum);
+        require(self.cumulatedMandates[msg.sender] < self.reelectionMaximum);
 
         // Check if the candidate is already candidate
-        require(ballot.candidacies[msg.sender].candidateAddress != msg.sender);
+        require(self.candidacies[msg.sender].candidateAddress != msg.sender);
 
         ballot.candidateList.push(msg.sender);
 
-        ballot.candidacies[msg.sender].candidateAddress = msg.sender;
+        self.candidacies[msg.sender].candidateAddress = msg.sender;
 
-        ballot.candidacies[msg.sender].ipfsHash = _ipfsHash;
-        ballot.candidacies[msg.sender].hash_function = _hash_function;
-        ballot.candidacies[msg.sender].size = _size;
-        ballot.candidacies[msg.sender].voteNumber = 0;
+        self.candidacies[msg.sender].ipfsHash = _ipfsHash;
+        self.candidacies[msg.sender].hash_function = _hash_function;
+        self.candidacies[msg.sender].size = _size;
          // Candidacy event is turned off for now
         emit presentCandidacyEvent(_ballotNumber, msg.sender, _ipfsHash, _hash_function, _size);
     }
 
-    function voteManyToOne(ElectionBallot storage self, uint _ballotNumber, address _candidateAddress) 
+    function voteManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, uint _ballotNumber, address _candidateAddress) 
     public 
     {        
         // Check if voter already votred
-        require(!self.hasUserVoted[msg.sender]);
+        require(self.nextElectionUserCanVoteIn[msg.sender] <= _ballotNumber);
 
         // Check if vote is still active
-        require(!self.wasEnded);
+        require(!ballot.wasEnded);
 
         // Check if candidacy period is over
-        require(self.candidacyEndDate < now);
+        require(ballot.candidacyEndDate < now);
 
         // Check if voting period ended
-        require(self.electionEndDate > now);
+        require(ballot.electionEndDate > now);
 
         // Check if candidate for whom we voted for is declared
         if(self.candidacies[_candidateAddress].candidateAddress != 0x0000)
@@ -166,17 +172,17 @@ library votingLibrary {
             // If candidate does not exist, this is a neutral vote
         {self.candidacies[0x0000].voteNumber += 1;}
 
-        self.hasUserVoted[msg.sender] = true;
+        self.nextElectionUserCanVoteIn[msg.sender] == _ballotNumber + 1;
         
-        self.totalVoteCount += 1;
+        ballot.totalVoteCount += 1;
 
         // Event
         emit votedOnElectionEvent(msg.sender, _ballotNumber);
     }
 
-    function countManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _votersOrgan, uint _ballotNumber) 
+    function countManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _votersOrganAddress, uint _ballotNumber) 
     public 
-    returns (address nextPresident)
+    returns (address nextPresidentAddress)
     {
         // We check if the vote was already closed
         require(!ballot.wasEnded);
@@ -187,10 +193,10 @@ library votingLibrary {
         // Checking that there was enough participation
         if ((ballot.candidateList.length == 0) || ballot.totalVoteCount == 0)
         {
-                ballot.wasEnded = true;
-                emit ballotResultException(_ballotNumber);
-                self.nextElectionDate = now -1;
-                return 0x0000;
+            ballot.wasEnded = true;
+            emit ballotResultException(_ballotNumber);
+            self.nextElectionDate = now -1;
+            return 0x0000;
         }
 
         // Checking if the election is still valid
@@ -209,7 +215,7 @@ library votingLibrary {
         bool isADraw = false;
         bool quorumIsObtained = false;
 
-        Organ voterRegistryOrgan = Organ(_votersOrgan);
+        Organ voterRegistryOrgan = Organ(_votersOrganAddress);
 
         // Check if quorum is obtained. We avoiding divisions here, since Solidity is not good to calculate divisions
         ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
@@ -224,17 +230,31 @@ library votingLibrary {
         for (uint p = 0; p < ballot.candidateList.length; p++) 
         {
             address _candidateAddress = ballot.candidateList[p];
-            if (ballot.candidacies[_candidateAddress].voteNumber > winningVoteCount) 
+
+            // Logging how many votes this candidate received
+           emit candidateVotesWereCounted(_candidateAddress, self.candidacies[_candidateAddress].voteNumber);
+
+            if (self.candidacies[_candidateAddress].voteNumber > winningVoteCount) 
             {
-                winningVoteCount = ballot.candidacies[_candidateAddress].voteNumber ;
-                nextPresident = ballot.candidateList[p];
+                winningVoteCount = self.candidacies[_candidateAddress].voteNumber ;
+                delete self.candidacies[nextPresidentAddress];
+                nextPresidentAddress = ballot.candidateList[p];
                 isADraw = false;
             }
 
-            else if (ballot.candidacies[_candidateAddress].voteNumber == winningVoteCount)
+            else if (self.candidacies[_candidateAddress].voteNumber == winningVoteCount)
             {
                 isADraw = true;
+                // Cleaning candidate info from mapping
+                delete self.candidacies[_candidateAddress];
             }
+
+            else
+            {   // Cleaning candidate info from mapping
+                delete self.candidacies[_candidateAddress];
+            }
+            
+            
         }
 
         // ############## Updating ballot values if vote concluded
@@ -243,25 +263,25 @@ library votingLibrary {
         if (!isADraw && quorumIsObtained)
             // The ballot completed succesfully
         {
-            emit ballotWasCounted(_ballotNumber, ballot.candidateList, nextPresident, ballot.totalVoteCount);
+            emit ballotWasCounted(_ballotNumber, nextPresidentAddress, ballot.totalVoteCount);
         }
 
-        else // The ballot did not conclude correctly. We reboot the election process.
+        else // The ballot did not conclude correctly.
         {
-            nextPresident = 0x0000;
             emit ballotResultException(_ballotNumber);
             self.nextElectionDate = now -1;
             ballot.wasEnded = true;
+            return 0x0000;
         }
 
-        return nextPresident;    
+        return nextPresidentAddress;   
     }
 
-    function givePowerToNewPresident(ElectionBallot storage ballot, address _newPresident, address _currentPresident, address _presidentialOrganAddress, uint _ballotNumber)
+    function givePowerToNewPresident(RecurringElectionInfo storage self, address _newPresident, address _currentPresident, address _presidentialOrganAddress, uint _ballotNumber)
     public
     {
         Organ presidentialOrgan = Organ(_presidentialOrganAddress);
-        presidentialOrgan.addNorm(_newPresident, ballot.candidacies[_newPresident].ipfsHash, ballot.candidacies[_newPresident].hash_function, ballot.candidacies[_newPresident].size);
+        presidentialOrgan.addNorm(self.candidacies[_newPresident].candidateAddress, self.candidacies[_newPresident].ipfsHash, self.candidacies[_newPresident].hash_function, self.candidacies[_newPresident].size);
         if (_ballotNumber > 0)
         {
             presidentialOrgan.remNorm(presidentialOrgan.getAddressPositionInNorm(_currentPresident));
@@ -270,4 +290,217 @@ library votingLibrary {
         emit ballotWasEnforced(_newPresident, _ballotNumber);
     }
 
+    function voteManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, uint _ballotNumber, address[] _candidateAddresses) 
+    public 
+    {
+        // Check if voter already voted
+        require(self.nextElectionUserCanVoteIn[msg.sender] <= _ballotNumber);
+
+        // Check if vote is still active
+        require(ballot.wasEnded);
+
+        // Check if candidacy period is over
+        require(ballot.candidacyEndDate < now);
+
+        // Check if voting period ended
+        require(ballot.electionEndDate > now);
+
+        // Checking that the voter has not selected too much candidates
+        require(_candidateAddresses.length < ballot.electedOfficialSlotNumber + 1);
+        
+        // Checking that the voter selected at least one candidate
+        require(_candidateAddresses.length > 0);
+
+        // Going through the list of selected candidates
+        for (uint i = 0; i < _candidateAddresses.length; i++)
+        {
+            if (i > 0)
+            {
+               require(_candidateAddresses[i-1] < _candidateAddresses[i]); 
+            }
+
+            if(self.candidacies[_candidateAddresses[i]].candidateAddress != 0x0000)
+            {
+                self.candidacies[_candidateAddresses[i]].voteNumber += ballot.electedOfficialSlotNumber-i;
+                ballot.totalVoteCount += ballot.electedOfficialSlotNumber-i;
+            }
+
+            else    // If candidate does not exist, this is a neutral vote
+            {
+                self.candidacies[0x0000].voteNumber += 1;
+            }
+        }
+        self.nextElectionUserCanVoteIn[msg.sender] == _ballotNumber + 1;
+
+        ballot.totalVoters += 1;
+
+        // Log event
+        emit votedOnElectionEvent(msg.sender, _ballotNumber);
+    }
+
+    function countManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address _votersOrganAddress, uint _ballotNumber) 
+    public 
+    {
+        // We check if the vote was already closed
+        require(!ballot.wasEnded);
+
+        // Checking that the vote can be closed
+        require(ballot.electionEndDate < now);
+
+        // Checking that the vote can be closed
+        if ((ballot.candidateList.length == 0) || ballot.totalVoteCount == 0)
+        {
+            self.nextElectionDate = now -1;
+            ballot.wasEnded = true;
+            emit ballotResultException(_ballotNumber);
+            return;
+        }
+
+        // Checking that the enforcing date is not later than the end of his supposed mandate
+        if (now > ballot.startDate + self.ballotFrequency)
+        {
+            self.nextElectionDate = now -1;
+            ballot.wasEnded = true;
+            emit ballotResultException(_ballotNumber);
+            return;
+        }
+
+        Organ voterRegistryOrgan = Organ(_votersOrganAddress);
+        // Check if quorum is obtained. We are avoiding divisions here, since Solidity is not good to calculate divisions
+        ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
+        if (ballot.totalVoters*100 < self.quorumSize*voterNumber)
+        {
+            // Quorum was not obtained. Rebooting election
+            //ballots[_ballotNumber].wasEnforced = true;
+            self.nextElectionDate = now -1;
+            ballot.wasEnded = true;
+
+            // Log event
+            emit ballotResultException(_ballotNumber);
+            // Rebooting election
+            //createBallot(ballots[_ballotNumber].name);
+            return;
+        }
+        delete voterRegistryOrgan;
+
+        // Checking that there are enough candidates
+        if (ballot.candidateList.length < ballot.electedOfficialSlotNumber)
+        {
+            ballot.electedOfficialSlotNumber = ballot.candidateList.length;
+        } 
+
+        // ############## Going through candidates to check the vote count
+        uint previousThresholdCount = uint(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF);
+        uint winningVoteCount = 0;
+        uint isADraw = 0;
+        uint roundWinningCandidate = 0;
+
+        // Going through candidate lists to check all elected moderators
+        for (uint i = 0; i < ballot.electedOfficialSlotNumber; i++)
+        {
+            winningVoteCount = 0;
+            roundWinningCandidate = 0;
+            // Going through candidate list once to find best suitor
+            for (uint p = 0; p < ballot.candidateList.length; p++)
+            {
+                address _candidateAddress = ballot.candidateList[p];
+                if (self.candidacies[_candidateAddress].voteNumber >= previousThresholdCount)
+                {}
+                else if (self.candidacies[_candidateAddress].voteNumber > winningVoteCount) 
+                {
+                    winningVoteCount = self.candidacies[_candidateAddress].voteNumber ;
+                    roundWinningCandidate = p;
+                    isADraw = 0;
+                }
+                else if (self.candidacies[_candidateAddress].voteNumber == winningVoteCount)
+                {
+                        isADraw += 1;
+                }
+
+            }
+
+            // Checking if various candidates tied
+            if (winningVoteCount == 0)
+            {}
+            else if (isADraw > 0)
+            {
+                // Going through list one more time to add all tied up candidates
+                for (uint q = 0; q < ballot.candidateList.length; q++)
+                {
+                    // Making sure that winning candidate number is not too big
+                    if (i >= ballot.electedOfficialSlotNumber)
+                    {}
+                    // Detecting ties
+                    else if (self.candidacies[_candidateAddress].voteNumber == winningVoteCount)
+                        {
+                            nextModerators.push(ballot.candidateList[q]);
+                            i += 1;
+                        }
+                }
+            }
+            // Adding candidate to winning candidate list
+            else 
+            {
+                nextModerators.push(ballot.candidateList[roundWinningCandidate]);
+            }
+
+            previousThresholdCount = winningVoteCount;
+        }
+
+        // ############## Updating ballot values if vote concluded
+        ballot.wasEnded = true;
+        // Log event
+        emit m2mBallotWasCounted(_ballotNumber, ballot.totalVoteCount );
+    }
+
+    function enforceManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address[] storage currentModerators, address _moderatorsOrganAddress, uint _ballotNumber) 
+    public 
+    {
+        // Checking the ballot was closed
+        require(ballot.wasEnded);
+        
+        // Checking there are new moderators to add
+        require(nextModerators.length > 0);
+
+        // We initiate the Organ interface to add a moderator norm
+        Organ moderatorsOrgan = Organ(_moderatorsOrganAddress);
+
+        // Removing current moderators, if this is not a first election
+        if (_ballotNumber > 1)
+            {
+            for (uint i = 0; i < currentModerators.length; i++)
+                {
+                    moderatorsOrgan.remNorm(moderatorsOrgan.getAddressPositionInNorm(currentModerators[i]));
+                    delete currentModerators[i];
+                }
+            }
+
+        // Adding new moderators
+        for (uint p = 0; p < nextModerators.length; p++)
+            {
+                Candidacy memory newModerator = self.candidacies[nextModerators[p]];
+                moderatorsOrgan.addNorm(nextModerators[p], newModerator.ipfsHash, newModerator.hash_function, newModerator.size  );
+                self.cumulatedMandates[nextModerators[p]] += 1;
+                if (p < currentModerators.length )
+                {
+                    currentModerators[p] = newModerator.candidateAddress;
+                }
+                else
+                {
+                    currentModerators.push(newModerator.candidateAddress);
+                }
+                delete newModerator;
+            }
+
+        delete moderatorsOrgan;
+
+        // Cleaning candidate lists and candidatures 
+        for (uint k = 0; k < ballot.candidateList.length; k++)
+        {
+            delete self.candidacies[ballot.candidateList[k]];
+        }
+
+        // Logging event
+        emit m2mBallotWasEnforced(nextModerators, _ballotNumber);
+    }
 }
