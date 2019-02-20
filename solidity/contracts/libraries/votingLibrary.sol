@@ -59,6 +59,7 @@ library votingLibrary {
 
     struct ElectionBallot 
     {
+        uint ballotNumber;
         bytes32 name;   // short name (up to 32 bytes)
         uint startDate;
         uint candidacyEndDate;
@@ -93,38 +94,26 @@ library votingLibrary {
         self.voterToCandidateRatio = _voterToCandidateRatio;
     }
 
-    function createRecurrentBallotManyToOne(RecurringElectionInfo storage self, ElectionBallot[] storage ballots, bytes32 _ballotName) 
+    function createRecurrentBallot(RecurringElectionInfo storage self, ElectionBallot storage ballot, bytes32 _ballotName) 
     public 
-    returns (uint ballotNumber)
     {
         // Checking that election date has passed
         require (now > self.nextElectionDate);
         // Checking if previous ballot was counted
-        if (ballots.length > 0) 
-        {
-            require(ballots[ballots.length - 1].wasEnded);
-        }
+        require(ballot.startDate == 0);
+    
+        ballot.name = _ballotName;
+        ballot.startDate = now;
+        ballot.candidacyEndDate = now + self.candidacyDuration;
+        ballot.electionEndDate = now + self.candidacyDuration+self.ballotDuration;
 
-        ElectionBallot memory newBallot;
-        newBallot.name = _ballotName;
-        newBallot.startDate = now;
-        newBallot.candidacyEndDate = now + self.candidacyDuration;
-        newBallot.electionEndDate = now + self.candidacyDuration+self.ballotDuration;
-        ballots.push(newBallot);
-
-        ballotNumber = ballots.length - 1;
-
-        // openBallotList.push(ballotNumber);
-        // currentBallot = ballotNumber;
         self.nextElectionDate = now + self.ballotFrequency;
 
         // Ballot creation event
-        emit ballotCreationEvent(msg.sender, newBallot.name, newBallot.startDate, newBallot.candidacyEndDate, newBallot.electionEndDate, ballotNumber);
+        emit ballotCreationEvent(msg.sender, ballot.name, ballot.startDate, ballot.candidacyEndDate, ballot.electionEndDate, ballot.ballotNumber);
+   }
 
-        return ballotNumber;
-    }
-
-    function presentCandidacyLib(RecurringElectionInfo storage self, ElectionBallot storage ballot, uint _ballotNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function presentCandidacyLib(RecurringElectionInfo storage self, ElectionBallot storage ballot, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public 
     {
         // Check that the ballot is still active
@@ -147,14 +136,14 @@ library votingLibrary {
         self.candidacies[msg.sender].hash_function = _hash_function;
         self.candidacies[msg.sender].size = _size;
          // Candidacy event is turned off for now
-        emit presentCandidacyEvent(_ballotNumber, msg.sender, _ipfsHash, _hash_function, _size);
+        emit presentCandidacyEvent(ballot.ballotNumber, msg.sender, _ipfsHash, _hash_function, _size);
     }
 
-    function voteManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, uint _ballotNumber, address _candidateAddress) 
+    function voteManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _candidateAddress) 
     public 
     {        
         // Check if voter already votred
-        require(self.nextElectionUserCanVoteIn[msg.sender] <= _ballotNumber);
+        require(self.nextElectionUserCanVoteIn[msg.sender] <= ballot.ballotNumber);
 
         // Check if vote is still active
         require(!ballot.wasEnded);
@@ -172,15 +161,15 @@ library votingLibrary {
             // If candidate does not exist, this is a neutral vote
         {self.candidacies[0x0000].voteNumber += 1;}
 
-        self.nextElectionUserCanVoteIn[msg.sender] == _ballotNumber + 1;
+        self.nextElectionUserCanVoteIn[msg.sender] == ballot.ballotNumber + 1;
         
         ballot.totalVoteCount += 1;
 
         // Event
-        emit votedOnElectionEvent(msg.sender, _ballotNumber);
+        emit votedOnElectionEvent(msg.sender, ballot.ballotNumber);
     }
 
-    function countManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _votersOrganAddress, uint _ballotNumber) 
+    function countManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _votersOrganAddress) 
     public 
     returns (address nextPresidentAddress)
     {
@@ -194,7 +183,7 @@ library votingLibrary {
         if ((ballot.candidateList.length == 0) || ballot.totalVoteCount == 0)
         {
             ballot.wasEnded = true;
-            emit ballotResultException(_ballotNumber);
+            emit ballotResultException(ballot.ballotNumber);
             self.nextElectionDate = now -1;
             return 0x0000;
         }
@@ -202,7 +191,7 @@ library votingLibrary {
         // Checking if the election is still valid
         if (now > ballot.startDate + self.ballotFrequency)
         {
-            emit ballotResultException(_ballotNumber);
+            emit ballotResultException(ballot.ballotNumber);
             ballot.wasEnded = true;  
             return 0x0000;                
         }
@@ -263,12 +252,12 @@ library votingLibrary {
         if (!isADraw && quorumIsObtained)
             // The ballot completed succesfully
         {
-            emit ballotWasCounted(_ballotNumber, nextPresidentAddress, ballot.totalVoteCount);
+            emit ballotWasCounted(ballot.ballotNumber, nextPresidentAddress, ballot.totalVoteCount);
         }
 
         else // The ballot did not conclude correctly.
         {
-            emit ballotResultException(_ballotNumber);
+            emit ballotResultException(ballot.ballotNumber);
             self.nextElectionDate = now -1;
             ballot.wasEnded = true;
             return 0x0000;
@@ -277,24 +266,24 @@ library votingLibrary {
         return nextPresidentAddress;   
     }
 
-    function givePowerToNewPresident(RecurringElectionInfo storage self, address _newPresident, address _currentPresident, address _presidentialOrganAddress, uint _ballotNumber)
+    function givePowerToNewPresident(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _newPresident, address _currentPresident, address _presidentialOrganAddress)
     public
     {
         Organ presidentialOrgan = Organ(_presidentialOrganAddress);
         presidentialOrgan.addNorm(self.candidacies[_newPresident].candidateAddress, self.candidacies[_newPresident].ipfsHash, self.candidacies[_newPresident].hash_function, self.candidacies[_newPresident].size);
-        if (_ballotNumber > 0)
+        if (ballot.ballotNumber > 0)
         {
             presidentialOrgan.remNorm(presidentialOrgan.getAddressPositionInNorm(_currentPresident));
         }
         
-        emit ballotWasEnforced(_newPresident, _ballotNumber);
+        emit ballotWasEnforced(_newPresident, ballot.ballotNumber);
     }
 
-    function voteManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, uint _ballotNumber, address[] _candidateAddresses) 
+    function voteManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] _candidateAddresses) 
     public 
     {
         // Check if voter already voted
-        require(self.nextElectionUserCanVoteIn[msg.sender] <= _ballotNumber);
+        require(self.nextElectionUserCanVoteIn[msg.sender] <= ballot.ballotNumber);
 
         // Check if vote is still active
         require(ballot.wasEnded);
@@ -330,15 +319,15 @@ library votingLibrary {
                 self.candidacies[0x0000].voteNumber += 1;
             }
         }
-        self.nextElectionUserCanVoteIn[msg.sender] == _ballotNumber + 1;
+        self.nextElectionUserCanVoteIn[msg.sender] == ballot.ballotNumber + 1;
 
         ballot.totalVoters += 1;
 
         // Log event
-        emit votedOnElectionEvent(msg.sender, _ballotNumber);
+        emit votedOnElectionEvent(msg.sender, ballot.ballotNumber);
     }
 
-    function countManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address _votersOrganAddress, uint _ballotNumber) 
+    function countManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address _votersOrganAddress) 
     public 
     {
         // We check if the vote was already closed
@@ -352,7 +341,7 @@ library votingLibrary {
         {
             self.nextElectionDate = now -1;
             ballot.wasEnded = true;
-            emit ballotResultException(_ballotNumber);
+            emit ballotResultException(ballot.ballotNumber);
             return;
         }
 
@@ -361,7 +350,7 @@ library votingLibrary {
         {
             self.nextElectionDate = now -1;
             ballot.wasEnded = true;
-            emit ballotResultException(_ballotNumber);
+            emit ballotResultException(ballot.ballotNumber);
             return;
         }
 
@@ -376,7 +365,7 @@ library votingLibrary {
             ballot.wasEnded = true;
 
             // Log event
-            emit ballotResultException(_ballotNumber);
+            emit ballotResultException(ballot.ballotNumber);
             // Rebooting election
             //createBallot(ballots[_ballotNumber].name);
             return;
@@ -450,10 +439,10 @@ library votingLibrary {
         // ############## Updating ballot values if vote concluded
         ballot.wasEnded = true;
         // Log event
-        emit m2mBallotWasCounted(_ballotNumber, ballot.totalVoteCount );
+        emit m2mBallotWasCounted(ballot.ballotNumber, ballot.totalVoteCount );
     }
 
-    function enforceManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address[] storage currentModerators, address _moderatorsOrganAddress, uint _ballotNumber) 
+    function enforceManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address[] storage currentModerators, address _moderatorsOrganAddress) 
     public 
     {
         // Checking the ballot was closed
@@ -466,7 +455,7 @@ library votingLibrary {
         Organ moderatorsOrgan = Organ(_moderatorsOrganAddress);
 
         // Removing current moderators, if this is not a first election
-        if (_ballotNumber > 1)
+        if (ballot.ballotNumber > 1)
             {
             for (uint i = 0; i < currentModerators.length; i++)
                 {
@@ -501,6 +490,6 @@ library votingLibrary {
         }
 
         // Logging event
-        emit m2mBallotWasEnforced(nextModerators, _ballotNumber);
+        emit m2mBallotWasEnforced(nextModerators, ballot.ballotNumber);
     }
 }

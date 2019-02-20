@@ -33,7 +33,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     address public currentPresident;
 
     // A dynamically-sized array of `Ballot` structs.
-    votingLibrary.ElectionBallot[] public ballots;
+    votingLibrary.ElectionBallot public currentBallot;
 
     constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, bytes32 _name) 
     public 
@@ -46,37 +46,35 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     /// Create a new ballot to choose one of `proposalNames`.
     function createBallot(bytes32 _ballotName) 
     public 
-    returns (uint ballotNumber)
     {
-
-        return electionParameters.createRecurrentBallotManyToOne(ballots, _ballotName);
+        electionParameters.createRecurrentBallot(currentBallot, _ballotName);
     }
 
-    function presentCandidacy(uint _ballotNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function presentCandidacy(bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public 
     {
 
         // Check the candidate is a member of the reference organ
         linkedOrgans.firstOrganAddress.isAllowed();
-        electionParameters.presentCandidacyLib(ballots[_ballotNumber], _ballotNumber, _ipfsHash, _hash_function, _size);
+        electionParameters.presentCandidacyLib(currentBallot, _ipfsHash, _hash_function, _size);
     }
 
 
     /// Vote for a candidate
-    function vote(uint _ballotNumber, address _candidateAddress) 
+    function vote(address _candidateAddress) 
     public 
     {
         linkedOrgans.firstOrganAddress.isAllowed();
-        electionParameters.voteManyToOne(ballots[_ballotNumber], _ballotNumber, _candidateAddress);
+        electionParameters.voteManyToOne(currentBallot, _candidateAddress);
     }
 
     // The vote is finished and we close it. This triggers the outcome of the vote.
 
-    function endBallot(uint _ballotNumber) 
+    function endBallot() 
     public 
     returns (address electionWinner)
     {
-       electionWinner = electionParameters.countManyToOne(ballots[_ballotNumber], linkedOrgans.firstOrganAddress, _ballotNumber);   
+       electionWinner = electionParameters.countManyToOne(currentBallot, linkedOrgans.firstOrganAddress);   
 
         if (electionWinner != 0x0000)
         {
@@ -84,26 +82,28 @@ contract cyclicalManyToOneElectionProcedure is Procedure
 
             if (electionWinner != currentPresident)
             {
-                electionParameters.givePowerToNewPresident(electionWinner, currentPresident, linkedOrgans.secondOrganAddress, _ballotNumber);
+                electionParameters.givePowerToNewPresident(currentBallot, electionWinner, currentPresident, linkedOrgans.secondOrganAddress);
             }
 
             delete electionParameters.candidacies[electionWinner];
         }
-
+        
+        uint nextBallotNumber = currentBallot.ballotNumber + 1;
         // Cleaning contract state from election
-        delete ballots[_ballotNumber];
+        delete currentBallot;
+        currentBallot.ballotNumber = nextBallotNumber;
 
         return electionWinner;          
     }
         
     // ######### Functions to retrieve procedure infos
 
-    function getCandidateList(uint _ballotNumber) 
+    function getCandidateList() 
     public 
     view 
     returns (address[] _candidateList)
     {
-        return ballots[_ballotNumber].candidateList;
+        return currentBallot.candidateList;
     }
 
     function nextElectionICanVoteIn() 

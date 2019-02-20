@@ -31,23 +31,11 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     address[] public nextModerators;
     uint public nextBallotToEnforce;
 
-    // Ballot structure, instanciated once for every election cycle
-    struct BallotExtra 
-    {
-        address[] winningCandidates;
-    }
-
     // A dynamically-sized array of `Ballot` structs.
     //Ballot[] public ballots;
-    votingLibrary.ElectionBallot[] public ballots;
+    votingLibrary.ElectionBallot public currentBallot;
 
-    // Events
-    event votedOnElectionEvent(address _from, uint _ballotNumber);
-    event ballotWasCounted(uint _ballotNumber, address[] _candidateList, address[] _winningCandidates, uint _totalVoteCount);
-    event ballotResultException(uint _ballotNumber, bool _wasRebooted);
-    event ballotWasEnforced(address[] _winningCandidates, uint _ballotNumber);
-
-
+    
     constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, uint _voterToCandidateRatio, bytes32 _name) 
    
     public 
@@ -60,72 +48,70 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     /// Create a new ballot to choose one of `proposalNames`.
     function createBallot(bytes32 _ballotName) 
     public 
-    returns (uint ballotNumber)
     {
 
-        ballotNumber = electionParameters.createRecurrentBallotManyToOne(ballots, _ballotName);
+        electionParameters.createRecurrentBallot(currentBallot, _ballotName);
         // Retrieving size of electorate
         Organ voterRegistryOrgan = Organ(linkedOrgans.firstOrganAddress);
         ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
 
-        ballots[ballotNumber].electedOfficialSlotNumber = voterNumber/uint(electionParameters.voterToCandidateRatio);
-        if ( ballots[ballotNumber].electedOfficialSlotNumber == 0) 
+        currentBallot.electedOfficialSlotNumber = voterNumber/uint(electionParameters.voterToCandidateRatio);
+        if ( currentBallot.electedOfficialSlotNumber == 0) 
         {
-            ballots[ballotNumber].electedOfficialSlotNumber = 1;
+            currentBallot.electedOfficialSlotNumber = 1;
         }
         delete voterRegistryOrgan;
-
-        return ballotNumber;
     }
 
-    function presentCandidacy(uint _ballotNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function presentCandidacy( bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public 
     {
         // Check the candidate is a member of the reference organ
         linkedOrgans.firstOrganAddress.isAllowed();
 
         // Check that the ballot is still active
-        electionParameters.presentCandidacyLib(ballots[_ballotNumber], _ballotNumber, _ipfsHash, _hash_function, _size);    
+        electionParameters.presentCandidacyLib(currentBallot, _ipfsHash, _hash_function, _size);    
     }
 
     /// Vote for a candidate
-    function vote(uint _ballotNumber, address[] _candidateAddresses) 
+    function vote(address[] _candidateAddresses) 
     public 
     {
         linkedOrgans.firstOrganAddress.isAllowed();
-        electionParameters.voteManyToMany(ballots[_ballotNumber], _ballotNumber, _candidateAddresses);
+        electionParameters.voteManyToMany(currentBallot, _candidateAddresses);
     }
 
     // The vote is finished and we close it. This triggers the outcome of the vote.
 
-    function endBallot(uint _ballotNumber) 
+    function endBallot() 
     public 
     {
-        electionParameters.countManyToMany(ballots[_ballotNumber], nextModerators, linkedOrgans.firstOrganAddress, _ballotNumber);
+        electionParameters.countManyToMany(currentBallot, nextModerators, linkedOrgans.firstOrganAddress);
     }
     
-    function enforceBallot(uint _ballotNumber) 
+    function enforceBallot() 
     public 
     {
-
         // Checking the ballot is indeed the next one to be enforced
-        require(_ballotNumber >= nextBallotToEnforce);
+        require(currentBallot.ballotNumber >= nextBallotToEnforce);
 
-        electionParameters.enforceManyToMany(ballots[_ballotNumber], nextModerators, currentModerators, linkedOrgans.secondOrganAddress, _ballotNumber);
+        electionParameters.enforceManyToMany(currentBallot, nextModerators, currentModerators, linkedOrgans.secondOrganAddress);
 
-        nextBallotToEnforce = _ballotNumber + 1;
-        delete ballots[_ballotNumber];
+        nextBallotToEnforce = currentBallot.ballotNumber + 1;
+
+        delete currentBallot;
+        currentBallot.ballotNumber = nextBallotToEnforce;
         // Removing data of nextModerators
         delete nextModerators;
     }
 
     //////////////////////// Functions to communicate with other contracts
-    function getCandidateList(uint _ballotNumber) 
+    function getCandidateList() 
     public 
     view 
     returns (address[] _candidateList)
     {
-        return ballots[_ballotNumber].candidateList;
+        return currentBallot.candidateList;
     }
     
     function nextElectionICanVoteIn() 
