@@ -4,6 +4,7 @@ pragma solidity >=0.4.22 <0.6.0;
 
 import "../standardProcedure.sol";
 import "../Organ.sol";
+import "../libraries/propositionVotingLibrary.sol";
 
 
 contract voteOnAdminsAndMastersProcedure is Procedure{
@@ -14,17 +15,16 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     // 5: Vote on Norms 
     // 6: Vote on masters and admins 
     // 7: Cooptation
-    int public procedureTypeNumber = 6;
 
-    // ############## Variable to set up when declaring the procedure
-    // Organ in which the voters are registered
-    address public votersOrganContract;
+    using procedureLibrary for procedureLibrary.threeRegisteredOrgans;
+    using propositionVotingLibrary for propositionVotingLibrary.Proposition;
+    using propositionVotingLibrary for propositionVotingLibrary.VotingProcessInfo;
 
-    // Organ in which the voters with veto power are registered
-    address public membersWithVetoOrganContract;
-
-    // Organ in which final promulgators are listed
-    address public finalPromulgatorsOrganContract;
+    // First stakeholder address is votersOrganContract
+    // Second stakeholder address is membersWithVetoOrganContract
+    // Third stakeholder address is finalPromulgatorsOrganContract
+    procedureLibrary.threeRegisteredOrgans public linkedOrgans;
+    propositionVotingLibrary.VotingProcessInfo public votingProcedureInfo;
 
     // Minimum participation to validate election. This is a percentage value; for 40% quorum, quorumSize = 40
     uint public quorumSize;
@@ -38,116 +38,43 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     // Minimum proportion of votes to win election. This is a percentage value; for 50% majority, majoritySize = 50
     uint public majoritySize;
 
-    // // Storage for procedure name
-    // string public procedureName;
 
     // ######################
 
-    // Variable of the procedure to keep track of propositions
-    uint public totalPropositionNumber;
-
-    // Proposition structure
-    struct Proposition {
-
-        // Proposition details
-        address targetOrgan;
-        address contractToAdd;
-        address contractToRemove;
-        bytes32 ipfsHash; // ID of proposal on IPFS
-        uint8 hash_function;
-        uint8 size;
-        string name; // Admin name
-        bool canAdd;  // if true, Admin can add norms
-        bool canDelete;  // if true, Admin can delete norms
-        bool canSpend;
-        bool canDeposit;
-        uint propositionType;
-
-
-        // **** Voting variables
-        // Mapping to track user votes
-        mapping(address => bool) hasUserVoted;
-        uint startDate;
-        uint votingPeriodEndDate;
-        bool wasVetoed;
-        bool wasCounted;
-        bool wasAccepted;
-        bool wasEnded;
-        uint voteFor;
-        // uint voteAgainst;
-        uint totalVoteCount;
-
-    }
-
-
 
     // A dynamically-sized array of `Proposition` structs.
-    Proposition[] propositions;
-
-    // Dynamic size array of status of propositions
-    bool[] public propositionsWaitingEndOfVote;
-    bool[] public propositionsWaitingPromulgation;
-
-    // Mapping each proposition to the user creating it
-    mapping (address => uint[]) public propositionToUser;    
-
-    // Mapping each proposition to the user who participated
-    mapping (address => uint[]) public propositionToVoter;
-
-    // Mapping each proposition to the user vetoing it
-    mapping (address => uint[]) public propositionToVetoer;
-
-    // Mapping each proposition to the user promulgating it
-    mapping (address => uint[]) public propositionToPromulgator;
-
-    
+    propositionVotingLibrary.Proposition[] propositions;
 
     // Events
 
     event createPropositionEvent(address _from, address _targetOrgan, uint _propositionType, uint _propositionNumber);
     event createPropositionDetails(address _contractToAdd, address _contractToRemove);
-    event createMasterPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete, string _name);
-    event createAdminPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name);
-    event createNormPropositionEvent(uint _propositionNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string name);
+    event createMasterPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete);
+    event createAdminPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend);
+    event createNormPropositionEvent(uint _propositionNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
 
     event voteOnProposition(address _from, uint _propositionNumber);
     event vetoProposition(address _from, uint _propositionNumber);
     event countVotes(address _from, uint _propositionNumber);
     event promulgatePropositionEvent(address _from, uint _propositionNumber, bool _promulgate);
 
-    constructor(address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, string _name) 
+    constructor(address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
     public 
     {
 
-    votersOrganContract = _votersOrganContract;
-    membersWithVetoOrganContract = _membersWithVetoOrganContract;
-    finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 
-    linkedOrgans = [votersOrganContract,membersWithVetoOrganContract,finalPromulgatorsOrganContract];
-
-    // Procedure name 
-    procedureName = _name;
-
-    quorumSize = _quorumSize;
-    // votingPeriodDuration = 3 minutes;
-    // promulgationPeriodDuration = 3 minutes;
-
-    votingPeriodDuration = _votingPeriodDuration;
-    promulgationPeriodDuration = _promulgationPeriodDuration;
-
-    majoritySize = _majoritySize;
-
-    kelsenVersionNumber = 1;
-
+    procedureInfo.initProcedure(6, _name, 3);
+    linkedOrgans.initThreeRegisteredOrgans(_votersOrganContract, _membersWithVetoOrganContract, _finalPromulgatorsOrganContract);
+    votingProcedureInfo.initElectionParameters(_quorumSize, _votingPeriodDuration, _promulgationPeriodDuration, _majoritySize);
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) public returns (uint propositionNumber){
+    function createProposition(address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) public returns (uint propositionNumber){
 
             // Check the proposition creator is able to make a proposition
-            votersOrganContract.isAllowed();
+            linkedOrgans.firstOrganAddress.isAllowed();
 
             // Retrieving proposition details
-            Proposition memory newProposition;
+            propositionVotingLibrary.Proposition memory newProposition;
             newProposition.targetOrgan = _targetOrgan;
             newProposition.contractToAdd = _contractToAdd;
             newProposition.contractToRemove = _contractToRemove;
@@ -159,12 +86,10 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             newProposition.canSpend = _canSpend;
             newProposition.canDeposit = _canDeposit;
             newProposition.propositionType = _propositionType;
-            newProposition.name = _name;
 
             // Instanciating proposition
 
-            newProposition.startDate = now;
-            newProposition.votingPeriodEndDate = now + votingPeriodDuration;            
+            newProposition.votingPeriodEndDate = now + votingProcedureInfo.votingPeriodDuration;            
             newProposition.wasVetoed = false;
             newProposition.wasEnded = false;
             newProposition.wasCounted = false;
@@ -177,29 +102,23 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
 
             propositionNumber = propositions.length - 1;
 
-            // Tracking proposition being deposed
-            totalPropositionNumber += 1;
-            propositionToUser[msg.sender].push(propositionNumber);
-            propositionsWaitingEndOfVote.push(true);
-            propositionsWaitingPromulgation.push(false);
-
             // proposition creation event
             emit createPropositionEvent(msg.sender, propositions[propositionNumber].targetOrgan, _propositionType, propositionNumber);
             emit createPropositionDetails(_contractToAdd, _contractToRemove);
             if (_propositionType == 0)
             {
                 // Master proposition event
-            emit createMasterPropositionEvent(propositionNumber, _canAdd, _canDelete, _name);
+            emit createMasterPropositionEvent(propositionNumber, _canAdd, _canDelete);
             }
             else if (_propositionType == 1)
             {
                 // Admin proposition event
-            emit createAdminPropositionEvent(propositionNumber, _canAdd, _canDelete, _canDeposit, _canSpend, _name);
+            emit createAdminPropositionEvent(propositionNumber, _canAdd, _canDelete, _canDeposit, _canSpend);
             }
             else if (_propositionType == 2)
             {
                 // Norm proposition event
-            emit createNormPropositionEvent(propositionNumber, _ipfsHash, _hash_function, _size, _name);
+            emit createNormPropositionEvent(propositionNumber, _ipfsHash, _hash_function, _size);
             }
 
     }
@@ -207,10 +126,10 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     /// Vote for a proposition
     function vote(uint _propositionNumber, bool _acceptProposition) public {
         // Check the voter is able to vote on a proposition
-        votersOrganContract.isAllowed();
+        linkedOrgans.firstOrganAddress.isAllowed();
 
         // Check if voter already voted
-        require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
+        require(!propositionVotingLibrary.getBoolean(votingProcedureInfo.userParticipation[msg.sender], _propositionNumber));
 
         // Check if vote is still active
         require(!propositions[_propositionNumber].wasCounted);
@@ -223,13 +142,10 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         {propositions[_propositionNumber].voteFor += 1;}
 
         // Loggin that user voted
-        propositions[_propositionNumber].hasUserVoted[msg.sender] = true;
-        
+        propositionVotingLibrary.setBoolean(votingProcedureInfo.userParticipation[msg.sender], _propositionNumber, true);
+
         // Adding vote count
         propositions[_propositionNumber].totalVoteCount += 1;
-
-        // Logging that user voted
-        propositionToVoter[msg.sender].push(_propositionNumber);
 
         // create vote event
         emit voteOnProposition(msg.sender, _propositionNumber);
@@ -239,7 +155,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     function veto(uint _propositionNumber) public {
 
         // Check the voter is able to veto the proposition
-        membersWithVetoOrganContract.isAllowed();
+        linkedOrgans.secondOrganAddress.isAllowed();
         
         // Check if vote is still active
         require(!propositions[_propositionNumber].wasCounted);
@@ -249,9 +165,6 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
 
         // Log that proposition was vetoed
         propositions[_propositionNumber].wasVetoed = true;
-
-        // Log that user vetoed this proposition
-        propositionToVetoer[msg.sender].push(_propositionNumber);
 
         //  Create veto event
         emit vetoProposition(msg.sender, _propositionNumber);
@@ -267,7 +180,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         // Checking that the vote can be closed
         require(propositions[_propositionNumber].votingPeriodEndDate < now);
 
-        Organ voterRegistryOrgan = Organ(votersOrganContract);
+        Organ voterRegistryOrgan = Organ(linkedOrgans.firstOrganAddress);
         ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
 
         // We check that Quorum was obtained and that a majority of votes were cast in favor of the proposition
@@ -285,8 +198,6 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         // ############## Updating ballot values if vote concluded
         propositions[_propositionNumber].wasCounted = true;
         propositions[_propositionNumber].wasAccepted = hasBeenAccepted;
-        propositionsWaitingEndOfVote[_propositionNumber] = false;
-        propositionsWaitingPromulgation[_propositionNumber] = true;
 
         emit countVotes(msg.sender, _propositionNumber);
     }
@@ -302,7 +213,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         if (now < propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration)
             {        
             // Check the voter is able to promulgate the proposition
-            finalPromulgatorsOrganContract.isAllowed();
+            linkedOrgans.thirdOrganAddress.isAllowed();
             }
         else { // If Promulgator did not promulgate, the only option is validating
             require(_promulgate);
@@ -383,9 +294,6 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
             
         }
         propositions[_propositionNumber].wasEnded = true;
-        propositionsWaitingPromulgation[_propositionNumber] = false;
-        propositionToPromulgator[msg.sender].push(_propositionNumber);
-
 
         // promulgation event
         emit promulgatePropositionEvent(msg.sender, _propositionNumber, _promulgate);
@@ -408,7 +316,6 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         if ((!canAdd && (propositions[_propositionNumber].contractToAdd != 0x0000)) || (!canDelete && (propositions[_propositionNumber].contractToRemove != 0x0000)) )
         {
             propositions[_propositionNumber].wasEnded = true;
-            propositionsWaitingPromulgation[_propositionNumber] = false;
         }
         emit promulgatePropositionEvent(msg.sender, _propositionNumber, false);
 
@@ -417,14 +324,14 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
 
     //////////////////////// Functions to communicate with other contracts
 
-    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, address _addressToRemove, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, string _name){
-        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend, propositions[_propositionNumber].name);
+    function getPropositionDetails(uint _propositionNumber) public view returns (address _addressToAdd, address _addressToRemove, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend){
+        return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].canAdd, propositions[_propositionNumber].canDelete, propositions[_propositionNumber].canDeposit, propositions[_propositionNumber].canSpend);
     }
     function getPropositionDocumentation(uint _propositionNumber) public view returns (address _addressToAdd, address _addressToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, uint _propositionType){
         return (propositions[_propositionNumber].contractToAdd, propositions[_propositionNumber].contractToRemove, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size, propositions[_propositionNumber].propositionType);
     }
-    function getPropositionDates(uint _propositionNumber) public view returns (uint _startDate, uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
-        return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].votingPeriodEndDate, propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration);
+    function getPropositionDates(uint _propositionNumber) public view returns (uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
+        return (propositions[_propositionNumber].votingPeriodEndDate, propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration);
     }
     function getPropositionStatus(uint _propositionNumber) public view returns (bool _wasCounted, bool _wasEnded){
         return (propositions[_propositionNumber].wasCounted, propositions[_propositionNumber].wasEnded);
@@ -437,20 +344,13 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         {require(propositions[_propositionNumber].wasCounted);
         return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor);}
 
-    function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToUser[_userAddress];}    
-    function getPropositionsVetoedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToVetoer[_userAddress];}  
-    function getPropositionsPromulgatedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToPromulgator[_userAddress];}  
-    function getPropositionsUsedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToVoter[_userAddress];}  
-    function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
-    {return propositions[propositionNumber].hasUserVoted[msg.sender];}
+    function haveIVoted(uint _propositionNumber) 
+    public 
+    view 
+    returns (bool IHaveVoted)
+    {return propositionVotingLibrary.getBoolean(votingProcedureInfo.userParticipation[msg.sender], _propositionNumber);}
     // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
     // {return linkedOrgans;}
-    // function getProcedureName() public view returns (string _procedureName)
-    // {return procedureName;}
 
 
 }

@@ -4,7 +4,7 @@ pragma solidity >=0.4.22 <0.6.0;
 
 import "../standardProcedure.sol";
 import "../Organ.sol";
-import "../libraries/votingLibrary.sol";
+import "../libraries/cyclicalVotingLibrary.sol";
 
 
 contract cyclicalManyToOneElectionProcedure is Procedure
@@ -17,14 +17,14 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     // 6: Vote on masters and admins 
     // 7: Cooptation
     using procedureLibrary for procedureLibrary.twoRegisteredOrgans;
-    using votingLibrary for votingLibrary.RecurringElectionInfo;
-    using votingLibrary for votingLibrary.Candidacy;
-    using votingLibrary for votingLibrary.ElectionBallot;
+    using cyclicalVotingLibrary for cyclicalVotingLibrary.RecurringElectionInfo;
+    using cyclicalVotingLibrary for cyclicalVotingLibrary.Candidacy;
+    using cyclicalVotingLibrary for cyclicalVotingLibrary.ElectionBallot;
 
     // First stakeholder address is referenceOrganContract
     // Second stakeholder address is affectedOrganContract
     procedureLibrary.twoRegisteredOrgans public linkedOrgans;
-    votingLibrary.RecurringElectionInfo public electionParameters;
+    cyclicalVotingLibrary.RecurringElectionInfo public electionParameters;
 
     // ############## Variable to set up when declaring the procedure
     // ####### Vote creation process
@@ -33,7 +33,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     address public currentPresident;
 
     // A dynamically-sized array of `Ballot` structs.
-    votingLibrary.ElectionBallot public currentBallot;
+    cyclicalVotingLibrary.ElectionBallot public currentBallot;
 
     constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, bytes32 _name) 
     public 

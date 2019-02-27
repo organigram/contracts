@@ -9,24 +9,12 @@ Procedure library
 This library is used to hold the logic common to all procedures
 
 **/
-library votingLibrary {
+library cyclicalVotingLibrary {
   
-    struct VotingProcessInfo 
-    {
-        uint startDate;
-        uint votingPeriodEndDate;
-        bool wasVetoed;
-        bool wasCounted;
-        bool wasAccepted;
-        bool wasEnded;
-        uint voteFor;
-        uint totalVoteCount;
-    }
-
     struct RecurringElectionInfo 
     {
         uint ballotFrequency;
-        // Max parallel election running
+        // When will the next election take place
         uint nextElectionDate;
         // Time to vote
         uint ballotDuration;
@@ -40,10 +28,13 @@ library votingLibrary {
         uint voterToCandidateRatio;
         // A mapping of candidacy status and number of candidacies per member
         mapping(address => uint) cumulatedMandates;
+
         // // Is blank vote accepted
         // bool neutralVoteAccepted;
+        
         mapping(address => uint) nextElectionUserCanVoteIn;
 
+        // Tracking last candidacies
         mapping(address => Candidacy) candidacies;
     }
 
