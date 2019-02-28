@@ -48,7 +48,7 @@ library propositionVotingLibrary {
         // 6: Add norm
         // 7: Remove norm. In this case, the norm to be removed must be designated by its NUMBER, encoded in hex in the contractToRemove field.
         // 8: Replace norm. In this case, the norm to be replaced must be designated by its NUMBER, encoded in hex in the contractToRemove field.
-        uint8 propositionType;
+        uint propositionType;
         bytes32 ipfsHash; // ID of proposal on IPFS
         
         uint votingPeriodEndDate;
@@ -104,7 +104,7 @@ library propositionVotingLibrary {
     }
 
         /// Create a new ballot to choose one of `proposalNames`.
-    function createPropositionLib(VotingProcessInfo storage self, address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint8 _propositionType) 
+    function createPropositionLib(VotingProcessInfo storage self, address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) 
     public 
     returns (uint propositionNumber)
     {
@@ -335,5 +335,30 @@ library propositionVotingLibrary {
             proposition.wasEnded = true;
         }
         emit promulgatePropositionEvent(msg.sender, proposition.propositionNumber, false);
+    }
+
+    function processPayoutPropositionLib(Proposition storage proposition, bool _promulgate) 
+    public
+    {
+        // Checking if ballot was already enforced
+        require(!proposition.wasEnded );
+
+        // Checking the ballot was counted
+        require(proposition.wasCounted);
+
+        // Checking the ballot was accepted
+        require(proposition.wasAccepted);
+
+        if ((_promulgate)||((proposition.contractToAdd != 0x0000) || (proposition.propositionType != 0)))
+        {
+            // We initiate the Organ interface to add a norm
+            Organ affectedOrgan = Organ(proposition.targetOrgan);
+            affectedOrgan.payout(proposition.contractToAdd, proposition.propositionType);
+        }
+
+        proposition.wasEnded = true;
+
+        // Promulgation event
+        emit promulgatePropositionEvent(msg.sender, proposition.propositionNumber, _promulgate);
     }
 }

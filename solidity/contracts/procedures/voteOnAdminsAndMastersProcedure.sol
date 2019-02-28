@@ -37,7 +37,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint8 _propositionType) 
+    function createProposition(address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) 
     public 
     returns (uint propositionNumber)
     {
@@ -117,7 +117,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     function getPropositionDocumentation(uint _propositionNumber) 
     public
     view
-    returns (bytes32 ipfsHash, uint8 hash_function, uint8 size, uint8 propositionType)
+    returns (bytes32 ipfsHash, uint8 hash_function, uint8 size, uint propositionType)
     {
         return (votingProcedureInfo.propositions[_propositionNumber].ipfsHash, votingProcedureInfo.propositions[_propositionNumber].hash_function, votingProcedureInfo.propositions[_propositionNumber].size, votingProcedureInfo.propositions[_propositionNumber].propositionType);
     }

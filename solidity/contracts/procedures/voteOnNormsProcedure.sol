@@ -50,7 +50,7 @@ contract voteOnNormsProcedure is Procedure{
             // Adding a new norm
             return votingProcedureInfo.createPropositionLib(linkedOrgans.fourthOrganAddress, _contractToAdd, _contractToRemove, _ipfsHash, _hash_function, _size, false, false, false, false, 6);
         }
-        
+
         //In order to remove/eplace a norm, the norm to be removed must be designated by its NUMBER, encoded in hex in the contractToRemove field.
         else if(_contractToAdd != 0x0000)
         {
@@ -127,7 +127,7 @@ contract voteOnNormsProcedure is Procedure{
     function getPropositionDocumentation(uint _propositionNumber) 
     public
     view
-    returns (bytes32 ipfsHash, uint8 hash_function, uint8 size, uint8 propositionType)
+    returns (bytes32 ipfsHash, uint8 hash_function, uint8 size, uint propositionType)
     {
         return (votingProcedureInfo.propositions[_propositionNumber].ipfsHash, votingProcedureInfo.propositions[_propositionNumber].hash_function, votingProcedureInfo.propositions[_propositionNumber].size, votingProcedureInfo.propositions[_propositionNumber].propositionType);
     }

@@ -4,7 +4,7 @@ pragma solidity >=0.4.22 <0.6.0;
 
 import "../standardProcedure.sol";
 import "../Organ.sol";
-
+import "../libraries/propositionVotingLibrary.sol";
 
 contract voteOnExpenseProcedure is Procedure{
     // 1: Cyclical many to one election (Presidential Election)
@@ -15,328 +15,130 @@ contract voteOnExpenseProcedure is Procedure{
     // 6: Vote on masters and admins 
     // 7: Cooptation
     // 8: Vote on an expense
-    int public procedureTypeNumber = 8;
 
-    // ############## Variable to set up when declaring the procedure
+    using procedureLibrary for procedureLibrary.fourRegisteredOrgans;
+    using propositionVotingLibrary for propositionVotingLibrary.Proposition;
+    using propositionVotingLibrary for propositionVotingLibrary.VotingProcessInfo;
 
-    // Which organ will be affected
-    address public affectedOrganContract;
+    // First stakeholder address is votersOrganContract
+    // Second stakeholder address is membersWithVetoOrganContract
+    // Third stakeholder address is finalPromulgatorsOrganContract
+    // Fourth stakeholder address is affectedOrganContract
+    procedureLibrary.fourRegisteredOrgans public linkedOrgans;
+    propositionVotingLibrary.VotingProcessInfo public votingProcedureInfo;
 
-    // Organ in which the voters are registered
-    address public votersOrganContract;
-
-    // Organ in which the voters with veto power are registered
-    address public membersWithVetoOrganContract;
-
-    // Organ in which final promulgators are listed
-    address public finalPromulgatorsOrganContract;
-
-    // Minimum participation to validate election. This is a percentage value; for 40% quorum, quorumSize = 40
-    uint public quorumSize;
-
-    // Time for participant to vote
-    uint public votingPeriodDuration;
-
-    // Time for president to promulgat
-    uint public promulgationPeriodDuration;
-
-    // Minimum proportion of votes to win election. This is a percentage value; for 50% majority, majoritySize = 50
-    uint public majoritySize;
-
-    // // Storage for procedure name
-    // string public procedureName;
-
-    
-
-    // ################## 
-
-    // Variable of the procedure to keep track of propositions
-    uint public totalPropositionNumber;
-
-    // Proposition structure
-    struct Proposition {
-
-        // Proposition details
-        address payoutAddress;
-        uint amount;
-        bytes32 ipfsHash; // ID of proposal on IPFS
-        uint8 hash_function;
-        uint8 size;
-        string name;
-
-        // **** Voting variables
-        // Mapping to track user votes
-        mapping(address => bool) hasUserVoted;
-        uint startDate;
-        uint votingPeriodEndDate;
-        bool wasVetoed;
-        bool wasCounted;
-        bool wasAccepted;
-        bool wasEnded;
-        uint voteFor;
-        // uint voteAgainst;
-        uint totalVoteCount;
-    }
-
-
-
-    // A dynamically-sized array of `Proposition` structs.
-    Proposition[] propositions;
-
-    // Dynamic size array of status of propositions
-    bool[] public propositionsWaitingEndOfVote;
-    bool[] public propositionsWaitingPromulgation;
-
-    // Mapping each proposition to the user creating it
-    mapping (address => uint[]) public propositionToUser;    
-
-    // Mapping each proposition to the user who participated
-    mapping (address => uint[]) public propositionToVoter;
-
-    // Mapping each proposition to the user vetoing it
-    mapping (address => uint[]) public propositionToVetoer;
-
-    // Mapping each proposition to the user promulgating it
-    mapping (address => uint[]) public propositionToPromulgator;
-
-    
-
-    // Events
-    event createPropositionEvent(address _from, address _payoutAddress, uint _amount, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
-    event voteOnProposition(address _from, uint _propositionNumber);
-    event vetoProposition(address _from, uint _propositionNumber);
-    event countVotes(address _from, uint _propositionNumber);
-    event promulgatePropositionEvent(address _from, uint _propositionNumber, bool _promulgate);
-
-    constructor(address _affectedOrganContract, address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, string _name) 
+    constructor(address _affectedOrganContract, address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
     public 
     {
-
-    affectedOrganContract = _affectedOrganContract;
-    votersOrganContract = _votersOrganContract;
-    membersWithVetoOrganContract = _membersWithVetoOrganContract;
-    finalPromulgatorsOrganContract = _finalPromulgatorsOrganContract; 
-    linkedOrgans = [affectedOrganContract,votersOrganContract,membersWithVetoOrganContract,finalPromulgatorsOrganContract];
-
-    // Procedure name 
-    procedureName = _name;
-    
-    majoritySize = _majoritySize;
-
-    quorumSize = _quorumSize;
-    // votingPeriodDuration = 3 minutes;
-    // promulgationPeriodDuration = 3 minutes;
-
-    votingPeriodDuration = _votingPeriodDuration;
-    promulgationPeriodDuration = _promulgationPeriodDuration;
-
-    kelsenVersionNumber = 1;
-
+        procedureInfo.initProcedure(8, _name, 4);
+        linkedOrgans.initFourRegisteredOrgans(_votersOrganContract, _membersWithVetoOrganContract, _finalPromulgatorsOrganContract, _affectedOrganContract);
+        votingProcedureInfo.initElectionParameters(_quorumSize, _votingPeriodDuration, _promulgationPeriodDuration, _majoritySize);
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(address _payoutAddress, uint _amount, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name) public returns (uint propositionNumber){
+    function createProposition(address _payoutAddress, uint _amount, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    public 
+    returns (uint propositionNumber)
+    {
 
-            // Check the proposition creator is able to make a proposition
-            votersOrganContract.isAllowed();
-
-            // Retrieving proposition details
-            Proposition memory newProposition;
-            newProposition.payoutAddress = _payoutAddress;
-            newProposition.amount = _amount;
-            newProposition.ipfsHash = _ipfsHash;
-            newProposition.hash_function = _hash_function;
-            newProposition.size = _size;
-            newProposition.name = _name;
-
-            // Instanciating proposition
-
-            newProposition.startDate = now;
-            newProposition.votingPeriodEndDate = now + votingPeriodDuration;            
-            newProposition.wasVetoed = false;
-            newProposition.wasEnded = false;
-            newProposition.wasCounted = false;
-            newProposition.wasAccepted = false;
-            newProposition.totalVoteCount = 0;
-            newProposition.voteFor = 0;
-            // newProposition.voteAgainst = 0;
-            propositions.push(newProposition);
-            delete newProposition;
-
-            propositionNumber = propositions.length - 1;
-
-            // Tracking proposition being deposed
-            totalPropositionNumber += 1;
-            propositionToUser[msg.sender].push(propositionNumber);
-            propositionsWaitingEndOfVote.push(true);
-            propositionsWaitingPromulgation.push(false);
-
-            // proposition creation event
-            emit createPropositionEvent(msg.sender, _payoutAddress, _amount, _ipfsHash, _hash_function, _size);
-
+        // Check the proposition creator is able to make a proposition
+        linkedOrgans.firstOrganAddress.isAllowed();
+        uint payoutAmount = _amount;
+        // The proposed payout amount is stored in the propositionType field
+        return votingProcedureInfo.createPropositionLib(linkedOrgans.fourthOrganAddress, _payoutAddress, 0x0000, _ipfsHash, _hash_function, _size, false, false, false, false, payoutAmount);
     }
 
     /// Vote for a proposition
-    function vote(uint _propositionNumber, bool _acceptProposition) public {
+    function vote(uint _propositionNumber, bool _acceptProposition) 
+    public 
+    {
         // Check the voter is able to vote on a proposition
-        votersOrganContract.isAllowed();
-        
-        // Check if voter already voted
-        require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
-
-        // Check if vote is still active
-        require(!propositions[_propositionNumber].wasCounted);
-
-        // Check if voting period ended
-        require(propositions[_propositionNumber].votingPeriodEndDate > now);
-
-        // Adding vote
-        if(_acceptProposition == true)
-        {propositions[_propositionNumber].voteFor += 1;}
-
-        // Loggin that user voted
-        propositions[_propositionNumber].hasUserVoted[msg.sender] = true;
-        
-        // Adding vote count
-        propositions[_propositionNumber].totalVoteCount += 1;
-
-        // Logging that user voted
-        propositionToVoter[msg.sender].push(_propositionNumber);
-
-        // create vote event
-        emit voteOnProposition(msg.sender, _propositionNumber);
+        linkedOrgans.firstOrganAddress.isAllowed();
+        votingProcedureInfo.voteLib(votingProcedureInfo.propositions[_propositionNumber], _acceptProposition);
     }
 
         /// Vote for a candidate
-    function veto(uint _propositionNumber) public {
-
+    function veto(uint _propositionNumber) 
+    public 
+    {
         // Check the voter is able to veto the proposition
-        membersWithVetoOrganContract.isAllowed();
+        linkedOrgans.secondOrganAddress.isAllowed();
         
-        // Check if vote is still active
-        require(!propositions[_propositionNumber].wasCounted);
-
-        // Check if voting period ended
-        require(propositions[_propositionNumber].votingPeriodEndDate > now);
-
-        // Log that proposition was vetoed
-        propositions[_propositionNumber].wasVetoed = true;
-
-        // Log that user vetoed this proposition
-        propositionToVetoer[msg.sender].push(_propositionNumber);
-
-        //  Create veto event
-        emit vetoProposition(msg.sender, _propositionNumber);
-
+        votingProcedureInfo.propositions[_propositionNumber].vetoLib();
     }
 
     // The vote is finished and we close it. This triggers the outcome of the vote.
 
-    function endPropositionVote(uint _propositionNumber) public returns (bool hasBeenAccepted) {
-        // We check if the vote was already counted
-        require(!propositions[_propositionNumber].wasCounted);
-
-        // Checking that the vote can be closed
-        require(propositions[_propositionNumber].votingPeriodEndDate < now);
-
-        Organ voterRegistryOrgan = Organ(votersOrganContract);
-        ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
-        // We check that Quorum was obtained and that a majority of votes were cast in favor of the proposition
-        if (propositions[_propositionNumber].wasVetoed )
-            {hasBeenAccepted=false;
-                propositions[_propositionNumber].wasEnded = true;}
-        else if
-            ((propositions[_propositionNumber].totalVoteCount*100 >= quorumSize*voterNumber) && (propositions[_propositionNumber].voteFor*100 > propositions[_propositionNumber].totalVoteCount*majoritySize))
-            {hasBeenAccepted = true;}
-        else 
-            {hasBeenAccepted=false;
-            propositions[_propositionNumber].wasEnded = true;}
-
-
-        // ############## Updating ballot values if vote concluded
-        propositions[_propositionNumber].wasCounted = true;
-        propositions[_propositionNumber].wasAccepted = hasBeenAccepted;
-        propositionsWaitingEndOfVote[_propositionNumber] = false;
-        propositionsWaitingPromulgation[_propositionNumber] = true;
-
-        emit countVotes(msg.sender, _propositionNumber);
+    function endPropositionVote(uint _propositionNumber) public returns (bool hasBeenAccepted) 
+    {
+        return votingProcedureInfo.endPropositionVoteLib(votingProcedureInfo.propositions[_propositionNumber], linkedOrgans.firstOrganAddress);
     }
+
     function promulgateProposition(uint _propositionNumber, bool _promulgate) public
     {
-        // Checking if ballot was already enforced
-        require(!propositions[_propositionNumber].wasEnded );
-
-        // Checking the ballot was counted
-        require(propositions[_propositionNumber].wasCounted);
-
         // If promulgation is happening before endOfVote + promulgationPeriodDuration, check caller is an official promulgator
-        if (now < propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration)
-            {        // Check the voter is able to promulgate the proposition
-            finalPromulgatorsOrganContract.isAllowed();
-            }
-        else { // If Promulgator did not promulgate, the only option is validating
+        if (now < votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate + votingProcedureInfo.promulgationPeriodDuration)
+        {        
+            // Check the voter is able to promulgate the proposition
+            linkedOrgans.thirdOrganAddress.isAllowed();
+        }
+        else 
+        { 
+            // If Promulgator did not promulgate, the only option is validating
             require(_promulgate);
-            }
-
-        // Checking the ballot was accepted
-        require(propositions[_propositionNumber].wasAccepted);
-
-        if ((!_promulgate)||((propositions[_propositionNumber].payoutAddress == 0x0000) && (propositions[_propositionNumber].amount == 0)) )
-        {
-            // The promulgator choses to invalidate the promulgation
-            propositions[_propositionNumber].wasEnded = true;
         }
-        else
-        {
-            // We initiate the Organ interface to add a norm
 
-        Organ affectedOrgan = Organ(affectedOrganContract);
-        affectedOrgan.payout(propositions[_propositionNumber].payoutAddress, propositions[_propositionNumber].amount);
-    
-            
-        }
-        propositions[_propositionNumber].wasEnded = true;
-        propositionsWaitingPromulgation[_propositionNumber] = false;
-        propositionToPromulgator[msg.sender].push(_propositionNumber);
-
-
-        // promulgation event
-        emit promulgatePropositionEvent(msg.sender, _propositionNumber, _promulgate);
-
+        votingProcedureInfo.propositions[_propositionNumber].processPayoutPropositionLib(_promulgate);
     }
 
-        //////////////////////// Functions to communicate with other contracts
-    function getPropositionDetails(uint _propositionNumber) public view returns (address _payoutAddress, uint _amount, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, string _name){
-        return (propositions[_propositionNumber].payoutAddress, propositions[_propositionNumber].amount, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size,propositions[_propositionNumber].name);
+    function haveIVoted(uint _propositionNumber) 
+    public 
+    view 
+    returns (bool IHaveVoted)
+    {
+        return propositionVotingLibrary.getBoolean(votingProcedureInfo.userParticipation[msg.sender], _propositionNumber);
     }
-    function getPropositionDates(uint _propositionNumber) public view returns (uint _startDate, uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
-        return (propositions[_propositionNumber].startDate, propositions[_propositionNumber].votingPeriodEndDate, propositions[_propositionNumber].votingPeriodEndDate + promulgationPeriodDuration);
-    }
-    function getPropositionStatus(uint _propositionNumber) public view returns (bool _wasCounted, bool _wasEnded){
-        return (propositions[_propositionNumber].wasCounted, propositions[_propositionNumber].wasEnded);
-    }
-    function getVotedPropositionResults(uint _propositionNumber) public view returns (bool _wasVetoed, bool _wasAccepted){
-        require(propositions[_propositionNumber].wasCounted);
-        return (propositions[_propositionNumber].wasVetoed, propositions[_propositionNumber].wasAccepted);
-    }
-    function getVotedPropositionStats(uint _propositionNumber) public view returns (uint _totalVoters, uint _totalVoteCount, uint _voteFor)
-        {require(propositions[_propositionNumber].wasCounted);
-        return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor);}
 
-    function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToUser[_userAddress];}    
-    function getPropositionsVetoedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToVetoer[_userAddress];}  
-    function getPropositionsPromulgatedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToPromulgator[_userAddress];}  
-    function getPropositionsUsedByUser(address _userAddress) public view returns (uint[])
-    {return propositionToVoter[_userAddress];}  
-    function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
-    {return propositions[propositionNumber].hasUserVoted[msg.sender];}
-    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    // {return linkedOrgans;}
-    // function getProcedureName() public view returns (string _procedureName)
-    // {return procedureName;}
+    function getPropositionDocumentation(uint _propositionNumber) 
+    public
+    view
+    returns (bytes32 ipfsHash, uint8 hash_function, uint8 size, uint propositionType)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].ipfsHash, votingProcedureInfo.propositions[_propositionNumber].hash_function, votingProcedureInfo.propositions[_propositionNumber].size, votingProcedureInfo.propositions[_propositionNumber].propositionType);
+    }
+
+    function getPropositionStatus(uint _propositionNumber) 
+    public
+    view
+    returns ( bool wasVetoed, bool wasCounted, bool wasAccepted, bool wasEnded, uint votingPeriodEndDate)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].wasVetoed, votingProcedureInfo.propositions[_propositionNumber].wasCounted, votingProcedureInfo.propositions[_propositionNumber].wasAccepted, votingProcedureInfo.propositions[_propositionNumber].wasEnded, votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate);
+    }
+
+    function getPropositionStatistics(uint _propositionNumber) 
+    public
+    view
+    returns (uint voteFor, uint totalVoteCount)
+    {
+        require(votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate < now);
+        return (votingProcedureInfo.propositions[_propositionNumber].voteFor, votingProcedureInfo.propositions[_propositionNumber].totalVoteCount);
+    }
+
+    function getPropositionAddresses(uint _propositionNumber) 
+    public
+    view
+    returns (address targetOrgan, address contractToAdd, address contractToRemove)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].targetOrgan, votingProcedureInfo.propositions[_propositionNumber].contractToAdd, votingProcedureInfo.propositions[_propositionNumber].contractToRemove);
+    }
+
+    function getPropositionPermissions(uint _propositionNumber) 
+    public
+    view
+    returns (bool canAdd, bool canDelete, bool canSpend, bool canDeposit)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].canAdd, votingProcedureInfo.propositions[_propositionNumber].canDelete, votingProcedureInfo.propositions[_propositionNumber].canSpend, votingProcedureInfo.propositions[_propositionNumber].canDeposit);
+    }
 
 }
 
