@@ -144,16 +144,16 @@ contract normsCooptationProcedure is Procedure{
 
             // Checking that the proposition is not made on an existing member
             Organ membersOrgan = Organ(membersOrganContract);
-            require(!membersOrgan.isNorm(msg.sender));
-
+            require(membersOrgan.getAddressPositionInNorm(msg.sender) == 0);
+            ( ,uint voterNumber) = membersOrgan.organInfos();
             // Check that deposit size is enough
-            require(msg.value > minimumDepositSize * membersOrgan.getActiveNormNumber());
+            require(msg.value > minimumDepositSize * voterNumber);
 
             // Creating new proposition 
             Proposition memory newProposition;
             
             // Calculating required quorum
-            newProposition.requiredQuorum = membersOrgan.getActiveNormNumber()*quorumSize/100;
+            newProposition.requiredQuorum = voterNumber*quorumSize/100;
             if (newProposition.requiredQuorum == 0){
                 newProposition.requiredQuorum = 1;
             }
@@ -202,9 +202,7 @@ contract normsCooptationProcedure is Procedure{
     function vote(uint _propositionNumber, bool _acceptProposition) public {
 
         // Check the voter is able to vote on a proposition
-        Organ membersOrgan = Organ(membersOrganContract);
-        require(membersOrgan.isNorm(msg.sender));
-        delete membersOrgan;
+        membersOrganContract.isAllowed();
         
         // Check if voter already voted
         require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
@@ -239,9 +237,7 @@ contract normsCooptationProcedure is Procedure{
         require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
 
         // Check the voter is able to veto the proposition
-        Organ membersWithVetoOrgan = Organ(membersWithVetoOrganContract);
-        require(membersWithVetoOrgan.isNorm(msg.sender));
-        delete membersWithVetoOrgan;
+        membersWithVetoOrganContract.isAllowed();
         
         // Check if vote is still active
         require(!propositions[_propositionNumber].wasCounted);
@@ -282,14 +278,14 @@ contract normsCooptationProcedure is Procedure{
         // Checking if members with vetoed blocked/forced the proposition
         Organ membersWithVetoOrgan = Organ(membersWithVetoOrganContract);
 
-
+        ( ,uint vetoerNumber) = membersWithVetoOrgan.organInfos();
         delete membersWithVetoOrgan;
         // We check that Quorum was obtained and that a majority of votes were cast in favor of the proposition
-        if (propositions[_propositionNumber].vetoCount >= membersWithVetoOrgan.getActiveNormNumber())
+        if (propositions[_propositionNumber].vetoCount >= vetoerNumber)
             {hasBeenAccepted=false;
                 propositions[_propositionNumber].wasEnacted = true;
                 propositions[_propositionNumber].payoutPerUser = propositions[_propositionNumber].deposit/(propositions[_propositionNumber].totalVoteCount-propositions[_propositionNumber].voteFor);}
-        else if ((propositions[_propositionNumber].notVetoCount >= membersWithVetoOrgan.getActiveNormNumber()) || (propositions[_propositionNumber].voteFor*2 > propositions[_propositionNumber].totalVoteCount) )
+        else if ((propositions[_propositionNumber].notVetoCount >= vetoerNumber) || (propositions[_propositionNumber].voteFor*2 > propositions[_propositionNumber].totalVoteCount) )
             {hasBeenAccepted = true;
             propositions[_propositionNumber].payoutPerUser = propositions[_propositionNumber].deposit/propositions[_propositionNumber].voteFor;}
         else 
@@ -322,10 +318,9 @@ contract normsCooptationProcedure is Procedure{
 
         // If promulgation is happening before endOfVote + promulgationPeriodDuration, check caller is an official promulgator
         if (now < propositions[_propositionNumber].startDate + votingPeriodDuration + promulgationPeriodDuration)
-            {        // Check the voter is able to promulgate the proposition
-            Organ promulgatorsOrgan = Organ(finalPromulgatorsOrganContract);
-            require(promulgatorsOrgan.isNorm(msg.sender));
-            delete promulgatorsOrgan;
+            {        
+            // Check the voter is able to promulgate the proposition
+            finalPromulgatorsOrganContract.isAllowed();
             }
 
         // Checking the ballot was accepted
@@ -335,7 +330,7 @@ contract normsCooptationProcedure is Procedure{
 
         Organ membersOrgan = Organ(membersOrganContract);
          // Adding a new norm
-        membersOrgan.addNorm(propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].name , propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
+        membersOrgan.addNorm(propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size );
                 
             
 

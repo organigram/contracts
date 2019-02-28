@@ -16,144 +16,64 @@ contract depositWithdrawFundsProcedure is Procedure{
     // 7: Cooptation
     // 8: Vote on an expense
     // 9: Deposit/Withdraw funds on an organ
-    int public procedureTypeNumber = 9;
 
-    // // Storage for procedure name
-    // string public procedureName;
+    using procedureLibrary for procedureLibrary.threeRegisteredOrgans;
 
-    // // Gathering connected organs for easier DAO mapping
-    // address[] public linkedOrgans;
-
-    // Where are authorized depositors registered. If authorizedDepositorsOrganContract is set to 0, anyone can deposit funds
-    address public authorizedDepositorsOrganContract;
-
-    // Where are authorized depositors registered. If authorizedDepositorsOrganContract is set to 0, anyone can deposit funds
-    address public authorizedWithdrawersOrganContract;
-
-    // Default organ to which deposits are sent
-    address public defaultReceivingOrganContract;
-
-
-
-    // Mapping each proposition to the user creating it
-    mapping (address => uint) public amountDepositedByDepositorAddress;    
-    mapping (address => uint) public amountWithdrawnByDepositorAddress;   
-
-    // Mapping each proposition to the user who participated
-    mapping (address => uint) public amountDepositedToReceiverAddress;
-    mapping (address => uint) public amountWithdrawnFromReceiverAddress;
+    // First stakeholder address is authorizedDepositorsOrganContract
+    // Second stakeholder address is authorizedWithdrawersOrganContract
+    // Third stakeholder address is defaultReceivingOrganContract
+    procedureLibrary.threeRegisteredOrgans public linkedOrgans;
 
     // Events
     event depositedFunds(address _from, address _payoutAddress, uint _amount);
     event withdrewFunds(address _from, address _payoutAddress, uint _amount);
 
-    constructor (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, string _name) 
+    constructor (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, bytes32 _name) 
     public 
     {
-
-    authorizedDepositorsOrganContract = _authorizedDepositors;
-    authorizedWithdrawersOrganContract = _authorizedWithdrawers;
-    defaultReceivingOrganContract = _defaultReceivingOrgan;
-    linkedOrgans = [defaultReceivingOrganContract,authorizedDepositorsOrganContract];
-    // Procedure name 
-    procedureName = _name;
-    kelsenVersionNumber = 1;
-
+        procedureInfo.initProcedure(9, _name, 3);
+        linkedOrgans.initThreeRegisteredOrgans(_authorizedDepositors, _authorizedWithdrawers, _defaultReceivingOrgan);
     }
 
-    function () public payable {
-
-        // Instanciating Organ
-        Organ authorizedDepositorsOrgan = Organ(authorizedDepositorsOrganContract);
-
-        // Checking if depositors are restricted
-        if (authorizedDepositorsOrganContract != 0x0000) {
-
-            require(authorizedDepositorsOrgan.isNorm(msg.sender));
-            
-        }
-
-        delete authorizedDepositorsOrgan;
-
-        // Sending funds to organ
-        defaultReceivingOrganContract.transfer(msg.value);
-
-        // Recording value transfer
-        amountDepositedByDepositorAddress[msg.sender] += msg.value;
-        amountDepositedToReceiverAddress[defaultReceivingOrganContract] += msg.value;
-
-        // Log event
-        emit depositedFunds(msg.sender, defaultReceivingOrganContract, msg.value);
-
-
+    function () 
+    public 
+    payable 
+    {
+        depositToOrgan(linkedOrgans.thirdOrganAddress);
     }
 
-        function depositToOrgan(address _targetOrgan) public payable {
-
-        // Instanciating Organ
-        Organ authorizedDepositorsOrgan = Organ(authorizedDepositorsOrganContract);
-
+    function depositToOrgan(address _targetOrgan) 
+    public 
+    payable 
+    {
         // Checking if depositors are restricted
-        if (authorizedDepositorsOrganContract != 0x0000) {
-
-            require(authorizedDepositorsOrgan.isNorm(msg.sender));
-            
+        if (linkedOrgans.firstOrganAddress != 0x0000) 
+        {
+            linkedOrgans.firstOrganAddress.isAllowed();   
         }
-
-        delete authorizedDepositorsOrgan;
 
         // Sending funds to organ
         _targetOrgan.transfer(msg.value);
 
-        // Recording value transfer
-        amountDepositedByDepositorAddress[msg.sender] += msg.value;
-        amountDepositedToReceiverAddress[_targetOrgan] += msg.value;
-
         // Log event
         emit depositedFunds(msg.sender, _targetOrgan, msg.value);
-
-
     }
 
-    function withdrawOnOrgan(address _targetOrgan, address _receiver, uint _amount) public {
-
-        // Instanciating Organ
-        Organ authorizedWithdrawersOrgan = Organ(authorizedWithdrawersOrganContract);
+    function withdrawOnOrgan(address _targetOrgan, address _receiver, uint _amount) 
+    public 
+    {
 
         // Checking if withdrawers are restricted
-		require(authorizedWithdrawersOrgan.isNorm(msg.sender));
-            
+        linkedOrgans.secondOrganAddress.isAllowed();    
    
-        delete authorizedWithdrawersOrgan;
-
         // Instanciating target organ for withdrawal
         Organ organToWithdrawFrom = Organ(_targetOrgan);
 
         // Withdrawing funds from organ
         organToWithdrawFrom.payout(_receiver, _amount);
 
-        // Recording value transfer
-        amountWithdrawnFromReceiverAddress[msg.sender] += _amount;
-        amountWithdrawnByDepositorAddress[_targetOrgan] += _amount;
-
         // Log event
         emit withdrewFunds( _targetOrgan, msg.sender, _amount);
-
-
     }
-
-    function getFundsDepositedByUser(address _userAddress) public view returns (uint)
-    {return amountDepositedByDepositorAddress[_userAddress];}    
-    function getFundsDepositedToOrgan(address _organAddress) public view returns (uint)
-    {return amountDepositedToReceiverAddress[_organAddress];} 
-    function getFundsWithdrawndByUser(address _userAddress) public view returns (uint)
-    {return amountWithdrawnFromReceiverAddress[_userAddress];}    
-    function getFundsWithdrawnFromOrgan(address _organAddress) public view returns (uint)
-    {return amountWithdrawnByDepositorAddress[_organAddress];} 
-    // function getLinkedOrgans() public view returns (address[] _linkedOrgans)
-    // {return linkedOrgans;}
-    // function getProcedureName() public view returns (string _procedureName)
-    // {return procedureName;}
-
 }
 
