@@ -31,7 +31,6 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     constructor(address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
     public 
     {
-
     procedureInfo.initProcedure(6, _name, 3);
     linkedOrgans.initThreeRegisteredOrgans(_votersOrganContract, _membersWithVetoOrganContract, _finalPromulgatorsOrganContract);
     votingProcedureInfo.initElectionParameters(_quorumSize, _votingPeriodDuration, _promulgationPeriodDuration, _majoritySize);
@@ -82,8 +81,6 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     function promulgateProposition(uint _propositionNumber, bool _promulgate) 
     public 
     {
-
-
         // If promulgation is happening before endOfVote + promulgationPeriodDuration, check caller is an official promulgator
         if (now < votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate + votingProcedureInfo.promulgationPeriodDuration)
         {        
@@ -115,6 +112,47 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     returns (bool IHaveVoted)
     {
         return propositionVotingLibrary.getBoolean(votingProcedureInfo.userParticipation[msg.sender], _propositionNumber);
+    }
+
+    function getPropositionDocumentation(uint _propositionNumber) 
+    public
+    view
+    returns (bytes32 ipfsHash, uint8 hash_function, uint8 size, uint8 propositionType)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].ipfsHash, votingProcedureInfo.propositions[_propositionNumber].hash_function, votingProcedureInfo.propositions[_propositionNumber].size, votingProcedureInfo.propositions[_propositionNumber].propositionType);
+    }
+
+    function getPropositionStatus(uint _propositionNumber) 
+    public
+    view
+    returns ( bool wasVetoed, bool wasCounted, bool wasAccepted, bool wasEnded, uint votingPeriodEndDate)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].wasVetoed, votingProcedureInfo.propositions[_propositionNumber].wasCounted, votingProcedureInfo.propositions[_propositionNumber].wasAccepted, votingProcedureInfo.propositions[_propositionNumber].wasEnded, votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate);
+    }
+
+    function getPropositionStatistics(uint _propositionNumber) 
+    public
+    view
+    returns (uint voteFor, uint totalVoteCount)
+    {
+        require(votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate < now);
+        return (votingProcedureInfo.propositions[_propositionNumber].voteFor, votingProcedureInfo.propositions[_propositionNumber].totalVoteCount);
+    }
+
+    function getPropositionAddresses(uint _propositionNumber) 
+    public
+    view
+    returns (address targetOrgan, address contractToAdd, address contractToRemove)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].targetOrgan, votingProcedureInfo.propositions[_propositionNumber].contractToAdd, votingProcedureInfo.propositions[_propositionNumber].contractToRemove);
+    }
+
+    function getPropositionPermissions(uint _propositionNumber) 
+    public
+    view
+    returns (bool canAdd, bool canDelete, bool canSpend, bool canDeposit)
+    {
+        return (votingProcedureInfo.propositions[_propositionNumber].canAdd, votingProcedureInfo.propositions[_propositionNumber].canDelete, votingProcedureInfo.propositions[_propositionNumber].canSpend, votingProcedureInfo.propositions[_propositionNumber].canDeposit);
     }
 
 
