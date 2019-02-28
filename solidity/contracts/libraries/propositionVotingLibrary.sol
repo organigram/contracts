@@ -48,6 +48,8 @@ library propositionVotingLibrary {
         // 6: Add norm
         // 7: Remove norm. In this case, the norm to be removed must be designated by its NUMBER, encoded in hex in the contractToRemove field.
         // 8: Replace norm. In this case, the norm to be replaced must be designated by its NUMBER, encoded in hex in the contractToRemove field.
+        // If the proposition is a payout proposition, the propositionType field is used to specify the desired payout. 
+        // In this case it needs to be processed with the processPayoutPropositionLib() function
         uint propositionType;
         bytes32 ipfsHash; // ID of proposal on IPFS
         
@@ -108,9 +110,6 @@ library propositionVotingLibrary {
     public 
     returns (uint propositionNumber)
     {
-        // If we are manipulating a norm, checking that it is not empty
-
-
         // Retrieving proposition number
         propositionNumber = self.nextPropositionNumber;
 
@@ -206,6 +205,9 @@ library propositionVotingLibrary {
 
         // Checking that the vote can be closed
         require(proposition.votingPeriodEndDate < now);
+
+        // Checking that the proposition has been initialised
+        require(proposition.votingPeriodEndDate != 0);
 
         Organ voterRegistryOrgan = Organ(votersOrganAddress);
         ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
@@ -316,6 +318,9 @@ library propositionVotingLibrary {
     function archiveDefunctPropositionLib(Proposition storage proposition) 
     public 
     {
+        // Checking that the proposition has been initialised
+        require(proposition.votingPeriodEndDate != 0);
+        
         // If a proposition contains an instruction that can not be executed (eg "add an admin" without having canAdd enabled), this proposition can be closed
 
         Organ targetOrganContract = Organ(proposition.targetOrgan);

@@ -170,6 +170,9 @@ library cyclicalVotingLibrary {
         // Checking that the vote can be closed
         require(ballot.electionEndDate < now);
 
+        // Checking the ballot has been initialised
+        require(ballot.electionEndDate != 0);
+
         // Checking that there was enough participation
         if ((ballot.candidateList.length == 0) || ballot.totalVoteCount == 0)
         {
@@ -326,6 +329,9 @@ library cyclicalVotingLibrary {
 
         // Checking that the vote can be closed
         require(ballot.electionEndDate < now);
+
+        // Checking the ballot has been initialised
+        require(ballot.electionEndDate != 0);
 
         // Checking that the vote can be closed
         if ((ballot.candidateList.length == 0) || ballot.totalVoteCount == 0)
