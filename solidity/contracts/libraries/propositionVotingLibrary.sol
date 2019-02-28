@@ -38,6 +38,16 @@ library propositionVotingLibrary {
         bool wasEnded;
         uint8 hash_function;
         uint8 size;
+        // Proposition type typonomy
+        // 0: Add master
+        // 1: Remove master
+        // 2: Replace master
+        // 3: Add admin
+        // 4: Remove admin
+        // 5: Replace admin
+        // 6: Add norm
+        // 7: Remove norm. In this case, the norm to be removed must be designated by its NUMBER, encoded in hex in the contractToRemove field.
+        // 8: Replace norm. In this case, the norm to be replaced must be designated by its NUMBER, encoded in hex in the contractToRemove field.
         uint8 propositionType;
         bytes32 ipfsHash; // ID of proposal on IPFS
         
@@ -54,13 +64,14 @@ library propositionVotingLibrary {
 
     // Events
 
-    event createPropositionEvent(address _from, address _targetOrgan, uint _propositionType, uint _propositionNumber);
+    event createPropositionEvent(address _from, address _targetOrgan, uint _propositionType, uint _propositionNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
     event createPropositionDetails(address _contractToAdd, address _contractToRemove);
     event createMasterPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete);
     event createAdminPropositionEvent(uint _propositionNumber, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend);
-    event createNormPropositionEvent(uint _propositionNumber, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
     event voteOnProposition(address _from, uint _propositionNumber);
     event vetoProposition(address _from, uint _propositionNumber);
+    event countVotes(address _from, uint _propositionNumber);
+    event promulgatePropositionEvent(address _from, uint _propositionNumber, bool _promulgate);
 
 
     function initElectionParameters(VotingProcessInfo storage self, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize)
@@ -97,7 +108,10 @@ library propositionVotingLibrary {
     public 
     returns (uint propositionNumber)
     {
-        // Retrieving proposition details
+        // If we are manipulating a norm, checking that it is not empty
+
+
+        // Retrieving proposition number
         propositionNumber = self.nextPropositionNumber;
 
         self.propositions[propositionNumber].targetOrgan = _targetOrgan;
@@ -123,24 +137,18 @@ library propositionVotingLibrary {
         self.nextPropositionNumber += 1;
 
         // proposition creation event
-        emit createPropositionEvent(msg.sender, _targetOrgan, _propositionType, propositionNumber);
+        emit createPropositionEvent(msg.sender, _targetOrgan, _propositionType, propositionNumber, _ipfsHash, _hash_function, _size);
         emit createPropositionDetails(_contractToAdd, _contractToRemove);
-        if (_propositionType == 0)
+        if (_propositionType < 3)
         {
             // Master proposition event
             emit createMasterPropositionEvent(propositionNumber, _canAdd, _canDelete);
         }
-        else if (_propositionType == 1)
+        else if (_propositionType > 2 && _propositionType < 6)
         {
             // Admin proposition event
             emit createAdminPropositionEvent(propositionNumber, _canAdd, _canDelete, _canDeposit, _canSpend);
         }
-        else if (_propositionType == 2)
-        {
-            // Norm proposition event
-            emit createNormPropositionEvent(propositionNumber, _ipfsHash, _hash_function, _size);
-        }
-
     }
 
         /// Vote for a proposition
@@ -175,7 +183,7 @@ library propositionVotingLibrary {
         /// Vote for a candidate
     function vetoLib(Proposition storage proposition) 
     public 
-    {        
+    {
         // Check if vote is still active
         require(!proposition.wasCounted);
 
@@ -187,5 +195,145 @@ library propositionVotingLibrary {
 
         //  Create veto event
         emit vetoProposition(msg.sender, proposition.propositionNumber);
+    }
+
+    function endPropositionVoteLib(VotingProcessInfo storage self, Proposition storage proposition, address votersOrganAddress) 
+    public 
+    returns (bool hasBeenAccepted) 
+    {
+        // We check if the vote was already counted
+        require(!proposition.wasCounted);
+
+        // Checking that the vote can be closed
+        require(proposition.votingPeriodEndDate < now);
+
+        Organ voterRegistryOrgan = Organ(votersOrganAddress);
+        ( ,uint voterNumber) = voterRegistryOrgan.organInfos();
+
+        // We check that Quorum was obtained and that a majority of votes were cast in favor of the proposition
+        if (proposition.wasVetoed)
+            {hasBeenAccepted=false;
+                proposition.wasEnded = true;}
+        else if
+            ((proposition.totalVoteCount*100 >= self.quorumSize*voterNumber) && (proposition.voteFor*100 > proposition.totalVoteCount*self.majoritySize))
+            {hasBeenAccepted = true;}
+        else 
+            {hasBeenAccepted=false;
+            proposition.wasEnded = true;}
+
+
+        // ############## Updating ballot values if vote concluded
+        proposition.wasCounted = true;
+        proposition.wasAccepted = hasBeenAccepted;
+
+        emit countVotes(msg.sender, proposition.propositionNumber);
+
+        return hasBeenAccepted;
+    }
+
+    function promulgatePropositionLib(Proposition storage proposition, bool _promulgate) 
+    public 
+    {
+        // Checking if ballot was already enforced
+        require(!proposition.wasEnded );
+
+        // Checking the ballot was counted
+        require(proposition.wasCounted);
+
+        // Checking the ballot was accepted
+        require(proposition.wasAccepted);
+
+        // Checking if the promulgator is chosing to invalidate the proposition
+        if (!_promulgate)
+        {
+            // The promulgator choses to invalidate the promulgation
+            proposition.wasEnded = true;
+            emit promulgatePropositionEvent(msg.sender, proposition.propositionNumber, _promulgate);
+            return;
+        }
+
+        // If were are manipulating admin/masters, verify that at contractToRemove and contractToAdd are not both empty
+        if (proposition.propositionType < 6)
+        {
+            require((proposition.contractToAdd != 0x0000) || (proposition.contractToRemove != 0x0000)); 
+        }
+
+         // We initiate the Organ interface to add a norm / Admin / master
+        Organ affectedOrgan = Organ(proposition.targetOrgan);
+
+        // Adding a master
+        if (proposition.propositionType == 0)
+        {
+            affectedOrgan.addMaster(proposition.contractToAdd, proposition.canAdd, proposition.canDelete);
+        }
+        // Removing a master
+        else if (proposition.propositionType == 1)
+        {
+            affectedOrgan.remMaster(proposition.contractToRemove);
+        }
+        // Replacing a master
+        else if (proposition.propositionType == 2)
+        {
+            affectedOrgan.replaceMaster(proposition.contractToRemove, proposition.contractToAdd, proposition.canAdd, proposition.canDelete);
+        }
+        // Adding an admin
+        else if (proposition.propositionType == 3)
+        {
+            affectedOrgan.addAdmin(proposition.contractToAdd, proposition.canAdd, proposition.canDelete, proposition.canDeposit, proposition.canSpend);
+        }
+        // Removing an admin
+        else if (proposition.propositionType == 4)
+        {
+            affectedOrgan.remAdmin(proposition.contractToRemove);
+        }
+        // Replacing an admin
+        else if (proposition.propositionType == 5)
+        {
+            affectedOrgan.replaceAdmin(proposition.contractToRemove, proposition.contractToAdd, proposition.canAdd, proposition.canDelete, proposition.canDeposit, proposition.canSpend);
+        }
+        // Adding a norm
+        else if (proposition.propositionType == 6)
+        {
+            affectedOrgan.addNorm(proposition.contractToAdd, proposition.ipfsHash, proposition.hash_function, proposition.size );
+        }
+        // Removing a norm
+        else if (proposition.propositionType == 7)
+        {
+            affectedOrgan.remNorm(uint(proposition.contractToRemove));
+        }
+        // Replacing a norm
+        else if (proposition.propositionType == 8)
+        {
+            affectedOrgan.replaceNorm(uint(proposition.contractToRemove), proposition.contractToAdd , proposition.ipfsHash, proposition.hash_function, proposition.size);
+        }
+       
+        proposition.wasEnded = true;
+
+        // promulgation event
+        emit promulgatePropositionEvent(msg.sender, proposition.propositionNumber, _promulgate);
+    }
+
+    function archiveDefunctPropositionLib(Proposition storage proposition) 
+    public 
+    {
+        // If a proposition contains an instruction that can not be executed (eg "add an admin" without having canAdd enabled), this proposition can be closed
+
+        Organ targetOrganContract = Organ(proposition.targetOrgan);
+        bool canAdd;
+        bool canDelete;
+        if (proposition.propositionType < 6)
+        {
+            (canAdd, canDelete) = targetOrganContract.isMaster(address(this));
+        }
+        else 
+        {
+            (canAdd, canDelete, , ) = targetOrganContract.isAdmin(address(this));
+        }
+        
+        if ((!canAdd && (proposition.contractToAdd != 0x0000)) || (!canDelete && (proposition.contractToRemove != 0x0000)) )
+        {
+            proposition.wasEnded = true;
+        }
+        emit promulgatePropositionEvent(msg.sender, proposition.propositionNumber, false);
     }
 }
