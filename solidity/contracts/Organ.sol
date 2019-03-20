@@ -144,7 +144,7 @@ contract Organ is Kelsen{
     function getSingleNorm(uint _desiredNormPosition) 
     public 
     view 
-    returns (address normAddress, bytes32 ipfsHash, uint8 hash_function, uint8 size)
+    returns (address payable normAddress, bytes32 ipfsHash, uint8 hash_function, uint8 size)
     {
         return (organInfos.norms[_desiredNormPosition].normAddress, organInfos.norms[_desiredNormPosition].ipfsHash, organInfos.norms[_desiredNormPosition].hash_function, organInfos.norms[_desiredNormPosition].size);
     }
