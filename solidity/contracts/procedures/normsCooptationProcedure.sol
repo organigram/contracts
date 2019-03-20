@@ -49,6 +49,9 @@ contract normsCooptationProcedure is Procedure{
     // Variable of the procedure to keep track of propositions
     uint public totalPropositionNumber;
 
+    bytes32 public procedureName;
+    address[] public linkedOrgans;
+
     // Proposition structure
     struct Proposition {
         // **** Voting variables

@@ -16,10 +16,4 @@ contract Procedure is Kelsen {
     // Identifiers to adapt procedure interface
     bool public isAnOrgan = false;
     bool public isAProcedure = true;
-    
-    // TODO remove to move to struct
-    bytes32 public procedureName;
-    int public procedureTypeNumber;
-    address[] public linkedOrgans;
-
 }
