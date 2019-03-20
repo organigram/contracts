@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity >=0.4.22 <0.6.0;
 
 import "../Organ.sol";
 
@@ -41,7 +41,7 @@ library cyclicalVotingLibrary {
     // Candidacies structure, to keep track of candidacies for an election
     struct Candidacy 
     {
-        address candidateAddress;
+        address payable candidateAddress;
         bytes32 ipfsHash; // ID of proposal on IPFS
         uint8 hash_function;
         uint8 size;
@@ -130,7 +130,7 @@ library cyclicalVotingLibrary {
         emit presentCandidacyEvent(ballot.ballotNumber, msg.sender, _ipfsHash, _hash_function, _size);
     }
 
-    function voteManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _candidateAddress) 
+    function voteManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address payable _candidateAddress) 
     public 
     {        
         // Check if voter already votred
@@ -146,11 +146,11 @@ library cyclicalVotingLibrary {
         require(ballot.electionEndDate > now);
 
         // Check if candidate for whom we voted for is declared
-        if(self.candidacies[_candidateAddress].candidateAddress != 0x0000)
+        if(self.candidacies[_candidateAddress].candidateAddress != address(0))
         {self.candidacies[_candidateAddress].voteNumber += 1;}
         else
             // If candidate does not exist, this is a neutral vote
-        {self.candidacies[0x0000].voteNumber += 1;}
+        {self.candidacies[address(0)].voteNumber += 1;}
 
         self.nextElectionUserCanVoteIn[msg.sender] == ballot.ballotNumber + 1;
         
@@ -160,7 +160,7 @@ library cyclicalVotingLibrary {
         emit votedOnElectionEvent(msg.sender, ballot.ballotNumber);
     }
 
-    function countManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _votersOrganAddress) 
+    function countManyToOne(RecurringElectionInfo storage self, ElectionBallot storage ballot, address payable _votersOrganAddress) 
     public 
     returns (address nextPresidentAddress)
     {
@@ -179,7 +179,7 @@ library cyclicalVotingLibrary {
             ballot.wasEnded = true;
             emit ballotResultException(ballot.ballotNumber);
             self.nextElectionDate = now -1;
-            return 0x0000;
+            return address(0);
         }
 
         // Checking if the election is still valid
@@ -187,7 +187,7 @@ library cyclicalVotingLibrary {
         {
             emit ballotResultException(ballot.ballotNumber);
             ballot.wasEnded = true;  
-            return 0x0000;                
+            return address(0);                
         }
 
 
@@ -254,13 +254,13 @@ library cyclicalVotingLibrary {
             emit ballotResultException(ballot.ballotNumber);
             self.nextElectionDate = now -1;
             ballot.wasEnded = true;
-            return 0x0000;
+            return address(0);
         }
 
         return nextPresidentAddress;   
     }
 
-    function givePowerToNewPresident(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _newPresident, address _currentPresident, address _presidentialOrganAddress)
+    function givePowerToNewPresident(RecurringElectionInfo storage self, ElectionBallot storage ballot, address _newPresident, address _currentPresident, address payable _presidentialOrganAddress)
     public
     {
         Organ presidentialOrgan = Organ(_presidentialOrganAddress);
@@ -273,7 +273,7 @@ library cyclicalVotingLibrary {
         emit ballotWasEnforced(_newPresident, ballot.ballotNumber);
     }
 
-    function voteManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] _candidateAddresses) 
+    function voteManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] memory _candidateAddresses) 
     public 
     {
         // Check if voter already voted
@@ -302,7 +302,7 @@ library cyclicalVotingLibrary {
                require(_candidateAddresses[i-1] < _candidateAddresses[i]); 
             }
 
-            if(self.candidacies[_candidateAddresses[i]].candidateAddress != 0x0000)
+            if(self.candidacies[_candidateAddresses[i]].candidateAddress != address(0))
             {
                 self.candidacies[_candidateAddresses[i]].voteNumber += ballot.electedOfficialSlotNumber-i;
                 ballot.totalVoteCount += ballot.electedOfficialSlotNumber-i;
@@ -310,7 +310,7 @@ library cyclicalVotingLibrary {
 
             else    // If candidate does not exist, this is a neutral vote
             {
-                self.candidacies[0x0000].voteNumber += 1;
+                self.candidacies[address(0)].voteNumber += 1;
             }
         }
         self.nextElectionUserCanVoteIn[msg.sender] == ballot.ballotNumber + 1;
@@ -321,7 +321,7 @@ library cyclicalVotingLibrary {
         emit votedOnElectionEvent(msg.sender, ballot.ballotNumber);
     }
 
-    function countManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address _votersOrganAddress) 
+    function countManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address payable _votersOrganAddress) 
     public 
     {
         // We check if the vote was already closed
@@ -412,12 +412,12 @@ library cyclicalVotingLibrary {
             {
                 // Going through list one more time to add all tied up candidates
                 for (uint q = 0; q < ballot.candidateList.length; q++)
-                {
+                {   
                     // Making sure that winning candidate number is not too big
                     if (i >= ballot.electedOfficialSlotNumber)
                     {}
                     // Detecting ties
-                    else if (self.candidacies[_candidateAddress].voteNumber == winningVoteCount)
+                    else if (self.candidacies[ballot.candidateList[q]].voteNumber == winningVoteCount)
                         {
                             nextModerators.push(ballot.candidateList[q]);
                             i += 1;
@@ -439,7 +439,7 @@ library cyclicalVotingLibrary {
         emit m2mBallotWasCounted(ballot.ballotNumber, ballot.totalVoteCount );
     }
 
-    function enforceManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address[] storage currentModerators, address _moderatorsOrganAddress) 
+    function enforceManyToMany(RecurringElectionInfo storage self, ElectionBallot storage ballot, address[] storage nextModerators, address[] storage currentModerators, address payable _moderatorsOrganAddress) 
     public 
     {
         // Checking the ballot was closed
@@ -465,7 +465,7 @@ library cyclicalVotingLibrary {
         for (uint p = 0; p < nextModerators.length; p++)
             {
                 Candidacy memory newModerator = self.candidacies[nextModerators[p]];
-                moderatorsOrgan.addNorm(nextModerators[p], newModerator.ipfsHash, newModerator.hash_function, newModerator.size  );
+                moderatorsOrgan.addNorm(newModerator.candidateAddress, newModerator.ipfsHash, newModerator.hash_function, newModerator.size  );
                 self.cumulatedMandates[nextModerators[p]] += 1;
                 if (p < currentModerators.length )
                 {

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity >=0.4.22 <0.6.0;
 
 import "../Organ.sol";
 
@@ -20,28 +20,28 @@ library procedureLibrary {
 
     struct oneRegisteredOrgan
     {
-        address firstOrganAddress;
+        address payable firstOrganAddress;
     }
 
     struct twoRegisteredOrgans
     {
-        address firstOrganAddress;
-        address secondOrganAddress;
+        address payable firstOrganAddress;
+        address payable secondOrganAddress;
     }
 
     struct threeRegisteredOrgans
     {
-        address firstOrganAddress;
-        address secondOrganAddress;
-        address thirdOrganAddress;
+        address payable firstOrganAddress;
+        address payable secondOrganAddress;
+        address payable thirdOrganAddress;
     }
 
     struct fourRegisteredOrgans
     {
-        address firstOrganAddress;
-        address secondOrganAddress;
-        address thirdOrganAddress;
-        address fourthOrganAddress;
+        address payable firstOrganAddress;
+        address payable secondOrganAddress;
+        address payable thirdOrganAddress;
+        address payable fourthOrganAddress;
     }
 
     function initProcedure(ProcedureData storage self, uint _procedureTypeNumber, bytes32 _procedureName, uint _linkedOrgans)
@@ -52,20 +52,20 @@ library procedureLibrary {
         self.linkedOrgans = _linkedOrgans;
     }
 
-    function initOneRegisteredOrgan(oneRegisteredOrgan storage self, address _firstOrganAddress)
+    function initOneRegisteredOrgan(oneRegisteredOrgan storage self, address payable _firstOrganAddress)
     public
     {
         self.firstOrganAddress = _firstOrganAddress;
     }
 
-    function initTwoRegisteredOrgans(twoRegisteredOrgans storage self, address _firstOrganAddress, address _secondOrganAddress)
+    function initTwoRegisteredOrgans(twoRegisteredOrgans storage self, address payable _firstOrganAddress, address payable _secondOrganAddress)
     public
     {
         self.firstOrganAddress = _firstOrganAddress;
         self.secondOrganAddress = _secondOrganAddress;
     }
 
-    function initThreeRegisteredOrgans(threeRegisteredOrgans storage self, address _firstOrganAddress, address _secondOrganAddress, address _thirdOrganAddress)
+    function initThreeRegisteredOrgans(threeRegisteredOrgans storage self, address payable _firstOrganAddress, address payable _secondOrganAddress, address payable _thirdOrganAddress)
     public
     {
         self.firstOrganAddress = _firstOrganAddress;
@@ -73,7 +73,7 @@ library procedureLibrary {
         self.thirdOrganAddress = _thirdOrganAddress;
     }
 
-    function initFourRegisteredOrgans(fourRegisteredOrgans storage self, address _firstOrganAddress, address _secondOrganAddress, address _thirdOrganAddress, address _fourthOrganAddress)
+    function initFourRegisteredOrgans(fourRegisteredOrgans storage self, address payable _firstOrganAddress, address payable _secondOrganAddress, address payable _thirdOrganAddress, address payable _fourthOrganAddress)
     public
     {
         self.firstOrganAddress = _firstOrganAddress;
@@ -82,7 +82,7 @@ library procedureLibrary {
         self.fourthOrganAddress = _fourthOrganAddress;
     }
 
-    function isAllowed(address _organAddress)
+    function isAllowed(address payable _organAddress)
     internal
     view
     {

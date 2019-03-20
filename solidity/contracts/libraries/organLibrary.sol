@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity >=0.4.22 <0.6.0;
 
 
 
@@ -24,7 +24,7 @@ library organLibrary {
     }
 
     struct Norm {
-        address normAddress; // Address if norm is a member or a contract
+        address payable normAddress; // Address if norm is a member or a contract
         bytes32 ipfsHash; // ID of proposal on IPFS
         uint8 hash_function;
         uint8 size;
@@ -82,7 +82,7 @@ library organLibrary {
         require(self.admins[msg.sender].canDeposit);
         emit receiveMoney(msg.sender, msg.value);
     }
-    function payoutLib(OrganInfo storage self, address _to, uint _value) 
+    function payoutLib(OrganInfo storage self, address payable _to, uint _value) 
     public 
     {
         require(self.admins[msg.sender].canSpend);
@@ -191,7 +191,7 @@ library organLibrary {
         addAdminLib(self, _adminToAdd, _canAdd, _canDelete, _canDeposit, _canSpend);
     }
 
-    function addNormLib(OrganInfo storage self, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function addNormLib(OrganInfo storage self, address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public 
     returns (uint _normPosition)
     {
@@ -199,7 +199,7 @@ library organLibrary {
         require(self.admins[msg.sender].canAdd);
 
         // If the norm has an address, we check that the address has not been used before.
-        if (_normAddress != 0x0000) { require(self.addressPositionInNorms[_normAddress] != 0);}
+        if (_normAddress != address(0)) { require(self.addressPositionInNorms[_normAddress] != 0);}
 
         // Adding the norm
         self.norms.push(organLibrary.Norm({
@@ -235,11 +235,11 @@ library organLibrary {
         self.activeNormNumber -= 1;
     }
 
-    function replaceNormLib(OrganInfo storage self, uint _normNumber, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function replaceNormLib(OrganInfo storage self, uint _normNumber, address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public
     {
         require((self.admins[msg.sender].canDelete) && (self.admins[msg.sender].canAdd));
-        if (_normAddress != 0x0000) { require(self.addressPositionInNorms[_normAddress] != 0);}
+        if (_normAddress != address(0)) { require(self.addressPositionInNorms[_normAddress] != 0);}
         
         self.addressPositionInNorms[self.norms[_normNumber].normAddress] = 0;
         emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);

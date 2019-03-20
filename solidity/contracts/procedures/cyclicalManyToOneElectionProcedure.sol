@@ -35,7 +35,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     // A dynamically-sized array of `Ballot` structs.
     cyclicalVotingLibrary.ElectionBallot public currentBallot;
 
-    constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, bytes32 _name) 
+    constructor(address payable _referenceOrganContract, address payable _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(1, _name, 2);
@@ -55,16 +55,16 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     {
 
         // Check the candidate is a member of the reference organ
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         electionParameters.presentCandidacyLib(currentBallot, _ipfsHash, _hash_function, _size);
     }
 
 
     /// Vote for a candidate
-    function vote(address _candidateAddress) 
+    function vote(address payable _candidateAddress) 
     public 
     {
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         electionParameters.voteManyToOne(currentBallot, _candidateAddress);
     }
 
@@ -76,7 +76,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     {
        electionWinner = electionParameters.countManyToOne(currentBallot, linkedOrgans.firstOrganAddress);   
 
-        if (electionWinner != 0x0000)
+        if (electionWinner != address(0))
         {
             electionParameters.cumulatedMandates[electionWinner] += 1;
 
@@ -101,7 +101,7 @@ contract cyclicalManyToOneElectionProcedure is Procedure
     function getCandidateList() 
     public 
     view 
-    returns (address[] _candidateList)
+    returns (address[] memory _candidateList)
     {
         return currentBallot.candidateList;
     }

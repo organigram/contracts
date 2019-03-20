@@ -22,74 +22,74 @@ contract simpleAdminsAndMasterNominationProcedure is Procedure{
     procedureLibrary.oneRegisteredOrgan public linkedOrgans;
     
 
-    constructor(address _authorizedNominatersOrgan, bytes32 _name) 
+    constructor(address payable _authorizedNominatersOrgan, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(4, _name, 1);
         linkedOrgans.initOneRegisteredOrgan(_authorizedNominatersOrgan);
     }
 
-    function addAdmin(address _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
+    function addAdmin(address payable _organToReform, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
     public 
     {
         // Checking if caller is an admin
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
         organToReformInstance.addAdmin(_newAdmin, _canAdd, _canDelete, _canDeposit, _canSpend);
     }
 
-    function remAdmin(address _organToReform, address _oldAdmin) 
+    function remAdmin(address payable _organToReform, address _oldAdmin) 
     public 
     {
         // Checking if caller is an admin
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
         organToReformInstance.remAdmin(_oldAdmin);
     }
 
-    function replaceAdmin(address _organToReform, address _oldAdmin, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
+    function replaceAdmin(address payable _organToReform, address _oldAdmin, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
     public 
     {
         // Checking if caller is an admin
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
         organToReformInstance.replaceAdmin(_oldAdmin, _newAdmin, _canAdd, _canDelete, _canDeposit, _canSpend );
     }
 
-    function addMaster(address _organToReform, address _newMaster, bool _canAdd, bool _canDelete) 
+    function addMaster(address payable _organToReform, address _newMaster, bool _canAdd, bool _canDelete) 
     public 
     {
         // Checking if caller is an admin
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
         organToReformInstance.addMaster(_newMaster, _canAdd, _canDelete);
     }
 
-    function remMaster(address _organToReform, address _oldMaster) 
+    function remMaster(address payable _organToReform, address _oldMaster) 
     public 
     {
 
         // Checking if caller is an admin
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
                 
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);
         organToReformInstance.remMaster(_oldMaster);
     }
 
-    function replaceMaster(address _organToReform, address _oldMaster, address _newMaster, bool _canAdd, bool _canDelete) 
+    function replaceMaster(address payable _organToReform, address _oldMaster, address _newMaster, bool _canAdd, bool _canDelete) 
     public 
     {
         // Checking if caller is an admin
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         
         // Sending the required command to the desired organ. If the nomination procedure is not an admin, the call will fail
         Organ organToReformInstance = Organ(_organToReform);

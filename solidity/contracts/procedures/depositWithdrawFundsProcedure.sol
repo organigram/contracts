@@ -28,7 +28,7 @@ contract depositWithdrawFundsProcedure is Procedure{
     event depositedFunds(address _from, address _payoutAddress, uint _amount);
     event withdrewFunds(address _from, address _payoutAddress, uint _amount);
 
-    constructor (address _authorizedDepositors, address _authorizedWithdrawers, address _defaultReceivingOrgan, bytes32 _name) 
+    constructor (address payable _authorizedDepositors, address payable _authorizedWithdrawers, address payable _defaultReceivingOrgan, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(9, _name, 3);
@@ -36,20 +36,20 @@ contract depositWithdrawFundsProcedure is Procedure{
     }
 
     function () 
-    public 
+    external 
     payable 
     {
         depositToOrgan(linkedOrgans.thirdOrganAddress);
     }
 
-    function depositToOrgan(address _targetOrgan) 
+    function depositToOrgan(address payable _targetOrgan) 
     public 
     payable 
     {
         // Checking if depositors are restricted
-        if (linkedOrgans.firstOrganAddress != 0x0000) 
+        if (linkedOrgans.firstOrganAddress != address(0)) 
         {
-            linkedOrgans.firstOrganAddress.isAllowed();   
+            procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);   
         }
 
         // Sending funds to organ
@@ -59,12 +59,12 @@ contract depositWithdrawFundsProcedure is Procedure{
         emit depositedFunds(msg.sender, _targetOrgan, msg.value);
     }
 
-    function withdrawOnOrgan(address _targetOrgan, address _receiver, uint _amount) 
+    function withdrawOnOrgan(address payable _targetOrgan, address payable _receiver, uint _amount) 
     public 
     {
 
         // Checking if withdrawers are restricted
-        linkedOrgans.secondOrganAddress.isAllowed();    
+        procedureLibrary.isAllowed(linkedOrgans.secondOrganAddress);    
    
         // Instanciating target organ for withdrawal
         Organ organToWithdrawFrom = Organ(_targetOrgan);
