@@ -28,7 +28,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
 
     // ######################
 
-    constructor(address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
+    constructor(address payable _votersOrganContract, address payable _membersWithVetoOrganContract, address payable _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
     public 
     {
     procedureInfo.initProcedure(6, _name, 3);
@@ -37,12 +37,12 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) 
+    function createProposition(address payable _targetOrgan, address payable _contractToAdd, address payable _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) 
     public 
     returns (uint propositionNumber)
     {
         // Check the proposition creator is able to make a proposition
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
 
         return votingProcedureInfo.createPropositionLib(_targetOrgan, _contractToAdd, _contractToRemove, _ipfsHash, _hash_function, _size, _canAdd, _canDelete, _canDeposit, _canSpend, _propositionType);
     }
@@ -52,7 +52,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     public 
     {
         // Check the voter is able to vote on a proposition
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
 
         votingProcedureInfo.voteLib(votingProcedureInfo.propositions[_propositionNumber], _acceptProposition);
     }
@@ -63,7 +63,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
     {
 
         // Check the voter is able to veto the proposition
-        linkedOrgans.secondOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.secondOrganAddress);
         
         votingProcedureInfo.propositions[_propositionNumber].vetoLib();
     }
@@ -85,7 +85,7 @@ contract voteOnAdminsAndMastersProcedure is Procedure{
         if (now < votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate + votingProcedureInfo.promulgationPeriodDuration)
         {        
             // Check the voter is able to promulgate the proposition
-            linkedOrgans.thirdOrganAddress.isAllowed();
+            procedureLibrary.isAllowed(linkedOrgans.thirdOrganAddress);
         }
         else 
         { 

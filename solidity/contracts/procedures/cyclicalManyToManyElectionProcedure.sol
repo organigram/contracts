@@ -36,7 +36,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     cyclicalVotingLibrary.ElectionBallot public currentBallot;
 
     
-    constructor(address _referenceOrganContract, address _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, uint _voterToCandidateRatio, bytes32 _name) 
+    constructor(address payable _referenceOrganContract, address payable _affectedOrganContract, uint _ballotFrequency, uint _ballotDuration, uint _quorumSize, uint _reelectionMaximum, uint _voterToCandidateRatio, bytes32 _name) 
    
     public 
     {
@@ -67,17 +67,17 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     public 
     {
         // Check the candidate is a member of the reference organ
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
 
         // Check that the ballot is still active
         electionParameters.presentCandidacyLib(currentBallot, _ipfsHash, _hash_function, _size);    
     }
 
     /// Vote for a candidate
-    function vote(address[] _candidateAddresses) 
+    function vote(address[] memory _candidateAddresses) 
     public 
     {
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         electionParameters.voteManyToMany(currentBallot, _candidateAddresses);
     }
 
@@ -109,7 +109,7 @@ contract cyclicalManyToManyElectionProcedure is Procedure{
     function getCandidateList() 
     public 
     view 
-    returns (address[] _candidateList)
+    returns (address[] memory _candidateList)
     {
         return currentBallot.candidateList;
     }

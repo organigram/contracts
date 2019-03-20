@@ -18,7 +18,7 @@ contract Procedure is Kelsen {
     bool public isAProcedure = true;
     
     // TODO remove to move to struct
-    string public procedureName;
+    bytes32 public procedureName;
     int public procedureTypeNumber;
     address[] public linkedOrgans;
 

@@ -27,7 +27,7 @@ contract voteOnExpenseProcedure is Procedure{
     procedureLibrary.fourRegisteredOrgans public linkedOrgans;
     propositionVotingLibrary.VotingProcessInfo public votingProcedureInfo;
 
-    constructor(address _affectedOrganContract, address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
+    constructor(address payable _affectedOrganContract, address payable _votersOrganContract, address payable _membersWithVetoOrganContract, address payable _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(8, _name, 4);
@@ -36,16 +36,16 @@ contract voteOnExpenseProcedure is Procedure{
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(address _payoutAddress, uint _amount, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function createProposition(address payable _payoutAddress, uint _amount, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public 
     returns (uint propositionNumber)
     {
 
         // Check the proposition creator is able to make a proposition
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         uint payoutAmount = _amount;
         // The proposed payout amount is stored in the propositionType field
-        return votingProcedureInfo.createPropositionLib(linkedOrgans.fourthOrganAddress, _payoutAddress, 0x0000, _ipfsHash, _hash_function, _size, false, false, false, false, payoutAmount);
+        return votingProcedureInfo.createPropositionLib(linkedOrgans.fourthOrganAddress, _payoutAddress, address(0), _ipfsHash, _hash_function, _size, false, false, false, false, payoutAmount);
     }
 
     /// Vote for a proposition
@@ -53,7 +53,7 @@ contract voteOnExpenseProcedure is Procedure{
     public 
     {
         // Check the voter is able to vote on a proposition
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         votingProcedureInfo.voteLib(votingProcedureInfo.propositions[_propositionNumber], _acceptProposition);
     }
 
@@ -62,7 +62,7 @@ contract voteOnExpenseProcedure is Procedure{
     public 
     {
         // Check the voter is able to veto the proposition
-        linkedOrgans.secondOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.secondOrganAddress);
         
         votingProcedureInfo.propositions[_propositionNumber].vetoLib();
     }
@@ -80,7 +80,7 @@ contract voteOnExpenseProcedure is Procedure{
         if (now < votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate + votingProcedureInfo.promulgationPeriodDuration)
         {        
             // Check the voter is able to promulgate the proposition
-            linkedOrgans.thirdOrganAddress.isAllowed();
+            procedureLibrary.isAllowed(linkedOrgans.thirdOrganAddress);
         }
         else 
         { 

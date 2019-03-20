@@ -36,13 +36,13 @@ contract Organ is Kelsen{
     }
         // Money managing function
     function () 
-    public 
+    external 
     payable 
     {
         organInfos.payInLib();
     }
 
-    function payout(address _to, uint _value) 
+    function payout(address payable _to, uint _value) 
     public 
     {
         organInfos.payoutLib(_to, _value);
@@ -86,7 +86,7 @@ contract Organ is Kelsen{
 
     // ################# Norms managing functions
 
-    function addNorm (address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function addNorm (address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public  
     returns (uint _normPosition)
     {
@@ -99,7 +99,7 @@ contract Organ is Kelsen{
        organInfos.remNormLib(_normNumber);
     }
 
-    function replaceNorm (uint _normNumber, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function replaceNorm (uint _normNumber, address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public
     {
        organInfos.replaceNormLib(_normNumber, _normAddress, _ipfsHash, _hash_function, _size);

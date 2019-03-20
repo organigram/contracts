@@ -22,13 +22,13 @@ contract normsCooptationProcedure is Procedure{
     // address[] public linkedOrgans;
 
     // Which organ will be affected
-    address public membersOrganContract;
+    address payable public  membersOrganContract;
 
     // Organ in which the voters with veto power are registered
-    address public membersWithVetoOrganContract;
+    address payable public membersWithVetoOrganContract;
 
     // Organ in which final promulgators are listed
-    address public finalPromulgatorsOrganContract;
+    address payable public finalPromulgatorsOrganContract;
 
 
     // ############## Variable to set up when declaring the procedure
@@ -75,8 +75,8 @@ contract normsCooptationProcedure is Procedure{
         // How many members need to vote to enact proposition?
         uint requiredQuorum;
         // Proposition details
-        address candidateAddress;
-        string name;
+        address payable candidateAddress;
+        bytes32 name;
         bytes32 ipfsHash; // ID of proposal on IPFS
         uint8 hash_function;
         uint8 size;
@@ -114,7 +114,7 @@ contract normsCooptationProcedure is Procedure{
     event promulgatePropositionEvent(address _from, uint _propositionNumber);
     event withdrawal(address _from, uint _propositionNumber, uint _value);
 
-    constructor(address _membersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, string _name) 
+    constructor(address payable _membersOrganContract, address payable _membersWithVetoOrganContract, address payable _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, bytes32 _name) 
     public 
     {
 
@@ -140,7 +140,7 @@ contract normsCooptationProcedure is Procedure{
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public payable returns (uint propositionNumber){
+    function createProposition(bytes32 _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) public payable returns (uint propositionNumber){
 
             // Checking that the proposition is not made on an existing member
             Organ membersOrgan = Organ(membersOrganContract);
@@ -202,7 +202,7 @@ contract normsCooptationProcedure is Procedure{
     function vote(uint _propositionNumber, bool _acceptProposition) public {
 
         // Check the voter is able to vote on a proposition
-        membersOrganContract.isAllowed();
+        procedureLibrary.isAllowed(membersOrganContract);
         
         // Check if voter already voted
         require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
@@ -237,7 +237,7 @@ contract normsCooptationProcedure is Procedure{
         require(!propositions[_propositionNumber].hasUserVoted[msg.sender]);
 
         // Check the voter is able to veto the proposition
-        membersWithVetoOrganContract.isAllowed();
+        procedureLibrary.isAllowed(membersWithVetoOrganContract);
         
         // Check if vote is still active
         require(!propositions[_propositionNumber].wasCounted);
@@ -320,7 +320,7 @@ contract normsCooptationProcedure is Procedure{
         if (now < propositions[_propositionNumber].startDate + votingPeriodDuration + promulgationPeriodDuration)
             {        
             // Check the voter is able to promulgate the proposition
-            finalPromulgatorsOrganContract.isAllowed();
+            procedureLibrary.isAllowed(finalPromulgatorsOrganContract);
             }
 
         // Checking the ballot was accepted
@@ -366,7 +366,7 @@ contract normsCooptationProcedure is Procedure{
      }
 
         //////////////////////// Functions to communicate with other contracts
-    function getPropositionDetails(uint _propositionNumber) public view returns (address _candidateAddress, string _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size){
+    function getPropositionDetails(uint _propositionNumber) public view returns (address _candidateAddress, bytes32 _name, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size){
         return (propositions[_propositionNumber].candidateAddress, propositions[_propositionNumber].name, propositions[_propositionNumber].ipfsHash, propositions[_propositionNumber].hash_function, propositions[_propositionNumber].size);
     }
     function getPropositionDates(uint _propositionNumber) public view returns (uint _startDate, uint _votingPeriodEndDate, uint _promulgatorWindowEndDate){
@@ -379,13 +379,13 @@ contract normsCooptationProcedure is Procedure{
         require(propositions[_propositionNumber].wasCounted);
         return (propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].totalVoteCount, propositions[_propositionNumber].voteFor, propositions[_propositionNumber].vetoCount, propositions[_propositionNumber].notVetoCount, propositions[_propositionNumber].wasAccepted);
         }
-    function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[])
+    function getPropositionsCreatedByUser(address _userAddress) public view returns (uint[] memory)
     {return propositionToUser[_userAddress];}    
-    function getPropositionsVetoedByUser(address _userAddress) public view returns (uint[])
+    function getPropositionsVetoedByUser(address _userAddress) public view returns (uint[] memory)
     {return propositionToVetoer[_userAddress];}  
-    function getPropositionsPromulgatedByUser(address _userAddress) public view returns (uint[])
+    function getPropositionsPromulgatedByUser(address _userAddress) public view returns (uint[] memory)
     {return propositionToPromulgator[_userAddress];}  
-    function getPropositionsUsedByUser(address _userAddress) public view returns (uint[])
+    function getPropositionsUsedByUser(address _userAddress) public view returns (uint[] memory)
     {return propositionToVoter[_userAddress];}  
     function haveIVoted(uint propositionNumber) public view returns (bool IHaveVoted)
     {return propositions[propositionNumber].hasUserVoted[msg.sender];}

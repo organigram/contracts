@@ -28,7 +28,7 @@ contract voteOnNormsProcedure is Procedure{
 
     // ######################
 
-    constructor (address _affectedOrganContract, address _votersOrganContract, address _membersWithVetoOrganContract, address _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
+    constructor (address payable _affectedOrganContract, address payable _votersOrganContract, address payable _membersWithVetoOrganContract, address payable _finalPromulgatorsOrganContract, uint _quorumSize, uint _votingPeriodDuration, uint _promulgationPeriodDuration, uint _majoritySize, bytes32 _name) 
     public 
     {
         procedureInfo.initProcedure(5, _name, 4);
@@ -37,24 +37,24 @@ contract voteOnNormsProcedure is Procedure{
     }
 
     /// Create a new ballot to choose one of `proposalNames`.
-    function createProposition(address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
+    function createProposition(address payable _contractToAdd, address payable _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
     public 
     returns (uint propositionNumber)
     {
         // Check the proposition creator is able to make a proposition
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         
         // First, checking if we are trying to add a norm with no address
-        if(_contractToAdd == 0x0000 && _contractToRemove == 0x0000 && _ipfsHash != 0)
+        if(_contractToAdd == address(0) && _contractToRemove == address(0) && _ipfsHash != 0)
         {
             // Adding a new norm
             return votingProcedureInfo.createPropositionLib(linkedOrgans.fourthOrganAddress, _contractToAdd, _contractToRemove, _ipfsHash, _hash_function, _size, false, false, false, false, 6);
         }
 
         //In order to remove/eplace a norm, the norm to be removed must be designated by its NUMBER, encoded in hex in the contractToRemove field.
-        else if(_contractToAdd != 0x0000)
+        else if(_contractToAdd != address(0))
         {
-            if (_contractToRemove != 0x0000)
+            if (_contractToRemove != address(0))
             { 
                 // Replacing a norm
                 return votingProcedureInfo.createPropositionLib(linkedOrgans.fourthOrganAddress, _contractToAdd, _contractToRemove, _ipfsHash, _hash_function, _size, false, false, false, false, 8);
@@ -77,7 +77,7 @@ contract voteOnNormsProcedure is Procedure{
     public 
     {
         // Check the voter is able to vote on a proposition
-        linkedOrgans.firstOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.firstOrganAddress);
         votingProcedureInfo.voteLib(votingProcedureInfo.propositions[_propositionNumber], _acceptProposition);
     }
 
@@ -86,7 +86,7 @@ contract voteOnNormsProcedure is Procedure{
     public 
     {
         // Check the voter is able to veto the proposition
-        linkedOrgans.secondOrganAddress.isAllowed();
+        procedureLibrary.isAllowed(linkedOrgans.secondOrganAddress);
         
         votingProcedureInfo.propositions[_propositionNumber].vetoLib();
     }
@@ -105,7 +105,7 @@ contract voteOnNormsProcedure is Procedure{
         if (now < votingProcedureInfo.propositions[_propositionNumber].votingPeriodEndDate + votingProcedureInfo.promulgationPeriodDuration)
         {        
             // Check the voter is able to promulgate the proposition
-            linkedOrgans.thirdOrganAddress.isAllowed();
+            procedureLibrary.isAllowed(linkedOrgans.thirdOrganAddress);
         }
         else 
         { 

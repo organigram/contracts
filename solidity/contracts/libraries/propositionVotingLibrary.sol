@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity >=0.4.22 <0.6.0;
 
 import "../Organ.sol";
 
@@ -59,8 +59,8 @@ library propositionVotingLibrary {
         uint totalVoteCount;
         uint propositionNumber;
         // Proposition details
-        address targetOrgan;
-        address contractToAdd;
+        address payable targetOrgan;
+        address payable contractToAdd;
         address contractToRemove;
     }
 
@@ -106,7 +106,7 @@ library propositionVotingLibrary {
     }
 
         /// Create a new ballot to choose one of `proposalNames`.
-    function createPropositionLib(VotingProcessInfo storage self, address _targetOrgan, address _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) 
+    function createPropositionLib(VotingProcessInfo storage self, address payable _targetOrgan, address payable _contractToAdd, address _contractToRemove, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend, uint _propositionType) 
     public 
     returns (uint propositionNumber)
     {
@@ -196,7 +196,7 @@ library propositionVotingLibrary {
         emit vetoProposition(msg.sender, proposition.propositionNumber);
     }
 
-    function endPropositionVoteLib(VotingProcessInfo storage self, Proposition storage proposition, address votersOrganAddress) 
+    function endPropositionVoteLib(VotingProcessInfo storage self, Proposition storage proposition, address payable votersOrganAddress) 
     public 
     returns (bool hasBeenAccepted) 
     {
@@ -257,7 +257,7 @@ library propositionVotingLibrary {
         // If were are manipulating admin/masters, verify that at contractToRemove and contractToAdd are not both empty
         if (proposition.propositionType < 6)
         {
-            require((proposition.contractToAdd != 0x0000) || (proposition.contractToRemove != 0x0000)); 
+            require((proposition.contractToAdd != address(0)) || (proposition.contractToRemove != address(0))); 
         }
 
          // We initiate the Organ interface to add a norm / Admin / master
@@ -335,7 +335,7 @@ library propositionVotingLibrary {
             (canAdd, canDelete, , ) = targetOrganContract.isAdmin(address(this));
         }
         
-        if ((!canAdd && (proposition.contractToAdd != 0x0000)) || (!canDelete && (proposition.contractToRemove != 0x0000)) )
+        if ((!canAdd && (proposition.contractToAdd != address(0))) || (!canDelete && (proposition.contractToRemove != address(0))) )
         {
             proposition.wasEnded = true;
         }
@@ -354,7 +354,7 @@ library propositionVotingLibrary {
         // Checking the ballot was accepted
         require(proposition.wasAccepted);
 
-        if ((_promulgate)||((proposition.contractToAdd != 0x0000) || (proposition.propositionType != 0)))
+        if ((_promulgate)||((proposition.contractToAdd != address(0)) || (proposition.propositionType != 0)))
         {
             // We initiate the Organ interface to add a norm
             Organ affectedOrgan = Organ(proposition.targetOrgan);
