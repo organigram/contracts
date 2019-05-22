@@ -199,7 +199,7 @@ library organLibrary {
         require(self.admins[msg.sender].canAdd);
 
         // If the norm has an address, we check that the address has not been used before.
-        if (_normAddress != address(0)) { require(self.addressPositionInNorms[_normAddress] != 0);}
+        if (_normAddress != address(0)) { require(self.addressPositionInNorms[_normAddress] == 0);}
 
         // Adding the norm
         self.norms.push(organLibrary.Norm({
