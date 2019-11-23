@@ -1,0 +1,11 @@
+{
+  "name": "solidity",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "\"\"",
+  "private": true,
+  "devDependencies": {
+    "truffle": "^5.1.1",
+    "truffle-hdwallet-provider": "^1.0.17"
+  }
+}

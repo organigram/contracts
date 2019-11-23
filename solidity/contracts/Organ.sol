@@ -1,160 +1,157 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.4.22 <0.7.0;
 
-
-/// @title Standard organ contract
-
+/// @title Standard Kelsen Organ contract.
 
 import "./Kelsen.sol";
 import "./libraries/organLibrary.sol";
 
+contract Organ is Kelsen {
+    // Kelsen definition.
+    bool public isOrgan = true;
+    bool public isProcedure = false;
 
-contract Organ is Kelsen{
+    // Linking to Organ library.
+    using OrganLibrary for OrganLibrary.OrganData;
+    OrganLibrary.OrganData public organData;
 
+    /*
+        Organ management.
+    */
 
-    // Declaring structures for different organ roles:
-    // Masters can add/remove admins
-    // Admins can add / remove norms
-    // Norms are sets of adresses, contracts or references gathered by the organ
-    bool public isAnOrgan = true;
-    bool public isAProcedure = false;
-    
-    using organLibrary for organLibrary.OrganInfo;
-    // Storing organ infos
-    organLibrary.OrganInfo public organInfos;
-
-    // Organ declaration
-    constructor(bytes32 _organName) public {
-        organInfos.initOrganLib(_organName);
+    // Constructor.
+    constructor(bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize) public {
+        organData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
     }
 
-    // ################# Organ managing functions
+    // Receiving funds.
+    function () external payable {
+        organData.deposit();
+    }
 
-    function setName(bytes32 _organName) 
-    public 
+    function updateMetadata(bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize)
+        public
     {
-        organInfos.setNameLib(_organName);
+        organData.updateMetadata(_ipfsHash, _hashFunction, _hashSize);
     }
-        // Money managing function
-    function () 
-    external 
-    payable 
+
+    function withdraw(address payable _to, uint _value)
+        public
     {
-        organInfos.payInLib();
+        organData.withdraw(_to, _value);
     }
 
-    function payout(address payable _to, uint _value) 
-    public 
+    /*
+        Masters management.
+    */
+
+    function addMaster(address _newMasterAddress, bool _canAdd, bool _canRemove)
+        public
     {
-        organInfos.payoutLib(_to, _value);
+        organData.addMaster(_newMasterAddress, _canAdd, _canRemove);
     }
 
-    // ################# Master managing functions
-    function addMaster(address _newMasterAddress, bool _canAdd, bool _canDelete) 
-    public
+    function removeMaster(address _masterToRemove)
+        public
     {
-        organInfos.addMasterLib(_newMasterAddress, _canAdd, _canDelete);
+        organData.removeMaster(_masterToRemove);
     }
 
-    function remMaster(address _masterToRemove) 
-    public 
+    function replaceMaster(address _masterToRemove, address _masterToAdd, bool _canAdd, bool _canRemove)
+        public
     {
-        organInfos.remMasterLib(_masterToRemove);
+        organData.replaceMaster(_masterToRemove, _masterToAdd, _canAdd, _canRemove);
     }
 
-    function replaceMaster(address _masterToRemove, address _masterToAdd, bool _canAdd, bool _canDelete) 
-    public 
+    /*
+        Admins management.
+    */
+
+    function addAdmin(address _newAdminAddress, bool _canAdd, bool _canRemove, bool _canDeposit, bool _canWithdraw)
+        public
     {
-        organInfos.replaceMasterLib(_masterToRemove, _masterToAdd, _canAdd, _canDelete);
+        organData.addAdmin(_newAdminAddress, _canAdd, _canRemove, _canDeposit, _canWithdraw);
     }
 
-    // ################# Admin managing functions
-    function addAdmin(address _newAdminAddress, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
-    public 
+    function removeAdmin(address _adminToRemove)
+        public
     {
-        organInfos.addAdminLib(_newAdminAddress, _canAdd, _canDelete, _canDeposit, _canSpend);
+        organData.removeAdmin(_adminToRemove);
     }
 
-    function replaceAdmin(address _adminToRemove, address _adminToAdd, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
-    public 
+    function replaceAdmin(
+        address _adminToRemove, address _adminToAdd,
+        bool _canAdd, bool _canRemove, bool _canDeposit, bool _canWithdraw
+    )
+        public
     {
-        organInfos.replaceAdminLib(_adminToRemove, _adminToAdd, _canAdd, _canDelete, _canDeposit, _canSpend);
+        organData.replaceAdmin(_adminToRemove, _adminToAdd, _canAdd, _canRemove, _canDeposit, _canWithdraw);
     }
 
-    function remAdmin(address _adminToRemove) public {
-        organInfos.remAdminLib(_adminToRemove);
-    }
+    /*
+        Norms management.
+    */
 
-    // ################# Norms managing functions
-
-    function addNorm (address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
-    public  
-    returns (uint _normPosition)
+    function addNorm(address payable _normAddress, bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize)
+        public returns (uint _normPosition)
     {
-        return organInfos.addNormLib(_normAddress, _ipfsHash, _hash_function, _size);
+        return organData.addNorm(_normAddress, _ipfsHash, _hashFunction, _hashSize);
     }
 
-    function remNorm (uint _normNumber) 
-    public
+    function removeNorm(uint _normIndex)
+        public
     {
-       organInfos.remNormLib(_normNumber);
+       organData.removeNorm(_normIndex);
     }
 
-    function replaceNorm (uint _normNumber, address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
-    public
+    function replaceNorm(uint _normIndex, address payable _normAddress, bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize)
+        public
     {
-       organInfos.replaceNormLib(_normNumber, _normAddress, _ipfsHash, _hash_function, _size);
+       organData.replaceNorm(_normIndex, _normAddress, _ipfsHash, _hashFunction, _hashSize);
     }
 
-    //////////////////////// Functions to communicate with other contracts
-    // Checking individual addresses
-    function isMaster (address _adressToCheck) 
-    public 
-    view 
-    returns (bool canAdd, bool canDelete) 
+    /*
+        Utilities for contracts.
+    */
+
+    function isMaster(address _adressToCheck)
+        public view returns (bool canAdd, bool canRemove)
     {
-        return (organInfos.masters[_adressToCheck].canAdd, organInfos.masters[_adressToCheck].canDelete);
+        return (organData.masters[_adressToCheck].canAdd, organData.masters[_adressToCheck].canRemove);
     }
 
-    function isAdmin (address _adressToCheck) 
-    public 
-    view 
-    returns (bool canAdd, bool canDelete, bool canDeposit, bool canSpend) 
+    function isAdmin(address _adressToCheck)
+        public view returns (bool canAdd, bool canRemove, bool canDeposit, bool canWithdraw)
     {
-        return (organInfos.admins[_adressToCheck].canAdd, organInfos.admins[_adressToCheck].canDelete, organInfos.admins[_adressToCheck].canDeposit, organInfos.admins[_adressToCheck].canSpend);
+        return (
+            organData.admins[_adressToCheck].canAdd,
+            organData.admins[_adressToCheck].canRemove,
+            organData.admins[_adressToCheck].canDeposit,
+            organData.admins[_adressToCheck].canWithdraw
+        );
     }
 
-    // Retrieve contract state info
-    // Size of norm array, to list elements
-    function getNormListSize() 
-    public 
-    view 
-    returns (uint normArraySize)
+    // Retrieve contract state info.
+    // Size of norm array, to list elements.
+    function getNormListSize()
+        public view returns (uint normArraySize)
     {
-        return organInfos.norms.length;
+        return organData.norms.length;
     }
 
-    function getAddressPositionInNorm(address _addressToCheck) 
-    public 
-    view 
-    returns (uint addressInNormPosition)
+    function getNormIndexByAddress(address _addressToCheck)
+        public view returns (uint addressInNormPosition)
     {
-        return organInfos.addressPositionInNorms[_addressToCheck];
+        return organData.addressPositionInNorms[_addressToCheck];
     }
 
-    function getSingleNorm(uint _desiredNormPosition) 
-    public 
-    view 
-    returns (address payable normAddress, bytes32 ipfsHash, uint8 hash_function, uint8 size)
+    function getNorm(uint _index)
+        public view returns (address payable normAddress, bytes32 ipfsHash, uint8 hashFunction, uint8 hashSize)
     {
-        return (organInfos.norms[_desiredNormPosition].normAddress, organInfos.norms[_desiredNormPosition].ipfsHash, organInfos.norms[_desiredNormPosition].hash_function, organInfos.norms[_desiredNormPosition].size);
-    }
-
-    function getKelsenVersion() 
-    public 
-    view 
-    returns(bool _isAnOrgan, bool _isAProcedure, int _versionNumber)
-    {
-        return (isAnOrgan, isAProcedure, kelsenVersionNumber);
+        return (
+            organData.norms[_index].normAddress,
+            organData.norms[_index].ipfsHash,
+            organData.norms[_index].hashFunction,
+            organData.norms[_index].hashSize
+        );
     }
 }
-

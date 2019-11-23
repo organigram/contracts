@@ -1,96 +1,82 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 import "../Organ.sol";
 
-/**
+/*
+    Kelsen Framework - Procedure library.
+    This library holds the logic common to all procedures
+*/
 
-Kelsen Framework
-Procedure library
-This library is used to hold the logic common to all procedures
-
-**/
-library procedureLibrary {
-  
-    struct ProcedureData 
-    {
-        uint procedureTypeNumber;
-        bytes32 procedureName;
-        uint linkedOrgans;
+library ProcedureLibrary {
+    struct ProcedureData {
+        bytes32 metadataIpfsHash;
+        uint8 metadataHashFunction;
+        uint8 metadataHashSize;
+        address payable admin;
     }
 
-    struct oneRegisteredOrgan
+    /*
+        Events.
+    */
+
+    event metadataUpdated(address _from, bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize);
+    event adminUpdated(address _from, address payable _admin);
+
+    /*
+        Procedure management.
+    */
+
+    function init(
+        ProcedureData storage self,
+        bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize
+    )
+        public
     {
-        address payable firstOrganAddress;
+        self.metadataIpfsHash = _ipfsHash;
+        self.metadataHashFunction = _hashFunction;
+        self.metadataHashSize = _hashSize;
+        self.admin = msg.sender;
     }
 
-    struct twoRegisteredOrgans
+    function updateAdmin(
+        ProcedureData storage self,
+        address payable _admin
+    )
+        public
     {
-        address payable firstOrganAddress;
-        address payable secondOrganAddress;
+        // Only the procedure's admin can update admin.
+        Organ authorizedUsersOrgan = Organ(self.admin);
+        require(msg.sender == self.admin || authorizedUsersOrgan.getNormIndexByAddress(msg.sender) != 0, "Not authorized.");
+        delete authorizedUsersOrgan;
+
+        self.admin = _admin;
+        emit adminUpdated(msg.sender, _admin);
     }
 
-    struct threeRegisteredOrgans
+    function updateMetadata(
+        ProcedureData storage self,
+        bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize
+    )
+        public
     {
-        address payable firstOrganAddress;
-        address payable secondOrganAddress;
-        address payable thirdOrganAddress;
+        // Only the procedure's admin can update metadata.
+        Organ authorizedUsersOrgan = Organ(self.admin);
+        require(msg.sender == self.admin || authorizedUsersOrgan.getNormIndexByAddress(msg.sender) != 0, "Not authorized.");
+        delete authorizedUsersOrgan;
+
+        self.metadataIpfsHash = _ipfsHash;
+        self.metadataHashFunction = _hashFunction;
+        self.metadataHashSize = _hashSize;
+        emit metadataUpdated(msg.sender, _ipfsHash, _hashFunction, _hashSize);
     }
 
-    struct fourRegisteredOrgans
+    function checkAuthorization(address payable _organAddress)
+        internal view
     {
-        address payable firstOrganAddress;
-        address payable secondOrganAddress;
-        address payable thirdOrganAddress;
-        address payable fourthOrganAddress;
-    }
-
-    function initProcedure(ProcedureData storage self, uint _procedureTypeNumber, bytes32 _procedureName, uint _linkedOrgans)
-    public
-    {
-        self.procedureTypeNumber = _procedureTypeNumber;
-        self.procedureName = _procedureName;
-        self.linkedOrgans = _linkedOrgans;
-    }
-
-    function initOneRegisteredOrgan(oneRegisteredOrgan storage self, address payable _firstOrganAddress)
-    public
-    {
-        self.firstOrganAddress = _firstOrganAddress;
-    }
-
-    function initTwoRegisteredOrgans(twoRegisteredOrgans storage self, address payable _firstOrganAddress, address payable _secondOrganAddress)
-    public
-    {
-        self.firstOrganAddress = _firstOrganAddress;
-        self.secondOrganAddress = _secondOrganAddress;
-    }
-
-    function initThreeRegisteredOrgans(threeRegisteredOrgans storage self, address payable _firstOrganAddress, address payable _secondOrganAddress, address payable _thirdOrganAddress)
-    public
-    {
-        self.firstOrganAddress = _firstOrganAddress;
-        self.secondOrganAddress = _secondOrganAddress;
-        self.thirdOrganAddress = _thirdOrganAddress;
-    }
-
-    function initFourRegisteredOrgans(fourRegisteredOrgans storage self, address payable _firstOrganAddress, address payable _secondOrganAddress, address payable _thirdOrganAddress, address payable _fourthOrganAddress)
-    public
-    {
-        self.firstOrganAddress = _firstOrganAddress;
-        self.secondOrganAddress = _secondOrganAddress;
-        self.thirdOrganAddress = _thirdOrganAddress;
-        self.fourthOrganAddress = _fourthOrganAddress;
-    }
-
-    function isAllowed(address payable _organAddress)
-    internal
-    view
-    {
-      // Verifying the evaluator is an admin
-      Organ authorizedUsersOrgan = Organ(_organAddress);
-
-      require(authorizedUsersOrgan.getAddressPositionInNorm(msg.sender) != 0);
-      delete _organAddress;
+        // Verifying the evaluator is an admin.
+        Organ authorizedUsersOrgan = Organ(_organAddress);
+        require(authorizedUsersOrgan.getNormIndexByAddress(msg.sender) != 0, "Not authorized.");
+        delete authorizedUsersOrgan;
     }
 
 }

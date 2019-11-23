@@ -1,258 +1,325 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.4.22 <0.7.0;
 
+/*
+    Kelsen Framework - Organ library.
+    This library holds the logic to manage a simple organ.
+*/
 
-
-/**
-
-Kelsen Framework
-Organ library
-This library is used to hold all the logic to manage a simple organ.
-
-**/
-library organLibrary {
-  
+library OrganLibrary {
+    /*
+        Masters can edit admins.
+    */
     struct Master {
-        bool canAdd;  // if true, master can add admins
-        bool canDelete;  // if true, master can delete admins
+        bool canAdd;        // if true, master can add admins.
+        bool canRemove;     // if true, master can delete admins.
     }
 
+    /*
+        Admins can edit norms.
+    */
     struct Admin {
-        bool canAdd;  // if true, Admin can add norms
-        bool canDelete;  // if true, Admin can delete norms
-        bool canSpend;
-        bool canDeposit;
+        bool canAdd;        // if true, Admin can add norms.
+        bool canRemove;     // if true, Admin can delete norms.
+        bool canWithdraw;   // if true, Admin can spend funds.
+        bool canDeposit;    // if true, Admin can deposit funds.
     }
 
+    /*
+        Norms are sets of addresses, contracts or references.
+    */
     struct Norm {
-        address payable normAddress; // Address if norm is a member or a contract
-        bytes32 ipfsHash; // ID of proposal on IPFS
-        uint8 hash_function;
-        uint8 size;
+        address payable normAddress;    // Address if norm is a member or a contract.
+        bytes32 ipfsHash;              // ID of proposal on IPFS.
+        uint8 hashFunction;
+        uint8 hashSize;
     }
 
-    struct OrganInfo {
-        bytes32 organName;
-        uint256 activeNormNumber;
+    struct OrganData {
+        bytes32 metadataIpfsHash;
+        uint8 metadataHashFunction;
+        uint8 metadataHashSize;
+        uint256 activeNormIndex;
         mapping(address => Master) masters;
         mapping(address => Admin) admins;
         Norm[] norms;
         mapping(address => uint) addressPositionInNorms;
     }
 
-    // Events
-    // Organ management events
-    event changeOrganName(address _from, bytes32 _newName);
-    event spendMoney(address _from, address _to, uint256 _amount);
-    event receiveMoney(address _from, uint256 _amount);
+    /*
+        Events.
+    */
 
-    // Master management events
-    event addMasterEvent(address _from, address _newMaster, bool _canAdd, bool _canDelete);
-    event remMasterEvent(address _from, address _masterToRemove);
+    event metadataUpdated(address _from, bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize);
+    event fundsWithdrawn(address _from, address _to, uint256 _amount);
+    event fundsDeposited(address _from, uint256 _amount);
+    event masterAdded(address _from, address _newMaster, bool _canAdd, bool _canRemove);
+    event masterRemoved(address _from, address _masterToRemove);
+    event adminAdded(address _from, address _newAdmin, bool _canAdd, bool _canRemove, bool _canDeposit, bool _canWithdraw);
+    event adminRemoved(address _from, address _adminToRemove);
+    event normAdded(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize);
+    event normRemoved(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize);
 
-    // Admin management events
-    event addAdminEvent(address _from, address _newAdmin, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend);
-    event remAdminEvent(address _from, address _adminToRemove);
+    /*
+        Constructor.
+    */
 
-    // Norm management events
-    event addNormEvent(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
-    event remNormEvent(address _from, address _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size);
-
-    function initOrganLib(OrganInfo storage self, bytes32 _organName)
-    public
+    function init(
+        OrganData storage self,
+        bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize
+    )
+        public
     {
-        // Initializing with deployer as master
+        // Initializing with deployer as master.
         self.masters[msg.sender].canAdd = true;
-        self.masters[msg.sender].canDelete = true;
-        self.organName = _organName;
+        self.masters[msg.sender].canRemove = true;
+        self.metadataIpfsHash = _ipfsHash;
+        self.metadataHashFunction = _hashFunction;
+        self.metadataHashSize = _hashSize;
         Norm memory initNorm;
         self.norms.push(initNorm);
     }
-    function setNameLib(OrganInfo storage self, bytes32 _organName) 
-    public 
+
+    function updateMetadata(
+        OrganData storage self,
+        bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize
+    )
+        public
     {
-        // Check sender is allowed
-        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canDelete));
-        self.organName = _organName;
-        emit changeOrganName(msg.sender, _organName);
+        // Check sender is allowed.
+        require(self.masters[msg.sender].canAdd && self.masters[msg.sender].canRemove, "Not authorized.");
+        self.metadataIpfsHash = _ipfsHash;
+        self.metadataHashFunction = _hashFunction;
+        self.metadataHashSize = _hashSize;
+        emit metadataUpdated(msg.sender, _ipfsHash, _hashFunction, _hashSize);
     }
-        // Money managing function
-    function payInLib(OrganInfo storage self) 
-    public  
+
+    /*
+        Funds management.
+    */
+
+    function deposit(OrganData storage self)
+        public
     {
-        require(self.admins[msg.sender].canDeposit);
-        emit receiveMoney(msg.sender, msg.value);
+        require(self.admins[msg.sender].canDeposit, "Not authorized to deposit.");
+        emit fundsDeposited(msg.sender, msg.value);
     }
-    function payoutLib(OrganInfo storage self, address payable _to, uint _value) 
-    public 
+
+    function withdraw(OrganData storage self, address payable _to, uint _value)
+        public
     {
-        require(self.admins[msg.sender].canSpend);
+        require(self.admins[msg.sender].canWithdraw, "Not authorized to withdraw.");
         _to.transfer(_value);
-        emit spendMoney(msg.sender, _to, _value);
+        emit fundsWithdrawn(msg.sender, _to, _value);
     }
-    // ################# Master managing functions
-    function addMasterLib(OrganInfo storage self, address _newMasterAddress, bool _canAdd, bool _canDelete) 
-    public
+
+    /*
+        Masters management.
+    */
+
+    function addMaster(OrganData storage self, address _newMasterAddress, bool _canAdd, bool _canRemove)
+        public
     {
-        // Check that the sender is allowed
-        require((self.masters[msg.sender].canAdd));
-        // Check new master is not already a master
-        require((!self.masters[_newMasterAddress].canAdd) && (!self.masters[_newMasterAddress].canDelete));
+        // Check that the sender is allowed.
+        require((self.masters[msg.sender].canAdd), "Not authorized to add.");
+        // Check new master is not already a master.
+        require((!self.masters[_newMasterAddress].canAdd) && (!self.masters[_newMasterAddress].canRemove), "Duplicate record.");
 
-        // Check new master has at least one permission activated
-        require(_canAdd || _canDelete);
+        // Check new master has at least one permission activated.
+        require(_canAdd || _canRemove, "Wrong permissions set.");
 
-        // Creating master privileges
+        // Creating master privileges.
         self.masters[_newMasterAddress].canAdd = _canAdd;
-        self.masters[_newMasterAddress].canDelete = _canDelete;
-        emit addMasterEvent(msg.sender, _newMasterAddress, _canAdd, _canDelete);
+        self.masters[_newMasterAddress].canRemove = _canRemove;
+        emit masterAdded(msg.sender, _newMasterAddress, _canAdd, _canRemove);
     }
-    function remMasterLib(OrganInfo storage self, address _masterToRemove) 
-    public 
+
+    function removeMaster(OrganData storage self, address _masterToRemove)
+        public
     {
-        // Check sender is allowed
-        require((self.masters[msg.sender].canDelete));
-        // Check affected account is a master
-        require((self.masters[_masterToRemove].canDelete) || (self.masters[_masterToRemove].canAdd) );
-        // Deleting master privileges
+        // Check sender is allowed.
+        require((self.masters[msg.sender].canRemove), "Not authorized to remove.");
+        // Check affected account is a master.
+        require((self.masters[_masterToRemove].canRemove) || (self.masters[_masterToRemove].canAdd), "Record not found.");
+        // Deleting master privileges.
         delete self.masters[_masterToRemove];
-        emit remMasterEvent(msg.sender, _masterToRemove);
+        emit masterRemoved(msg.sender, _masterToRemove);
     }
-    function replaceMasterLib(OrganInfo storage self, address _masterToRemove, address _masterToAdd, bool _canAdd, bool _canDelete) 
-    public 
-    {
-        // Check sender is allowed
-        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canDelete));
-        // Check new master has at least one permission activated
-        require(_canAdd || _canDelete);
 
-        // Check if we are replacing a master with another, or if we are modifying permissions
-        if (_masterToRemove != _masterToAdd)
-        {
+    function replaceMaster(
+        OrganData storage self, address _masterToRemove, address _masterToAdd,
+        bool _canAdd, bool _canRemove
+    )
+        public
+    {
+        // Check sender is allowed.
+        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canRemove), "Not authorized to replace.");
+        // Check new master has at least one permission activated.
+        require(_canAdd || _canRemove, "Wrong permissions set.");
+
+        // Check if we are replacing a master with another, or updating permissions.
+        if (_masterToRemove != _masterToAdd) {
             // Replacing a master
-            addMasterLib(self, _masterToAdd, _canAdd, _canDelete);
-            remMasterLib(self, _masterToRemove);
+            addMaster(self, _masterToAdd, _canAdd, _canRemove);
+            removeMaster(self, _masterToRemove);
         }
-        else
-        {
-            // Modifying permissions
-            // Triggering events
-            emit remMasterEvent(msg.sender, _masterToRemove);
-            emit addMasterEvent(msg.sender, _masterToAdd, _canAdd, _canDelete);
-
-            //Modifying permissions
+        else {
+            //Modifying permissions.
             self.masters[_masterToRemove].canAdd = _canAdd;
-            self.masters[_masterToRemove].canDelete = _canDelete;
+            self.masters[_masterToRemove].canRemove = _canRemove;
+
+            // Triggering events.
+            emit masterRemoved(msg.sender, _masterToRemove);
+            emit masterAdded(msg.sender, _masterToAdd, _canAdd, _canRemove);
         }
     }
 
-    // ################# Admin managing functions
-    function addAdminLib(OrganInfo storage self, address _newAdminAddress, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
-    public 
+    /*
+        Admins Management.
+    */
+
+    function addAdmin(
+        OrganData storage self, address _newAdminAddress,
+        bool _canAdd, bool _canRemove, bool _canDeposit, bool _canWithdraw
+    )
+        public
     {
-        // Check the sender is allowed
-        require((self.masters[msg.sender].canAdd));
-        // Check new admin is not already an admin
-        require((!self.admins[_newAdminAddress].canAdd) && (!self.admins[_newAdminAddress].canDelete) && (!self.admins[_newAdminAddress].canDeposit) && (!self.admins[_newAdminAddress].canSpend));
+        // Check the sender is allowed.
+        require((self.masters[msg.sender].canAdd), "Not authorized to add.");
+        // Check new admin is not already an admin.
+        require(
+            !self.admins[_newAdminAddress].canAdd &&
+            !self.admins[_newAdminAddress].canRemove &&
+            !self.admins[_newAdminAddress].canDeposit &&
+            !self.admins[_newAdminAddress].canWithdraw,
+            "Duplicate record."
+        );
 
-        // Check new admin has at least one permission activated
-        require(_canAdd || _canDelete || _canDeposit || _canSpend);
+        // Check new admin has at least one permission activated.
+        require(_canAdd || _canRemove || _canDeposit || _canWithdraw, "Wrong permissions set.");
 
-        // Creating master privileges
+        // Creating master privileges.
         self.admins[_newAdminAddress].canAdd = _canAdd;
-        self.admins[_newAdminAddress].canDelete = _canDelete;
+        self.admins[_newAdminAddress].canRemove = _canRemove;
         self.admins[_newAdminAddress].canDeposit = _canDeposit;
-        self.admins[_newAdminAddress].canSpend = _canSpend;
-        emit addAdminEvent(msg.sender, _newAdminAddress,  _canAdd,  _canDelete,  _canDeposit,  _canSpend);
+        self.admins[_newAdminAddress].canWithdraw = _canWithdraw;
+        emit adminAdded(msg.sender, _newAdminAddress,  _canAdd,  _canRemove,  _canDeposit,  _canWithdraw);
     }
 
-    function remAdminLib(OrganInfo storage self, address _adminToRemove) 
-    public 
+    function removeAdmin(OrganData storage self, address _adminToRemove)
+        public
     {
-        // Check sender is allowed
-        require((self.masters[msg.sender].canDelete));
-        // Check affected account is admin
-        require((self.admins[_adminToRemove].canDelete) || (self.admins[_adminToRemove].canAdd) || (self.admins[_adminToRemove].canDeposit) || (self.admins[_adminToRemove].canSpend));
+        // Check sender is allowed.
+        require((self.masters[msg.sender].canRemove), "Not authorized to remove.");
+        // Check affected account is admin.
+        require(
+            self.admins[_adminToRemove].canRemove ||
+            self.admins[_adminToRemove].canAdd ||
+            self.admins[_adminToRemove].canDeposit ||
+            self.admins[_adminToRemove].canWithdraw,
+            "Record not found."
+        );
 
-        // Deleting admin privileges
+        // Deleting admin privileges.
         delete self.admins[_adminToRemove];
-
-        emit remAdminEvent(msg.sender, _adminToRemove);
+        emit adminRemoved(msg.sender, _adminToRemove);
     }
 
-    function replaceAdminLib(OrganInfo storage self, address _adminToRemove, address _adminToAdd, bool _canAdd, bool _canDelete, bool _canDeposit, bool _canSpend) 
-    public 
+    function replaceAdmin(
+        OrganData storage self, address _adminToRemove, address _adminToAdd,
+        bool _canAdd, bool _canRemove, bool _canDeposit, bool _canWithdraw
+    )
+        public
     {
-        // Check sender is allowed
-        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canDelete));
-        // Check new admin has at least one permission activated
-        require(_canAdd || _canDelete || _canDeposit || _canSpend);
-        
-        remAdminLib(self, _adminToRemove);
-        addAdminLib(self, _adminToAdd, _canAdd, _canDelete, _canDeposit, _canSpend);
+        // Check sender is allowed.
+        require((self.masters[msg.sender].canAdd) && (self.masters[msg.sender].canRemove), "Not authorized to replace.");
+        // Check new admin has at least one permission activated.
+        require(_canAdd || _canRemove || _canDeposit || _canWithdraw, "Wrong permissions set.");
+
+        removeAdmin(self, _adminToRemove);
+        addAdmin(self, _adminToAdd, _canAdd, _canRemove, _canDeposit, _canWithdraw);
     }
 
-    function addNormLib(OrganInfo storage self, address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
-    public 
-    returns (uint _normPosition)
+    function addNorm(OrganData storage self, address payable _normAddress, bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize)
+        public returns (uint _normPosition)
     {
-        // Check sender is allowed
-        require(self.admins[msg.sender].canAdd);
+        // Check sender is allowed.
+        require(self.admins[msg.sender].canAdd, "Not authorized to add.");
 
         // If the norm has an address, we check that the address has not been used before.
-        if (_normAddress != address(0)) { require(self.addressPositionInNorms[_normAddress] == 0);}
+        if (_normAddress != address(0)) {
+            require(self.addressPositionInNorms[_normAddress] == 0, "Duplicate record.");
+        }
 
-        // Adding the norm
-        self.norms.push(organLibrary.Norm({
-                normAddress: _normAddress,
-                ipfsHash: _ipfsHash,
-                hash_function: _hash_function,
-                size: _size
-            }));
-        // Registering norm position relative to its address
-        self.addressPositionInNorms[_normAddress] = self.norms.length -1;
-        // Incrementing active norm number and total norm number trackers
-        self.activeNormNumber += 1;
-        emit addNormEvent(msg.sender, _normAddress,  _ipfsHash,  _hash_function,  _size);
+        // Adding the norm.
+        self.norms.push(Norm({
+            normAddress: _normAddress,
+            ipfsHash: _ipfsHash,
+            hashFunction: _hashFunction,
+            hashSize: _hashSize
+        }));
+        // Registering norm position relative to its address.
+        self.addressPositionInNorms[_normAddress] = self.norms.length - 1;
+        // Incrementing active norm number and total norm number trackers.
+        self.activeNormIndex += 1;
+        emit normAdded(msg.sender, _normAddress,  _ipfsHash,  _hashFunction,  _hashSize);
 
         // Registering the address as active
         return self.addressPositionInNorms[_normAddress] ;
     }
 
-    function remNormLib(OrganInfo storage self, uint _normNumber) 
-    public
+    function removeNorm(OrganData storage self, uint _normIndex)
+        public
     {
         // Check sender is allowed:
-        // - Sender is admin
-        // - Norm number is trying to delete himself
-        require(self.admins[msg.sender].canDelete || (self.addressPositionInNorms[self.norms[_normNumber].normAddress] != 0 && msg.sender == self.norms[_normNumber].normAddress));
-        // Deleting norm position from addressPositionInNorms
-        delete self.addressPositionInNorms[self.norms[_normNumber].normAddress];
-        // Logging event
-        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
+        // - Sender is admin.
+        // - Norm number is trying to delete himself.
+        require(
+            self.admins[msg.sender].canRemove ||
+            (
+                self.addressPositionInNorms[self.norms[_normIndex].normAddress] != 0 &&
+                msg.sender == self.norms[_normIndex].normAddress
+            ),
+            "Not authorized."
+        );
+        // Deleting norm position from addressPositionInNorms.
+        delete self.addressPositionInNorms[self.norms[_normIndex].normAddress];
+        // Logging event.
+        emit normRemoved(
+            msg.sender, self.norms[_normIndex].normAddress,
+            self.norms[_normIndex].ipfsHash,  self.norms[_normIndex].hashFunction,  self.norms[_normIndex].hashSize
+        );
 
-        // Removing norm from norms
-        delete self.norms[_normNumber];
-        self.activeNormNumber -= 1;
+        // Removing norm from norms.
+        delete self.norms[_normIndex];
+        self.activeNormIndex -= 1;
     }
 
-    function replaceNormLib(OrganInfo storage self, uint _normNumber, address payable _normAddress, bytes32 _ipfsHash, uint8 _hash_function, uint8 _size) 
-    public
+    function replaceNorm(
+        OrganData storage self, uint _normIndex, address payable _normAddress,
+        bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize
+    )
+        public
     {
-        require((self.admins[msg.sender].canDelete) && (self.admins[msg.sender].canAdd));
-        if (_normAddress != address(0)) { require(self.addressPositionInNorms[_normAddress] != 0);}
-        
-        self.addressPositionInNorms[self.norms[_normNumber].normAddress] = 0;
-        emit remNormEvent(msg.sender, self.norms[_normNumber].normAddress, self.norms[_normNumber].ipfsHash,  self.norms[_normNumber].hash_function,  self.norms[_normNumber].size);
+        require(self.admins[msg.sender].canRemove && self.admins[msg.sender].canAdd, "Not authorized to replace.");
+        if (_normAddress != address(0)) {
+            require(self.addressPositionInNorms[_normAddress] != 0, "Record not found.");
+        }
 
-        delete self.norms[_normNumber];
-        self.norms[_normNumber] = organLibrary.Norm({
-                normAddress: _normAddress,
-                ipfsHash: _ipfsHash,
-                hash_function: _hash_function,
-                size: _size
-            });
-        
-        self.addressPositionInNorms[_normAddress] = _normNumber;
-        emit addNormEvent(msg.sender, _normAddress,  _ipfsHash,  _hash_function,  _size);
+        self.addressPositionInNorms[self.norms[_normIndex].normAddress] = 0;
+        emit normRemoved(
+            msg.sender, self.norms[_normIndex].normAddress,
+            self.norms[_normIndex].ipfsHash,  self.norms[_normIndex].hashFunction,  self.norms[_normIndex].hashSize
+        );
+
+        delete self.norms[_normIndex];
+        self.norms[_normIndex] = Norm({
+            normAddress: _normAddress,
+            ipfsHash: _ipfsHash,
+            hashFunction: _hashFunction,
+            hashSize: _hashSize
+        });
+
+        self.addressPositionInNorms[_normAddress] = _normIndex;
+        emit normAdded(msg.sender, _normAddress,  _ipfsHash,  _hashFunction,  _hashSize);
     }
 }

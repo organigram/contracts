@@ -1,12 +1,15 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.4.22 <0.7.0;
 
-
-
-/// @title Standard organ contract
+/// @title Standard Kelsen contract.
 
 contract Kelsen {
-        // Identifiers for Dapp using Kelsen
-    int public kelsenVersionNumber = 2;
-    bool public isAnOrgan;
-    bool public isAProcedure;
+    uint8 public kelsenVersion = 3;
+    bool public isOrgan;
+    bool public isProcedure;
+
+    function getKelsenData()
+        public view returns(bool _isOrgan, bool _isProcedure, uint8 _version)
+    {
+        return (isOrgan, isProcedure, kelsenVersion);
+    }
 }
