@@ -1,0 +1,42 @@
+{
+  "name": "@organigram/contracts",
+  "version": "0.1.2",
+  "description": "Solidity smart-contracts framework for governance systems.",
+  "main": "index.js",
+  "author": "Organigr.am <dev@organigr.am> (https://organigr.am)",
+  "license": "LGPL-3.0-or-later",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cleanup": "yarn truffle networks --clean"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.1.0"
+  },
+  "devDependencies": {
+    "bs58": "^4.0.1",
+    "cids": "^1.0.0",
+    "ipfs": "^0.50.1",
+    "ipfs-http-client": "^46.1.1",
+    "truffle": "^5.1.43",
+    "truffle-hdwallet-provider": "^1.0.17"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/organigram/contracts.git"
+  },
+  "keywords": [
+    "organigram",
+    "solidity",
+    "governance",
+    "organisations",
+    "ethereum",
+    "dapp"
+  ],
+  "bugs": {
+    "url": "https://github.com/organigram/contracts/issues"
+  },
+  "homepage": "https://github.com/organigram/contracts#readme"
+}
