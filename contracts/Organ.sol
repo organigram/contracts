@@ -138,7 +138,7 @@ contract Organ is Kelsen {
         return organData.norms.length;
     }
 
-    function getNormIndexByAddress(address _addressToCheck)
+    function getNormIndexForAddress(address _addressToCheck)
         public view returns (uint addressInNormPosition)
     {
         return organData.addressPositionInNorms[_addressToCheck];

@@ -5,7 +5,7 @@ pragma solidity >=0.4.22 <0.7.0;
 import "../Procedure.sol";
 import "../Organ.sol";
 
-contract simpleAdminAndMasterNominationProcedure is Procedure {
+contract SimpleAdminAndMasterNominationProcedure is Procedure {
 
     address payable public authorizedNominatersOrgan;
 

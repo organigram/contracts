@@ -46,7 +46,7 @@ library ProcedureLibrary {
     {
         // Only the procedure's admin can update admin.
         Organ authorizedUsersOrgan = Organ(self.admin);
-        require(msg.sender == self.admin || authorizedUsersOrgan.getNormIndexByAddress(msg.sender) != 0, "Not authorized.");
+        require(msg.sender == self.admin || authorizedUsersOrgan.getNormIndexForAddress(msg.sender) != 0, "Not authorized.");
         delete authorizedUsersOrgan;
 
         self.admin = _admin;
@@ -61,7 +61,7 @@ library ProcedureLibrary {
     {
         // Only the procedure's admin can update metadata.
         Organ authorizedUsersOrgan = Organ(self.admin);
-        require(msg.sender == self.admin || authorizedUsersOrgan.getNormIndexByAddress(msg.sender) != 0, "Not authorized.");
+        require(msg.sender == self.admin || authorizedUsersOrgan.getNormIndexForAddress(msg.sender) != 0, "Not authorized.");
         delete authorizedUsersOrgan;
 
         self.metadataIpfsHash = _ipfsHash;
@@ -75,7 +75,7 @@ library ProcedureLibrary {
     {
         // Verifying the evaluator is an admin.
         Organ authorizedUsersOrgan = Organ(_organAddress);
-        require(authorizedUsersOrgan.getNormIndexByAddress(msg.sender) != 0, "Not authorized.");
+        require(authorizedUsersOrgan.getNormIndexForAddress(msg.sender) != 0, "Not authorized.");
         delete authorizedUsersOrgan;
     }
 

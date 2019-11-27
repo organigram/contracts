@@ -38,7 +38,7 @@ library OrganLibrary {
         bytes32 metadataIpfsHash;
         uint8 metadataHashFunction;
         uint8 metadataHashSize;
-        uint256 activeNormIndex;
+        uint256 normsCount;
         mapping(address => Master) masters;
         mapping(address => Admin) admins;
         Norm[] norms;
@@ -259,8 +259,8 @@ library OrganLibrary {
         }));
         // Registering norm position relative to its address.
         self.addressPositionInNorms[_normAddress] = self.norms.length - 1;
-        // Incrementing active norm number and total norm number trackers.
-        self.activeNormIndex += 1;
+        // Incrementing norms counter.
+        self.normsCount += 1;
         emit normAdded(msg.sender, _normAddress,  _ipfsHash,  _hashFunction,  _hashSize);
 
         // Registering the address as active
@@ -291,7 +291,7 @@ library OrganLibrary {
 
         // Removing norm from norms.
         delete self.norms[_normIndex];
-        self.activeNormIndex -= 1;
+        self.normsCount -= 1;
     }
 
     function replaceNorm(
