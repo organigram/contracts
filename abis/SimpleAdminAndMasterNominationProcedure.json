@@ -1,0 +1,374 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashSize",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_authorizedNominatersOrgan",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "authorizedNominatersOrgan",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getKelsenData",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "_isOrgan",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isProcedure",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_version",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isOrgan",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isProcedure",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "kelsenVersion",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "procedureData",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashSize",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "admin",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_admin",
+        "type": "address"
+      }
+    ],
+    "name": "updateAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_ipfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_hashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_hashSize",
+        "type": "uint8"
+      }
+    ],
+    "name": "updateMetadata",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_organToReform",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newAdmin",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canAdd",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canRemove",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canDeposit",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canWithdraw",
+        "type": "bool"
+      }
+    ],
+    "name": "addAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_organToReform",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oldAdmin",
+        "type": "address"
+      }
+    ],
+    "name": "removeAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_organToReform",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oldAdmin",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newAdmin",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canAdd",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canRemove",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canDeposit",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canWithdraw",
+        "type": "bool"
+      }
+    ],
+    "name": "replaceAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_organToReform",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newMaster",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canAdd",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canRemove",
+        "type": "bool"
+      }
+    ],
+    "name": "addMaster",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_organToReform",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oldMaster",
+        "type": "address"
+      }
+    ],
+    "name": "removeMaster",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_organToReform",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oldMaster",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_newMaster",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canAdd",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_canRemove",
+        "type": "bool"
+      }
+    ],
+    "name": "replaceMaster",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
