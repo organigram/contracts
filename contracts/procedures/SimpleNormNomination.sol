@@ -4,6 +4,7 @@ pragma solidity >=0.4.22 <0.7.0;
 
 import "../Procedure.sol";
 import "../Organ.sol";
+import "../ProcedureFactory.sol";
 
 contract SimpleNormNominationProcedure is Procedure {
 

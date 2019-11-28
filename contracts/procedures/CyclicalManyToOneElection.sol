@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.7.0;
 import "../Procedure.sol";
 import "../Organ.sol";
 import "../libraries/CyclicalElectionLibrary.sol";
+import "../ProcedureFactory.sol";
 
 contract CyclicalManyToOneElectionProcedure is Procedure {
     using CyclicalElectionLibrary for CyclicalElectionLibrary.CyclicalElectionData;

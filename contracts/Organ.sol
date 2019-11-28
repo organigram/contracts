@@ -6,22 +6,21 @@ import "./Kelsen.sol";
 import "./libraries/organLibrary.sol";
 
 contract Organ is Kelsen(true,false) {
-    // Kelsen definition.
-    address public factory;
-
     // Linking to Organ library.
     using OrganLibrary for OrganLibrary.OrganData;
     OrganLibrary.OrganData public organData;
+
+    address public factory;
 
     /*
         Organ management.
     */
 
     // Constructor.
-    constructor(address _owner, bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize) public {
-        // Kelsen attributes.
+    constructor(address _owner, bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize)
+        public
+    {
         factory = msg.sender;
-        // Organ attributes.
         organData.init(_owner, _metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
     }
 

@@ -10,10 +10,13 @@ contract Procedure is Kelsen(false,true) {
     using ProcedureLibrary for ProcedureLibrary.ProcedureData;
     ProcedureLibrary.ProcedureData public procedureData;
 
+    // Stores factory that created the procedure.
+    address public factory;
+
     constructor (bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize)
         public
     {
-        // Procedure attributes.
+        factory = msg.sender;
         procedureData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
     }
 
@@ -27,20 +30,5 @@ contract Procedure is Kelsen(false,true) {
         public
     {
         procedureData.updateAdmin(_admin);
-    }
-}
-
-contract ProcedureFactory {
-    address[] public procedures;
-
-    function createProcedure() public pure {
-        revert("Factory must override the createProcedure method.");
-    }
-
-    function registerProcedure(address _contractAddress)
-        public returns (address)
-    {
-        procedures.push(_contractAddress);
-        return _contractAddress;
     }
 }
