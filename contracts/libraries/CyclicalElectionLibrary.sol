@@ -203,7 +203,7 @@ library CyclicalElectionLibrary {
         Organ voterRegistryOrgan = Organ(_votersOrganAddress);
 
         // Check if quorum is obtained.
-        (,,, uint normsCount) = voterRegistryOrgan.organData();
+        (,,,, uint normsCount) = voterRegistryOrgan.organData();
         delete voterRegistryOrgan;
         if ((election.votesTotal * 100) >= (self.quorumSize * normsCount)) {
             quorumIsObtained = true;
@@ -315,7 +315,7 @@ library CyclicalElectionLibrary {
         }
 
         Organ voterRegistryOrgan = Organ(_votersOrganAddress);
-        (,,, uint normsCount) = voterRegistryOrgan.organData();
+        (,,,, uint normsCount) = voterRegistryOrgan.organData();
         delete voterRegistryOrgan;
 
         // Check if quorum is obtained.

@@ -5,10 +5,9 @@ pragma solidity >=0.4.22 <0.7.0;
 import "./Kelsen.sol";
 import "./libraries/organLibrary.sol";
 
-contract Organ is Kelsen {
+contract Organ is Kelsen(true,false) {
     // Kelsen definition.
-    bool public isOrgan = true;
-    bool public isProcedure = false;
+    address public factory;
 
     // Linking to Organ library.
     using OrganLibrary for OrganLibrary.OrganData;
@@ -19,8 +18,11 @@ contract Organ is Kelsen {
     */
 
     // Constructor.
-    constructor(bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize) public {
-        organData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
+    constructor(address _owner, bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize) public {
+        // Kelsen attributes.
+        factory = msg.sender;
+        // Organ attributes.
+        organData.init(_owner, _metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
     }
 
     // Receiving funds.

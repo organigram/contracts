@@ -5,18 +5,15 @@ pragma solidity >=0.4.22 <0.7.0;
 import "./Kelsen.sol";
 import "./libraries/procedureLibrary.sol";
 
-contract Procedure is Kelsen {
+contract Procedure is Kelsen(false,true) {
     using ProcedureLibrary for address;
     using ProcedureLibrary for ProcedureLibrary.ProcedureData;
     ProcedureLibrary.ProcedureData public procedureData;
 
-    // Identifiers to adapt procedure interface
-    bool public isOrgan = false;
-    bool public isProcedure = true;
-
     constructor (bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize)
         public
     {
+        // Procedure attributes.
         procedureData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
     }
 
@@ -30,5 +27,20 @@ contract Procedure is Kelsen {
         public
     {
         procedureData.updateAdmin(_admin);
+    }
+}
+
+contract ProcedureFactory {
+    address[] public procedures;
+
+    function createProcedure() public pure {
+        revert("Factory must override the createProcedure method.");
+    }
+
+    function registerProcedure(address _contractAddress)
+        public returns (address)
+    {
+        procedures.push(_contractAddress);
+        return _contractAddress;
     }
 }

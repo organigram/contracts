@@ -23,10 +23,9 @@ contract CyclicalManyToManyBordaElectionProcedure is Procedure {
         address payable _votersOrganContract, address payable _affectedOrganContract,
         uint _frequency, uint _votingDuration, uint _quorumSize, uint _mandatesMaximum, uint _votersToCandidatesRatio,
         bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize
-    )
+    ) Procedure (_metadataIpfsHash, _metadataHashFunction, _metadataHashSize)
         public
     {
-        procedureData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
         votersOrganContract = _votersOrganContract;
         affectedOrganContract = _affectedOrganContract;
         // Candidacy duration is set to 2 times voting duration.
@@ -40,7 +39,7 @@ contract CyclicalManyToManyBordaElectionProcedure is Procedure {
         cyclicalElectionData.createElection(currentElection, _metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
         // Retrieving size of electorate.
         Organ votersRegistryOrgan = Organ(votersOrganContract);
-        (,,, uint normsCount) = votersRegistryOrgan.organData();
+        (,,,, uint normsCount) = votersRegistryOrgan.organData();
         delete votersRegistryOrgan;
 
         currentElection.electedCandidatesMaximum = normsCount / uint(cyclicalElectionData.votersToCandidatesRatio);
@@ -99,13 +98,13 @@ contract CyclicalManyToManyBordaElectionProcedure is Procedure {
         return currentElection.candidates;
     }
 
-    function latestElectionIVotedIn()
+    function getLatestElectionIVotedIn()
         public view returns (uint electionIndex)
     {
         return cyclicalElectionData.latestElectionIndexes[msg.sender];
     }
 
-    function candidacyProposal(address _candidate)
+    function getCandidacyProposal(address _candidate)
         public view returns (bytes32 ipfsHash, uint8 hashFunction, uint8 hashSize)
     {
         return (
@@ -113,5 +112,24 @@ contract CyclicalManyToManyBordaElectionProcedure is Procedure {
             cyclicalElectionData.candidacies[_candidate].proposalHashFunction,
             cyclicalElectionData.candidacies[_candidate].proposalHashSize
         );
+    }
+}
+
+contract CyclicalManyToManyBordaElectionProcedureFactory is ProcedureFactory {
+    function createProcedure(
+        address payable _votersOrganContract, address payable _affectedOrganContract,
+        uint _frequency, uint _votingDuration, uint _quorumSize, uint _mandatesMaximum, uint _votersToCandidatesRatio,
+        bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize
+    )
+        public returns (address)
+    {
+        // @TODO : Add check that gas can cover deployment.
+        address _contractAddress = address(new CyclicalManyToManyBordaElectionProcedure(
+            _votersOrganContract, _affectedOrganContract,
+            _frequency, _votingDuration, _quorumSize, _mandatesMaximum, _votersToCandidatesRatio,
+            _metadataIpfsHash, _metadataHashFunction, _metadataHashSize
+        ));
+        // Call ProcedureFactory.registerProcedure to register the new contract and returns an address.
+        return registerProcedure(_contractAddress);
     }
 }

@@ -35,6 +35,7 @@ library OrganLibrary {
     }
 
     struct OrganData {
+        address owner;
         bytes32 metadataIpfsHash;
         uint8 metadataHashFunction;
         uint8 metadataHashSize;
@@ -64,14 +65,15 @@ library OrganLibrary {
     */
 
     function init(
-        OrganData storage self,
+        OrganData storage self, address _owner,
         bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize
     )
         public
     {
         // Initializing with deployer as master.
-        self.masters[msg.sender].canAdd = true;
-        self.masters[msg.sender].canRemove = true;
+        self.owner = _owner;
+        self.masters[_owner].canAdd = true;
+        self.masters[_owner].canRemove = true;
         self.metadataIpfsHash = _ipfsHash;
         self.metadataHashFunction = _hashFunction;
         self.metadataHashSize = _hashSize;

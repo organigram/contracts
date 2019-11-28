@@ -12,10 +12,9 @@ contract SimpleNormNominationProcedure is Procedure {
     constructor (
         bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize,
         address payable _authorizedNominatersOrgan
-    )
+    ) Procedure (_metadataIpfsHash, _metadataHashFunction, _metadataHashSize)
         public
     {
-        procedureData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
         authorizedNominatersOrgan = _authorizedNominatersOrgan;
         // Set members of authorizedNominatersOrgan as admins.
         procedureData.updateAdmin(_authorizedNominatersOrgan);
@@ -59,5 +58,21 @@ contract SimpleNormNominationProcedure is Procedure {
         Organ targetOrganInstance = Organ(_targetOrgan);
         targetOrganInstance.replaceNorm(_oldNormIndex, _newNormAdress, _ipfsHash, _hashFunction, _hashSize);
     }
+}
 
+contract SimpleNormNominationProcedureFactory is ProcedureFactory {
+    function createProcedure(
+        bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize,
+        address payable _authorizedNominatersOrgan
+    )
+        public returns (address)
+    {
+        // @TODO : Add check that gas can cover deployment.
+        address _contractAddress = address(new SimpleNormNominationProcedure(
+            _metadataIpfsHash, _metadataHashFunction, _metadataHashSize,
+            _authorizedNominatersOrgan
+        ));
+        // Call ProcedureFactory.registerProcedure to register the new contract and returns an address.
+        return registerProcedure(_contractAddress);
+    }
 }

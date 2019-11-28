@@ -7,6 +7,11 @@ contract Kelsen {
     bool public isOrgan;
     bool public isProcedure;
 
+    constructor(bool _isOrgan, bool _isProcedure) public {
+        isOrgan = _isOrgan;
+        isProcedure = _isProcedure;
+    }
+
     function getKelsenData()
         public view returns(bool _isOrgan, bool _isProcedure, uint8 _version)
     {

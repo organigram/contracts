@@ -19,10 +19,9 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
         address payable _votersOrganContract, address payable _affectedOrganContract,
         uint _frequency, uint _votingDuration, uint _quorumSize, uint _mandatesMaximum,
         bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize
-    )
+    ) Procedure (_metadataIpfsHash, _metadataHashFunction, _metadataHashSize)
         public
     {
-        procedureData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);
         votersOrganContract = _votersOrganContract;
         affectedOrganContract = _affectedOrganContract;
         // Candidacy duration is set to 2 times voting duration.
@@ -99,5 +98,26 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
             cyclicalElectionData.candidacies[_candidate].proposalHashFunction,
             cyclicalElectionData.candidacies[_candidate].proposalHashSize
         );
+    }
+}
+
+
+
+contract CyclicalManyToOneElectionProcedureFactory is ProcedureFactory {
+    function createProcedure(
+        address payable _votersOrganContract, address payable _affectedOrganContract,
+        uint _frequency, uint _votingDuration, uint _quorumSize, uint _mandatesMaximum,
+        bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize
+    )
+        public returns (address)
+    {
+        // @TODO : Add check that gas can cover deployment.
+        address _contractAddress = address(new CyclicalManyToOneElectionProcedure(
+            _votersOrganContract, _affectedOrganContract,
+            _frequency, _votingDuration, _quorumSize, _mandatesMaximum,
+            _metadataIpfsHash, _metadataHashFunction, _metadataHashSize
+        ));
+        // Call ProcedureFactory.registerProcedure to register the new contract and returns an address.
+        return registerProcedure(_contractAddress);
     }
 }

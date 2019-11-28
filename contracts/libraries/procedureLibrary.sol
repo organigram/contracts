@@ -78,5 +78,4 @@ library ProcedureLibrary {
         require(authorizedUsersOrgan.getNormIndexForAddress(msg.sender) != 0, "Not authorized.");
         delete authorizedUsersOrgan;
     }
-
 }
