@@ -1,0 +1,83 @@
+[
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "procedures",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashSize",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_authorizedNominatersOrgan",
+        "type": "address"
+      }
+    ],
+    "name": "createProcedure",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "createProcedure",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]

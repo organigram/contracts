@@ -2,6 +2,21 @@
   {
     "inputs": [
       {
+        "internalType": "bytes32",
+        "name": "_metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashSize",
+        "type": "uint8"
+      },
+      {
         "internalType": "address payable",
         "name": "_votersOrganContract",
         "type": "address"
@@ -35,21 +50,6 @@
         "internalType": "uint256",
         "name": "_votersToCandidatesRatio",
         "type": "uint256"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "_metadataIpfsHash",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "uint8",
-        "name": "_metadataHashFunction",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint8",
-        "name": "_metadataHashSize",
-        "type": "uint8"
       }
     ],
     "payable": false,
@@ -196,6 +196,21 @@
         "internalType": "uint256",
         "name": "votersToCandidatesRatio",
         "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -494,7 +509,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "latestElectionIVotedIn",
+    "name": "getLatestElectionIVotedIn",
     "outputs": [
       {
         "internalType": "uint256",
@@ -515,7 +530,7 @@
         "type": "address"
       }
     ],
-    "name": "candidacyProposal",
+    "name": "getCandidacyProposal",
     "outputs": [
       {
         "internalType": "bytes32",

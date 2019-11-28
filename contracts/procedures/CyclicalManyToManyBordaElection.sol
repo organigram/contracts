@@ -21,9 +21,9 @@ contract CyclicalManyToManyBordaElectionProcedure is Procedure {
     uint public nextElectionToEnforce;
 
     constructor (
+        bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize,
         address payable _votersOrganContract, address payable _affectedOrganContract,
-        uint _frequency, uint _votingDuration, uint _quorumSize, uint _mandatesMaximum, uint _votersToCandidatesRatio,
-        bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize
+        uint _frequency, uint _votingDuration, uint _quorumSize, uint _mandatesMaximum, uint _votersToCandidatesRatio
     ) Procedure (_metadataIpfsHash, _metadataHashFunction, _metadataHashSize)
         public
     {
@@ -126,9 +126,9 @@ contract CyclicalManyToManyBordaElectionProcedureFactory is ProcedureFactory {
     {
         // @TODO : Add check that gas can cover deployment.
         address _contractAddress = address(new CyclicalManyToManyBordaElectionProcedure(
+            _metadataIpfsHash, _metadataHashFunction, _metadataHashSize,
             _votersOrganContract, _affectedOrganContract,
-            _frequency, _votingDuration, _quorumSize, _mandatesMaximum, _votersToCandidatesRatio,
-            _metadataIpfsHash, _metadataHashFunction, _metadataHashSize
+            _frequency, _votingDuration, _quorumSize, _mandatesMaximum, _votersToCandidatesRatio
         ));
         // Call ProcedureFactory.registerProcedure to register the new contract and returns an address.
         return registerProcedure(_contractAddress);

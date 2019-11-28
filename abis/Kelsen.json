@@ -1,5 +1,22 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "_isOrgan",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isProcedure",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "constant": true,
     "inputs": [],
     "name": "isOrgan",
