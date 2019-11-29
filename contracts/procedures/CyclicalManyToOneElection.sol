@@ -12,8 +12,6 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
 
     CyclicalElectionLibrary.CyclicalElectionData public cyclicalElectionData;
     CyclicalElectionLibrary.Election public currentElection;
-    address payable public votersOrganContract;
-    address payable public affectedOrganContract;
     address payable public elected;
 
     constructor (
@@ -23,11 +21,12 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
     ) Procedure (_metadataIpfsHash, _metadataHashFunction, _metadataHashSize)
         public
     {
-        votersOrganContract = _votersOrganContract;
-        affectedOrganContract = _affectedOrganContract;
         // Candidacy duration is set to 2 times voting duration.
         // Voters to candidates ratio is set to 0 for many-to-one elections.
-        cyclicalElectionData.init(_frequency, _votingDuration, _quorumSize, _mandatesMaximum, 2 * _votingDuration, 0);
+        cyclicalElectionData.init(
+            _votersOrganContract, _affectedOrganContract,
+            _frequency, _votingDuration, _quorumSize, _mandatesMaximum, 2 * _votingDuration, 0
+        );
     }
 
     // Create a new election.
@@ -41,8 +40,6 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
     function presentCandidacy(bytes32 _proposalIpfsHash, uint8 _proposalHashFunction, uint8 _proposalHashSize)
         public
     {
-        // Check that the candidate is a member of the reference organ.
-        ProcedureLibrary.checkAuthorization(votersOrganContract);
         cyclicalElectionData.presentCandidacy(currentElection, _proposalIpfsHash, _proposalHashFunction, _proposalHashSize);
     }
 
@@ -50,7 +47,6 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
     function vote(address payable _candidate)
         public
     {
-        ProcedureLibrary.checkAuthorization(votersOrganContract);
         cyclicalElectionData.voteManyToOne(currentElection, _candidate);
     }
 
@@ -58,14 +54,7 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
     function endElection()
         public returns (address electionWinner)
     {
-        electionWinner = cyclicalElectionData.countManyToOne(currentElection, votersOrganContract);
-        if (electionWinner != address(0)) {
-            cyclicalElectionData.mandatesCounts[electionWinner] += 1;
-            if (electionWinner != elected) {
-                cyclicalElectionData.electCandidate(currentElection, electionWinner, elected, affectedOrganContract);
-            }
-            delete cyclicalElectionData.candidacies[electionWinner];
-        }
+        electionWinner = cyclicalElectionData.endManyToOne(currentElection);
 
         // Cleaning contract state from election but keeping index.
         uint electionIndex = currentElection.index;
@@ -79,19 +68,19 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
         Utilities functions.
     */
 
-    function currentCandidates()
+    function getCurrentCandidates()
         public view returns (address[] memory candidates)
     {
         return currentElection.candidates;
     }
 
-    function latestElectionIVotedIn()
+    function getCatestElectionIVotedIn()
         public view returns (uint electionIndex)
     {
         return cyclicalElectionData.latestElectionIndexes[msg.sender];
     }
 
-    function candidacyProposal(address _candidate)
+    function getCandidacyProposal(address _candidate)
         public view returns (bytes32 ipfsHash, uint8 hashFunction, uint8 hashSize)
     {
         return (

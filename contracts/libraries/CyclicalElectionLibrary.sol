@@ -22,6 +22,8 @@ library CyclicalElectionLibrary {
         uint mandatesMaximum;
         uint quorumSize;                                        // Minimum participation for a valid election.
         uint votersToCandidatesRatio;                           // For many-to-many elections.
+        address payable votersOrganContract;
+        address payable affectedOrganContract;
         mapping(address => uint) mandatesCounts;
         mapping(address => uint) latestElectionIndexes;
         mapping(address => Candidacy) candidacies;              // Reset before each election.
@@ -40,11 +42,14 @@ library CyclicalElectionLibrary {
         uint startDate;
         uint endDate;
         uint candidacyEndDate;
+        bool hasQuorum;
         bool isEnded;
         uint votesTotal;
         uint votersTotal;
         uint electedCandidatesMaximum;      // Number of winners in many-to-many elections.
         address[] candidates;
+        address[] winningCandidates;
+        uint minimumVotesToBeWinning;
         bytes32 metadataIpfsHash;
         uint8 metadataHashFunction;
         uint8 metadataHashSize;
@@ -63,20 +68,17 @@ library CyclicalElectionLibrary {
         bytes32 _proposalIpfsHash, uint8 _proposalHashFunction, uint8 _proposalHashSize
     );
     event voted(uint _electionIndex, address _from);
-    event electionCounted(uint _electionIndex, address _winningCandidate, uint _votesTotal);
     event electionFailed(uint _electionIndex);
-    event electionEnforced(uint _electionIndex, address _winningCandidate);
-    event candidateVotesCounted(uint _electionIndex, address _candidate, uint _votes);
-    event manyToManyBordaElectionCounted(uint _electionIndex, uint _votesTotal);
-    event manyToManyBordaElectionEnforced(uint _electionIndex, address[] _winningCandidates);
+    event electionSucceeded(uint _electionIndex, address[] _winningCandidates);
 
     /*
         Constructor.
     */
 
     function init(
-        CyclicalElectionData storage self, uint _frequency, uint _votingDuration,
-        uint _quorumSize, uint _mandatesMaximum, uint _candidacyDuration, uint _votersToCandidatesRatio
+        CyclicalElectionData storage self,
+        address payable _votersOrganContract, address payable _affectedOrganContract,
+        uint _frequency, uint _votingDuration, uint _quorumSize, uint _mandatesMaximum, uint _candidacyDuration, uint _votersToCandidatesRatio
     )
         public
     {
@@ -87,6 +89,8 @@ library CyclicalElectionLibrary {
         self.mandatesMaximum = _mandatesMaximum;
         self.candidacyDuration = _candidacyDuration;
         self.votersToCandidatesRatio = _votersToCandidatesRatio;
+        self.votersOrganContract = _votersOrganContract;
+        self.affectedOrganContract = _affectedOrganContract;
     }
 
     function createElection(
@@ -99,7 +103,6 @@ library CyclicalElectionLibrary {
         require (now > self.nextElectionDate, "Election date not reached.");
         // Checking if previous election was counted.
         require(election.startDate == 0, "Previous election was not counted.");
-
         election.index = election.index + 1;
         election.metadataIpfsHash = _metadataIpfsHash;
         election.metadataHashFunction = _metadataHashFunction;
@@ -107,6 +110,16 @@ library CyclicalElectionLibrary {
         election.startDate = now;
         election.candidacyEndDate = now + self.candidacyDuration;
         election.endDate = now + self.candidacyDuration + self.votingDuration;
+        
+        // Retrieving size of electorate.
+        Organ votersRegistryOrgan = Organ(self.votersOrganContract);
+        (,,,, uint normsCount) = votersRegistryOrgan.organData();
+        delete votersRegistryOrgan;
+
+        election.electedCandidatesMaximum = normsCount / uint(self.votersToCandidatesRatio);
+        if (election.electedCandidatesMaximum == 0) {
+            election.electedCandidatesMaximum = 1;
+        }
 
         self.nextElectionDate = now + self.frequency;
 
@@ -122,6 +135,8 @@ library CyclicalElectionLibrary {
     )
         public
     {
+        // Check that the user is a voter.
+        requireVoter(self);
         // Check that the election is still active.
         require(!election.isEnded, "A election is still ongoing.");
         // Check that the election candidacy period is still open.
@@ -143,18 +158,29 @@ library CyclicalElectionLibrary {
     function voteManyToOne(CyclicalElectionData storage self, Election storage election, address payable _candidate)
         public
     {
+        // Check that the user is a voter.
+        requireVoter(self);
         // Check if voter didn't already vote.
         require(self.latestElectionIndexes[msg.sender] < election.index, "Duplicate record.");
-
         // Check if candidacy period is over.
         require(election.candidacyEndDate < now, "Candidacy period is not over.");
-
         // Check if voting period ended.
         require(!election.isEnded && election.endDate > now, "Voting period is over.");
 
         // Check if candidate for whom we voted for is declared
         if (self.candidacies[_candidate].candidate != address(0)) {
             self.candidacies[_candidate].votes += 1;
+
+            // Track winning candidate.
+            // If nobody is winning, we compute if current candidate is winning.
+            if (self.candidacies[_candidate].votes > election.minimumVotesToBeWinning && election.winningCandidates.length == 0) {
+                election.winningCandidates.push(_candidate);
+                election.minimumVotesToBeWinning = self.candidacies[_candidate].votes;
+            }
+            // In case of tie, we remove the current winner.
+            else if (self.candidacies[_candidate].votes == election.minimumVotesToBeWinning && election.winningCandidates.length == 1) {
+                delete election.winningCandidates[0];
+            }
         }
         // If candidate does not exist, this is a neutral vote.
         else {
@@ -164,12 +190,12 @@ library CyclicalElectionLibrary {
         self.latestElectionIndexes[msg.sender] == election.index;
         election.votesTotal += 1;
 
-        // Event
+        // Vote is done.
         emit voted(election.index, msg.sender);
     }
 
-    function countManyToOne(CyclicalElectionData storage self, Election storage election, address payable _votersOrganAddress)
-        public returns (address electedCandidate)
+    function endElection(CyclicalElectionData storage self, Election storage election)
+        public returns (address[] memory electedCandidates)
     {
         // Check that voting has ended.
         require(
@@ -179,274 +205,102 @@ library CyclicalElectionLibrary {
             "Voting period not ended."
         );
 
-        // End and fail if there are no candidates or no votes.
-        if (election.candidates.length == 0 || election.votesTotal == 0) {
-            election.isEnded = true;
-            emit electionFailed(election.index);
-            self.nextElectionDate = now - 1;
-            return address(0);
-        }
+        election.isEnded = true;
 
         // End and fail if the time has come for a new election.
-        if (now > (election.startDate + self.frequency))
-        {
-            emit electionFailed(election.index);
-            election.isEnded = true;
-            return address(0);
-        }
-
-        // Going through candidates to check the vote count.
-        uint winningVoteCount = 0;
-        bool isADraw = false;
-        bool quorumIsObtained = false;
-
-        Organ voterRegistryOrgan = Organ(_votersOrganAddress);
-
-        // Check if quorum is obtained.
-        (,,,, uint normsCount) = voterRegistryOrgan.organData();
-        delete voterRegistryOrgan;
-        if ((election.votesTotal * 100) >= (self.quorumSize * normsCount)) {
-            quorumIsObtained = true;
-        }
-
-        // For each candidate...
-        for (uint p = 0; p < election.candidates.length; p++) {
-            address _candidate = election.candidates[p];
-
-            // Log how many votes this candidate received
-            emit candidateVotesCounted(election.index, _candidate, self.candidacies[_candidate].votes);
-
-            // In case of clear win.
-            if (self.candidacies[_candidate].votes > winningVoteCount) {
-                winningVoteCount = self.candidacies[_candidate].votes;
-                delete self.candidacies[electedCandidate];
-                electedCandidate = _candidate;
-                isADraw = false;
-            }
-            // In case of draw.
-            else if (self.candidacies[_candidate].votes == winningVoteCount) {
-                isADraw = true;
-                delete self.candidacies[electedCandidate];
-                delete self.candidacies[_candidate];
-            }
-            // Remove loser from candidacies.
-            else {
-                delete self.candidacies[_candidate];
-            }
-        }
-
-        election.isEnded = true;
-
-        // Fail if election is a draw or failed to reach quorum.
-        if (isADraw || !quorumIsObtained) {
-            emit electionFailed(election.index);
-            self.nextElectionDate = now - 1;
-            return address(0);
-        }
-
-        // The election completed succesfully.
-        emit electionCounted(election.index, electedCandidate, election.votesTotal);
-
-        return electedCandidate;
-    }
-
-    function voteManyToManyBorda(CyclicalElectionData storage self, Election storage election, address[] memory _candidates)
-        public
-    {
-        // Check if voter didn't vote yet.
-        require(self.latestElectionIndexes[msg.sender] < election.index, "Duplicate record.");
-        // Check that election is ended.
-        require(
-            election.isEnded &&
-            election.endDate > now &&
-            election.candidacyEndDate < now,
-            "Election not ended."
-        );
-        // Check the vote is for a valid number of candidates.
-        require(
-            _candidates.length > 0 &&
-            _candidates.length <= election.electedCandidatesMaximum,
-            "Invalid number of candidates."
-        );
-
-        // Going through the list of selected candidates
-        for (uint i = 0; i < _candidates.length; i++) {
-            if (self.candidacies[_candidates[i]].candidate != address(0)) {
-                self.candidacies[_candidates[i]].votes += election.electedCandidatesMaximum - i;
-                election.votesTotal += election.electedCandidatesMaximum - i;
-            }
-            // If candidate does not exist, this is a neutral vote.
-            else {
-                self.candidacies[address(0)].votes += 1;
-            }
-        }
-        self.latestElectionIndexes[msg.sender] == election.index;
-        election.votersTotal += 1;
-
-        emit voted(election.index, msg.sender);
-    }
-
-    function countManyToManyBorda(
-        CyclicalElectionData storage self, Election storage election,
-        address[] storage nextModerators, address payable _votersOrganAddress
-    )
-        public
-    {
-        // We check if the vote was already closed
-        require(!election.isEnded && election.endDate < now, "Election is not over.");
-
-        // Checking the election has been initialised
-        require(election.endDate != 0, "Election not initialised.");
-
-        // Checking that the vote can be closed
-        if ((election.candidates.length == 0) || election.votesTotal == 0) {
-            self.nextElectionDate = now - 1;
-            election.isEnded = true;
-            emit electionFailed(election.index);
-            return;
-        }
-
-        // Checking that the enforcing date is not later than the end of his supposed mandate
         if (now > (election.startDate + self.frequency)) {
-            self.nextElectionDate = now - 1;
-            election.isEnded = true;
             emit electionFailed(election.index);
-            return;
+            return address(0);
         }
 
-        Organ voterRegistryOrgan = Organ(_votersOrganAddress);
-        (,,,, uint normsCount) = voterRegistryOrgan.organData();
-        delete voterRegistryOrgan;
+        // Compute quorum.
+        Organ votersOrgan = Organ(self.votersOrganContract);
+        (,,,, uint normsCount) = votersOrgan.organData();
+        delete votersOrgan;
+        election.hasQuorum = (election.votesTotal * 100) >= (self.quorumSize * normsCount);
 
-        // Check if quorum is obtained.
-        if ((election.votersTotal * 100) < (self.quorumSize * normsCount)) {
-            self.nextElectionDate = now - 1;
-            election.isEnded = true;
+        // End and fail if there are no winners, no votes or no quorum.
+        if (
+            election.winningCandidates.length == 0 ||
+            election.votesTotal == 0 ||
+            !election.hasQuorum
+        ) {
             emit electionFailed(election.index);
-            return;
+            self.nextElectionDate = now - 1;
+            return address(0);
         }
 
-        // Checking that there are enough candidates
-        if (election.candidates.length < election.electedCandidatesMaximum) {
-            election.electedCandidatesMaximum = election.candidates.length;
-        }
-
-        uint previousThresholdCount = uint(0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF);
-        uint winningVoteCount = 0;
-        uint isADraw = 0;
-        uint roundWinningCandidate = 0;
-
-        // Going through candidate lists to check all elected moderators.
-        // @ FIXME : Avoid O(mn) complexities potentially causing out-of-gas exceptions.
-        for (uint i = 0; i < election.electedCandidatesMaximum; i++) {
-            winningVoteCount = 0;
-            roundWinningCandidate = 0;
-            // Going through candidate list once to find best suitor.
-            for (uint p = 0; p < election.candidates.length; p++) {
-                address _candidate = election.candidates[p];
-                if (self.candidacies[_candidate].votes < previousThresholdCount) {
-                    if (self.candidacies[_candidate].votes > winningVoteCount) {
-                        winningVoteCount = self.candidacies[_candidate].votes;
-                        roundWinningCandidate = p;
-                        isADraw = 0;
-                    }
-                    else if (self.candidacies[_candidate].votes == winningVoteCount) {
-                        isADraw += 1;
-                    }
-                }
-
-            }
-
-            // Checking if various candidates tied
-            if (winningVoteCount > 0) {
-                if (isADraw > 0) {
-                    // Going through list one more time to add all tied up candidates
-                    for (uint q = 0; q < election.candidates.length; q++) {
-                        // Detecting ties
-                        if (i < election.electedCandidatesMaximum && self.candidacies[election.candidates[q]].votes == winningVoteCount) {
-                            nextModerators.push(election.candidates[q]);
-                            i += 1;
-                        }
-                    }
-                }
-                // Adding candidate to winning candidate list
-                else {
-                    nextModerators.push(election.candidates[roundWinningCandidate]);
-                }
-            }
-
-            previousThresholdCount = winningVoteCount;
-        }
-
-        election.isEnded = true;
-
-        emit manyToManyBordaElectionCounted(election.index, election.votesTotal);
+        // Else we elect the winners.
+        electCandidates(self, election);
+        emit electionSucceeded(election.index, election.winningCandidates);
+        // Clean up.
+        delete self.candidacies;
+        return election.winningCandidates;
     }
 
-    function enforceManyToManyBorda(
-        CyclicalElectionData storage self, Election storage election,
-        address[] storage nextModerators,address[] storage currentModerators, address payable _moderatorsOrganAddress
-    )
+    // @TODO : If the cost of replacing a norm is not much lower than removing and adding back,
+    // we can simply remove all the old norms and add the new ones.
+    function electCandidates(CyclicalElectionData storage self, Election storage election)
         public
     {
-        // Checking the election was closed
-        require(election.isEnded, "Election is not ended.");
-        // Checking there are new moderators to add
-        require(nextModerators.length > 0, "There are no new moderators to add.");
+        Organ affectedOrgan = Organ(self.affectedOrganContract);
 
-        // We initiate the Organ interface to add a moderator norm
-        Organ moderatorsOrgan = Organ(_moderatorsOrganAddress);
+        mapping(address => uint) storage winningCandidatesIndexes;
 
-        // Removing current moderators, if this is not a first election
-        if (election.index > 1) {
-            for (uint i = 0; i < currentModerators.length; i++) {
-                moderatorsOrgan.removeNorm(moderatorsOrgan.getNormIndexForAddress(currentModerators[i]));
-                delete currentModerators[i];
-            }
+        // Loop through winning candidates.
+        for (uint i = 0; i < election.winningCandidates.length; ++i) {
+            self.mandatesCounts[election.winningCandidates[i]] += 1;
+            // We store an index starting at 1. An index of 0 means not in the array.
+            winningCandidatesIndexes[election.winningCandidates[i]] = i + 1;
         }
 
-        // Adding new moderators
-        for (uint p = 0; p < nextModerators.length; p++) {
-            Candidacy memory newModerator = self.candidacies[nextModerators[p]];
-            moderatorsOrgan.addNorm(
-                newModerator.candidate,
-                newModerator.proposalIpfsHash, newModerator.proposalHashFunction, newModerator.proposalHashSize
-            );
-            self.mandatesCounts[nextModerators[p]] += 1;
-            if (p < currentModerators.length) {
-                currentModerators[p] = newModerator.candidate;
+        // Loop through existing elected norms and mark them for removal if needed.
+        (,,,, uint normsCount) = affectedOrgan.organData();
+        address[] memory addressesToRemove;
+        for (uint i = 0; i < normsCount; ++i) {
+            (address normAddress,,,) = affectedOrgan.getNorm(i);
+            if (winningCandidatesIndexes[normAddress] == 0) {
+                // Removing the norm will mess with the indexes during the loop, so we just store the address.
+                addressesToRemove.push(normAddress);
             }
             else {
-                currentModerators.push(newModerator.candidate);
+                // If a winning candidate is already in the organ, we update the norm and mark him done.
+                affectedOrgan.replaceNorm(
+                    i, self.candidacies[normAddress].candidate,
+                    self.candidacies[normAddress].proposalIpfsHash,
+                    self.candidacies[normAddress].proposalHashFunction,
+                    self.candidacies[normAddress].proposalHashSize
+                );
+                winningCandidatesIndexes[normAddress] = 0;
             }
-            delete newModerator;
         }
 
-        delete moderatorsOrgan;
-
-        // Cleaning candidate lists and candidatures.
-        for (uint k = 0; k < election.candidates.length; k++) {
-            delete self.candidacies[election.candidates[k]];
+        // Remove the old norms now.
+        for (uint i = 0; i < addressesToRemove.length; ++i) {
+            affectedOrgan.removeNorm(affectedOrgan.getNormIndexForAddress(addressesToRemove[i]));
         }
 
-        emit manyToManyBordaElectionEnforced(election.index, nextModerators);
+        // Loop through winning candidates and add them.
+        for (uint i = 0; i < election.winningCandidates.length; ++i) {
+            // We add them if they are still in the indexes mapping.
+            if (winningCandidatesIndexes[election.winningCandidates[i]] > 0) {
+                address candidate = election.winningCandidates[i];
+                affectedOrgan.addNorm(
+                    self.candidacies[candidate].candidate,
+                    self.candidacies[candidate].proposalIpfsHash,
+                    self.candidacies[candidate].proposalHashFunction,
+                    self.candidacies[candidate].proposalHashSize
+                );
+            }
+        }
     }
 
-    function electCandidate(
-        CyclicalElectionData storage self, Election storage election,
-        address _candidate, address _currentElected, address payable _organAddress
-    )
-        public
+    function requireVoter(CyclicalElectionData storage self)
+        internal view
     {
-        Organ targetOrgan = Organ(_organAddress);
-        targetOrgan.addNorm(
-            self.candidacies[_candidate].candidate,
-            self.candidacies[_candidate].proposalIpfsHash, self.candidacies[_candidate].proposalHashFunction, self.candidacies[_candidate].proposalHashSize
-        );
-        if (election.index > 1) {
-            targetOrgan.removeNorm(targetOrgan.getNormIndexForAddress(_currentElected));
-        }
-
-        emit electionEnforced(election.index, _candidate);
+        // Verifying the evaluator is an admin.
+        Organ votersOrgan = Organ(self.votersOrganContract);
+        require(votersOrgan.getNormIndexForAddress(msg.sender) != 0, "Not authorized.");
+        delete votersOrgan;
     }
 }
