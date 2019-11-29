@@ -54,21 +54,6 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "affectedOrganContract",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
     "name": "currentElection",
     "outputs": [
       {
@@ -93,6 +78,11 @@
       },
       {
         "internalType": "bool",
+        "name": "hasQuorum",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
         "name": "isEnded",
         "type": "bool"
       },
@@ -109,6 +99,11 @@
       {
         "internalType": "uint256",
         "name": "electedCandidatesMaximum",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumVotesToBeWinning",
         "type": "uint256"
       },
       {
@@ -170,6 +165,16 @@
         "internalType": "uint256",
         "name": "votersToCandidatesRatio",
         "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "votersOrganContract",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "affectedOrganContract",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -347,21 +352,6 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "votersOrganContract",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [
       {
@@ -432,7 +422,7 @@
     "name": "endElection",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "electionWinner",
         "type": "address"
       }
@@ -444,10 +434,10 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "currentCandidates",
+    "name": "getCurrentCandidates",
     "outputs": [
       {
-        "internalType": "address[]",
+        "internalType": "address payable[]",
         "name": "candidates",
         "type": "address[]"
       }
@@ -459,7 +449,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "latestElectionIVotedIn",
+    "name": "getCatestElectionIVotedIn",
     "outputs": [
       {
         "internalType": "uint256",
@@ -480,7 +470,7 @@
         "type": "address"
       }
     ],
-    "name": "candidacyProposal",
+    "name": "getCandidacyProposal",
     "outputs": [
       {
         "internalType": "bytes32",

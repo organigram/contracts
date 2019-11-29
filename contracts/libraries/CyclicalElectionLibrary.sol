@@ -47,8 +47,8 @@ library CyclicalElectionLibrary {
         uint votesTotal;
         uint votersTotal;
         uint electedCandidatesMaximum;      // Number of winners in many-to-many elections.
-        address[] candidates;
-        address[] winningCandidates;
+        address payable[] candidates;
+        address payable[] winningCandidates;
         uint minimumVotesToBeWinning;
         bytes32 metadataIpfsHash;
         uint8 metadataHashFunction;
@@ -69,7 +69,7 @@ library CyclicalElectionLibrary {
     );
     event voted(uint _electionIndex, address _from);
     event electionFailed(uint _electionIndex);
-    event electionSucceeded(uint _electionIndex, address[] _winningCandidates);
+    event electionSucceeded(uint _electionIndex, address payable[] _winningCandidates);
 
     /*
         Constructor.
@@ -195,7 +195,7 @@ library CyclicalElectionLibrary {
     }
 
     function endElection(CyclicalElectionData storage self, Election storage election)
-        public returns (address[] memory electedCandidates)
+        public returns (address payable[] memory electedCandidates)
     {
         // Check that voting has ended.
         require(
@@ -207,10 +207,11 @@ library CyclicalElectionLibrary {
 
         election.isEnded = true;
 
+
         // End and fail if the time has come for a new election.
         if (now > (election.startDate + self.frequency)) {
             emit electionFailed(election.index);
-            return address(0);
+            return electedCandidates;
         }
 
         // Compute quorum.
@@ -227,71 +228,40 @@ library CyclicalElectionLibrary {
         ) {
             emit electionFailed(election.index);
             self.nextElectionDate = now - 1;
-            return address(0);
+            return electedCandidates;
         }
 
         // Else we elect the winners.
         electCandidates(self, election);
         emit electionSucceeded(election.index, election.winningCandidates);
         // Clean up.
-        delete self.candidacies;
+        for (uint i = 0; i < election.candidates.length; ++i) {
+            delete self.candidacies[election.candidates[i]];
+        }
         return election.winningCandidates;
     }
 
-    // @TODO : If the cost of replacing a norm is not much lower than removing and adding back,
-    // we can simply remove all the old norms and add the new ones.
     function electCandidates(CyclicalElectionData storage self, Election storage election)
         public
     {
         Organ affectedOrgan = Organ(self.affectedOrganContract);
 
-        mapping(address => uint) storage winningCandidatesIndexes;
+        // Remove all old norms.
+        (,,,, uint normsCount) = affectedOrgan.organData();
+        for (uint i = 0; i < normsCount; ++i) {
+            affectedOrgan.removeNorm(0);
+        }
 
         // Loop through winning candidates.
         for (uint i = 0; i < election.winningCandidates.length; ++i) {
-            self.mandatesCounts[election.winningCandidates[i]] += 1;
-            // We store an index starting at 1. An index of 0 means not in the array.
-            winningCandidatesIndexes[election.winningCandidates[i]] = i + 1;
-        }
-
-        // Loop through existing elected norms and mark them for removal if needed.
-        (,,,, uint normsCount) = affectedOrgan.organData();
-        address[] memory addressesToRemove;
-        for (uint i = 0; i < normsCount; ++i) {
-            (address normAddress,,,) = affectedOrgan.getNorm(i);
-            if (winningCandidatesIndexes[normAddress] == 0) {
-                // Removing the norm will mess with the indexes during the loop, so we just store the address.
-                addressesToRemove.push(normAddress);
-            }
-            else {
-                // If a winning candidate is already in the organ, we update the norm and mark him done.
-                affectedOrgan.replaceNorm(
-                    i, self.candidacies[normAddress].candidate,
-                    self.candidacies[normAddress].proposalIpfsHash,
-                    self.candidacies[normAddress].proposalHashFunction,
-                    self.candidacies[normAddress].proposalHashSize
-                );
-                winningCandidatesIndexes[normAddress] = 0;
-            }
-        }
-
-        // Remove the old norms now.
-        for (uint i = 0; i < addressesToRemove.length; ++i) {
-            affectedOrgan.removeNorm(affectedOrgan.getNormIndexForAddress(addressesToRemove[i]));
-        }
-
-        // Loop through winning candidates and add them.
-        for (uint i = 0; i < election.winningCandidates.length; ++i) {
-            // We add them if they are still in the indexes mapping.
-            if (winningCandidatesIndexes[election.winningCandidates[i]] > 0) {
-                address candidate = election.winningCandidates[i];
-                affectedOrgan.addNorm(
-                    self.candidacies[candidate].candidate,
-                    self.candidacies[candidate].proposalIpfsHash,
-                    self.candidacies[candidate].proposalHashFunction,
-                    self.candidacies[candidate].proposalHashSize
-                );
-            }
+            address candidate = election.winningCandidates[i];
+            self.mandatesCounts[candidate] += 1;
+            affectedOrgan.addNorm(
+                self.candidacies[candidate].candidate,
+                self.candidacies[candidate].proposalIpfsHash,
+                self.candidacies[candidate].proposalHashFunction,
+                self.candidacies[candidate].proposalHashSize
+            );
         }
     }
 

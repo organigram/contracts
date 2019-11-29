@@ -52,16 +52,16 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
 
     // The vote is finished and we close it. This triggers the outcome of the vote.
     function endElection()
-        public returns (address electionWinner)
+        public returns (address payable electionWinner)
     {
-        electionWinner = cyclicalElectionData.endManyToOne(currentElection);
+        address payable[] memory electionWinners = cyclicalElectionData.endElection(currentElection);
 
         // Cleaning contract state from election but keeping index.
         uint electionIndex = currentElection.index;
         delete currentElection;
         currentElection.index = electionIndex;
 
-        return electionWinner;
+        return electionWinners.length == 1 ? electionWinners[0] : address(0);
     }
 
     /*
@@ -69,7 +69,7 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
     */
 
     function getCurrentCandidates()
-        public view returns (address[] memory candidates)
+        public view returns (address payable[] memory candidates)
     {
         return currentElection.candidates;
     }
