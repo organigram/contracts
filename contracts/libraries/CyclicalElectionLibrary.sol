@@ -7,10 +7,8 @@ import "../Organ.sol";
     This library holds logic common to all cyclical voting procedures.
 */
 
-// @ FIXME : Enforce methods seem susceptible to re-entrancy.
+// @ FIXME : endElection method might be susceptible to re-entrancy.
 // https://solidity.readthedocs.io/en/v0.5.13/security-considerations.html#re-entrancy
-// @ FIXME : Votes count seem susceptible to out-of-gas exceptions.
-// https://solidity.readthedocs.io/en/v0.5.13/security-considerations.html#gas-limit-and-loops
 
 library CyclicalElectionLibrary {
 
