@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.7.0;
 /// @title Base contract from which procedures factories inherit.
 
 contract ProcedureFactory {
+
     address public owner;
     address[] public procedures;
 

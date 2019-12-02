@@ -6,13 +6,13 @@ import "../libraries/CyclicalElectionLibrary.sol";
 import "../ProcedureFactory.sol";
 
 contract CyclicalManyToOneElectionProcedure is Procedure {
+
     using CyclicalElectionLibrary for CyclicalElectionLibrary.CyclicalElectionData;
     using CyclicalElectionLibrary for CyclicalElectionLibrary.Candidacy;
     using CyclicalElectionLibrary for CyclicalElectionLibrary.Election;
 
     CyclicalElectionLibrary.CyclicalElectionData public cyclicalElectionData;
     CyclicalElectionLibrary.Election public currentElection;
-    address payable public elected;
 
     constructor (
         bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize,
@@ -74,7 +74,7 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
         return currentElection.candidates;
     }
 
-    function getCatestElectionIVotedIn()
+    function getLatestElectionIVotedIn()
         public view returns (uint electionIndex)
     {
         return cyclicalElectionData.latestElectionIndexes[msg.sender];
@@ -90,8 +90,6 @@ contract CyclicalManyToOneElectionProcedure is Procedure {
         );
     }
 }
-
-
 
 contract CyclicalManyToOneElectionProcedureFactory is ProcedureFactory {
     function createProcedure(

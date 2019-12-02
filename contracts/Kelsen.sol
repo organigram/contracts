@@ -3,6 +3,7 @@ pragma solidity >=0.4.22 <0.7.0;
 /// @title Standard Kelsen contract.
 
 contract Kelsen {
+
     uint8 public kelsenVersion = 3;
     bool public isOrgan;
     bool public isProcedure;

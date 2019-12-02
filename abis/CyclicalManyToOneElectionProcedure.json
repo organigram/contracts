@@ -184,21 +184,6 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "elected",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
     "name": "factory",
     "outputs": [
       {
@@ -449,7 +434,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "getCatestElectionIVotedIn",
+    "name": "getLatestElectionIVotedIn",
     "outputs": [
       {
         "internalType": "uint256",

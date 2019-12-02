@@ -4,6 +4,7 @@ pragma solidity >=0.4.22 <0.7.0;
 import "./Organ.sol";
 
 contract KelsenFactory {
+
     struct FactoryData {
         address contractAddress;
         uint16 version;
@@ -57,7 +58,8 @@ contract KelsenFactory {
             require(_version > factoryData.version, "Wrong version number.");
             factoryData.version = _version;
             factoryData.contractAddress = _contractAddress;
-        } else {
+        }
+        else {
             require(_version >= 1, "Wrong version number.");
             factoryData = FactoryData({
                 contractAddress: _contractAddress,

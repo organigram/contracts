@@ -8,6 +8,7 @@ import "../Organ.sol";
 */
 
 library ProcedureLibrary {
+
     struct ProcedureData {
         bytes32 metadataIpfsHash;
         uint8 metadataHashFunction;
