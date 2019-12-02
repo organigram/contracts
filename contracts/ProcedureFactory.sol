@@ -6,6 +6,9 @@ contract ProcedureFactory {
     address public owner;
     address[] public procedures;
 
+    // Events.
+    event procedureRegistered(address _from, address _address);
+
     constructor() public {
         owner = msg.sender;
     }
@@ -18,6 +21,7 @@ contract ProcedureFactory {
         internal returns (address)
     {
         procedures.push(_contractAddress);
+        emit procedureRegistered(msg.sender, _contractAddress);
         return _contractAddress;
     }
 }

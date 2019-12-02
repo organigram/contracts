@@ -6,7 +6,6 @@ import "./Kelsen.sol";
 import "./libraries/procedureLibrary.sol";
 
 contract Procedure is Kelsen(false,true) {
-    using ProcedureLibrary for address;
     using ProcedureLibrary for ProcedureLibrary.ProcedureData;
     ProcedureLibrary.ProcedureData public procedureData;
 

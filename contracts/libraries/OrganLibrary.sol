@@ -29,7 +29,7 @@ library OrganLibrary {
     */
     struct Norm {
         address payable normAddress;    // Address if norm is a member or a contract.
-        bytes32 ipfsHash;              // ID of proposal on IPFS.
+        bytes32 ipfsHash;               // ID of proposal on IPFS.
         uint8 hashFunction;
         uint8 hashSize;
     }
