@@ -12,14 +12,14 @@ contract KelsenFactory {
 
     // Store organs created directly.
     address public owner;
-    address[] public organs;
+    address payable[] public organs;
     // Store procedures factories.
     string[] public proceduresNames;
     uint public proceduresCount;
     mapping (string => FactoryData) proceduresFactories;
 
     // Events.
-    event organCreated(address _from, address _address);
+    event organCreated(address _from, address payable _address);
     event procedureFactoryRegistered(address _from, string _name, address _contractAddress, uint16 _version);
 
     constructor () public {
@@ -27,12 +27,12 @@ contract KelsenFactory {
     }
 
     function createOrgan(bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize)
-        public returns (address)
+        public returns (address payable)
     {
         // @TODO : Check if enough gas.
 
         // Create instance, add instance to array, return instance.
-        address organAddress = address(new Organ(msg.sender, _metadataIpfsHash, _metadataHashFunction, _metadataHashSize));
+        address payable organAddress = address(new Organ(msg.sender, _metadataIpfsHash, _metadataHashFunction, _metadataHashSize));
         organs.push(organAddress);
 
         emit organCreated(msg.sender, organAddress);
