@@ -1,0 +1,14 @@
+{
+  "name": "solidity",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "\"\"",
+  "private": true,
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.16.2",
+    "bs58": "^4.0.1",
+    "ipfs": "^0.39.1",
+    "truffle": "^5.1.1",
+    "truffle-hdwallet-provider": "^1.0.17"
+  }
+}
