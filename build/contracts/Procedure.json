@@ -1,0 +1,1870 @@
+{
+  "contractName": "Procedure",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_metadataIpfsHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint8",
+          "name": "_metadataHashFunction",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "_metadataHashSize",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "factory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getKelsenData",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "_isOrgan",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "_isProcedure",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint8",
+          "name": "_version",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isOrgan",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "isProcedure",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "kelsenVersion",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "procedureData",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "metadataIpfsHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint8",
+          "name": "metadataHashFunction",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "metadataHashSize",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address payable",
+          "name": "admin",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_ipfsHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint8",
+          "name": "_hashFunction",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "_hashSize",
+          "type": "uint8"
+        }
+      ],
+      "name": "updateMetadata",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_admin",
+          "type": "address"
+        }
+      ],
+      "name": "updateAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.12+commit.7709ece9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_metadataIpfsHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"_metadataHashFunction\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"_metadataHashSize\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":true,\"inputs\":[],\"name\":\"factory\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getKelsenData\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"_isOrgan\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"_isProcedure\",\"type\":\"bool\"},{\"internalType\":\"uint8\",\"name\":\"_version\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"isOrgan\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"isProcedure\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"kelsenVersion\",\"outputs\":[{\"internalType\":\"uint8\",\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"procedureData\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"metadataIpfsHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"metadataHashFunction\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"metadataHashSize\",\"type\":\"uint8\"},{\"internalType\":\"address payable\",\"name\":\"admin\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_admin\",\"type\":\"address\"}],\"name\":\"updateAdmin\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_ipfsHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"_hashFunction\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"_hashSize\",\"type\":\"uint8\"}],\"name\":\"updateMetadata\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/alex/Code/organigr.am/kelsen/contracts/Procedure.sol\":\"Procedure\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/alex/Code/organigr.am/kelsen/contracts/Kelsen.sol\":{\"keccak256\":\"0x3e5910e6e121ebd71ca093b43a516a72b736da69e091d66558b77b3a072e568e\",\"urls\":[\"bzz-raw://f7e3df8ebde92e456794050922c35399bf15a4b05ce3d99ba9bb6cee5e2a47df\",\"dweb:/ipfs/Qmet95pnm1pakin9AwC8Zt2w5V9BXhAi9qQkCUahAwhpac\"]},\"/Users/alex/Code/organigr.am/kelsen/contracts/Organ.sol\":{\"keccak256\":\"0x0f204fc0b599e6989a4e1273485f8e7f33a82d9571ad8f21e42ddbb6cde47e37\",\"urls\":[\"bzz-raw://08b07a5fd162c7b9315c886be42ea480aa50485e18d4ce2486857ec96fd71295\",\"dweb:/ipfs/QmakPvnFmqkB97hmkh2zVJCGVsg1FPu37n9FiZjWnB3KyD\"]},\"/Users/alex/Code/organigr.am/kelsen/contracts/Procedure.sol\":{\"keccak256\":\"0x12805ecb72c4cc2e7f21fb9a41b96e5b0ff7f1ea90819636c35faf21c59c4bda\",\"urls\":[\"bzz-raw://d4dfcdc6de3d974adb13a8d4b4cba691fef05eac94451d433cfb8225392a408e\",\"dweb:/ipfs/QmcDT5NH9DVrTa54FvcjHrHkDC946dmzBq1d5bh4YL3c7S\"]},\"/Users/alex/Code/organigr.am/kelsen/contracts/libraries/organLibrary.sol\":{\"keccak256\":\"0xb0133df8c06b27e32044a6ff71603c5dd92fe6a345d325c2cba68c4d00bd331f\",\"urls\":[\"bzz-raw://cd30a5e6f774fd364f8350a1a316c546f982da0b694eb743c083ce00426d36d6\",\"dweb:/ipfs/QmNdMEVXWUr6GfZFSnuZ1bEPnViF8Js2GkxkrRFkqWjjQd\"]},\"/Users/alex/Code/organigr.am/kelsen/contracts/libraries/procedureLibrary.sol\":{\"keccak256\":\"0x280027e0745446976c2df1495ff3a26e9b9b8be22848dbe8951a04ce9a0151b9\",\"urls\":[\"bzz-raw://bd765352ea62e4ecb589ec6f6eaaa6032d252d12357fd8b984835bac39f221c6\",\"dweb:/ipfs/QmTvW5G5c9rHjRwg11F2AnKLtavJhEnHgzy9dgsoqR4Ei2\"]}},\"version\":1}",
+  "bytecode": "0x608060405260036000806101000a81548160ff021916908360ff16021790555034801561002b57600080fd5b5060405161065b38038061065b8339818101604052606081101561004e57600080fd5b810190808051906020019092919080519060200190929190805190602001909291905050506000600181600060016101000a81548160ff02191690831515021790555080600060026101000a81548160ff021916908315150217905550505033600360006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550600173__ProcedureLibrary______________________63359a395d90918585856040518563ffffffff1660e01b8152600401808581526020018481526020018360ff1660ff1681526020018260ff1660ff16815260200194505050505060006040518083038186803b15801561016457600080fd5b505af4158015610178573d6000803e3d6000fd5b505050505050506104cd8061018e6000396000f3fe608060405234801561001057600080fd5b50600436106100885760003560e01c806390f2ee221161005b57806390f2ee221461019e578063c45a0155146101c0578063c91ebea81461020a578063e2f273bd1461022c57610088565b8063249abcf71461008d57806339c2ae70146100c75780635b07cda51461010f578063759913d61461017a575b600080fd5b610095610270565b6040518084151515158152602001831515151581526020018260ff1660ff168152602001935050505060405180910390f35b61010d600480360360608110156100dd57600080fd5b8101908080359060200190929190803560ff169060200190929190803560ff1690602001909291905050506102ae565b005b610117610341565b604051808581526020018460ff1660ff1681526020018360ff1660ff1681526020018273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200194505050505060405180910390f35b610182610399565b604051808260ff1660ff16815260200191505060405180910390f35b6101a66103ab565b604051808215151515815260200191505060405180910390f35b6101c86103be565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6102126103e4565b604051808215151515815260200191505060405180910390f35b61026e6004803603602081101561024257600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506103f7565b005b60008060008060019054906101000a900460ff16600060029054906101000a900460ff166000809054906101000a900460ff16925092509250909192565b600173__ProcedureLibrary______________________63b8cc9a0290918585856040518563ffffffff1660e01b8152600401808581526020018481526020018360ff1660ff1681526020018260ff1660ff16815260200194505050505060006040518083038186803b15801561032457600080fd5b505af4158015610338573d6000803e3d6000fd5b50505050505050565b60018060000154908060010160009054906101000a900460ff16908060010160019054906101000a900460ff16908060010160029054906101000a900473ffffffffffffffffffffffffffffffffffffffff16905084565b6000809054906101000a900460ff1681565b600060019054906101000a900460ff1681565b600360009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b600060029054906101000a900460ff1681565b600173__ProcedureLibrary______________________638e956e929091836040518363ffffffff1660e01b8152600401808381526020018273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019250505060006040518083038186803b15801561047d57600080fd5b505af4158015610491573d6000803e3d6000fd5b505050505056fea265627a7a7231582020256c0d56185f63074f3c25f2c0868c7f8bd177c80611a36930d95504094a0764736f6c634300050c0032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100885760003560e01c806390f2ee221161005b57806390f2ee221461019e578063c45a0155146101c0578063c91ebea81461020a578063e2f273bd1461022c57610088565b8063249abcf71461008d57806339c2ae70146100c75780635b07cda51461010f578063759913d61461017a575b600080fd5b610095610270565b6040518084151515158152602001831515151581526020018260ff1660ff168152602001935050505060405180910390f35b61010d600480360360608110156100dd57600080fd5b8101908080359060200190929190803560ff169060200190929190803560ff1690602001909291905050506102ae565b005b610117610341565b604051808581526020018460ff1660ff1681526020018360ff1660ff1681526020018273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200194505050505060405180910390f35b610182610399565b604051808260ff1660ff16815260200191505060405180910390f35b6101a66103ab565b604051808215151515815260200191505060405180910390f35b6101c86103be565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6102126103e4565b604051808215151515815260200191505060405180910390f35b61026e6004803603602081101561024257600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506103f7565b005b60008060008060019054906101000a900460ff16600060029054906101000a900460ff166000809054906101000a900460ff16925092509250909192565b600173__ProcedureLibrary______________________63b8cc9a0290918585856040518563ffffffff1660e01b8152600401808581526020018481526020018360ff1660ff1681526020018260ff1660ff16815260200194505050505060006040518083038186803b15801561032457600080fd5b505af4158015610338573d6000803e3d6000fd5b50505050505050565b60018060000154908060010160009054906101000a900460ff16908060010160019054906101000a900460ff16908060010160029054906101000a900473ffffffffffffffffffffffffffffffffffffffff16905084565b6000809054906101000a900460ff1681565b600060019054906101000a900460ff1681565b600360009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b600060029054906101000a900460ff1681565b600173__ProcedureLibrary______________________638e956e929091836040518363ffffffff1660e01b8152600401808381526020018273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019250505060006040518083038186803b15801561047d57600080fd5b505af4158015610491573d6000803e3d6000fd5b505050505056fea265627a7a7231582020256c0d56185f63074f3c25f2c0868c7f8bd177c80611a36930d95504094a0764736f6c634300050c0032",
+  "sourceMap": "149:797:4:-;;;124:1:0;95:30;;;;;;;;;;;;;;;;;;;;397:239:4;8:9:-1;5:2;;;30:1;27;20:12;5:2;397:239:4;;;;;;;;;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;397:239:4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;178:5;184:4;259:8:0;249:7;;:18;;;;;;;;;;;;;;;;;;291:12;277:11;;:26;;;;;;;;;;;;;;;;;;186:124;;530:10:4;520:7;;:20;;;;;;;;;;;;;;;;;;550:13;:18;;;;569:17;588:21;611:17;550:79;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;550:79:4;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;550:79:4;;;;397:239;;;149:797;;;;;;",
+  "deployedSourceMap": "149:797:4:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;149:797:4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;316:168:0;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;642:182:4;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;642:182:4;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;260:51;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;95:30:0;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;131:19;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;368:22:4;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;156:23:0;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;830:114:4;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;830:114:4;;;;;;;;;;;;;;;;;;;:::i;:::-;;316:168:0;369:13;384:17;403:14;441:7;;;;;;;;;;;450:11;;;;;;;;;;;463:13;;;;;;;;;;;433:44;;;;;;316:168;;;:::o;642:182:4:-;752:13;:28;;;;781:9;792:13;807:9;752:65;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;752:65:4;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;752:65:4;;;;642:182;;;:::o;260:51::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;95:30:0:-;;;;;;;;;;;;;:::o;131:19::-;;;;;;;;;;;;;:::o;368:22:4:-;;;;;;;;;;;;;:::o;156:23:0:-;;;;;;;;;;;;;:::o;830:114:4:-;904:13;:25;;;;930:6;904:33;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;904:33:4;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;904:33:4;;;;830:114;:::o",
+  "source": "pragma solidity >=0.4.22 <0.7.0;\n\n/// @title Standard Kelsen Procedure contract.\n\nimport \"./Kelsen.sol\";\nimport \"./libraries/procedureLibrary.sol\";\n\ncontract Procedure is Kelsen(false,true) {\n\n    using ProcedureLibrary for ProcedureLibrary.ProcedureData;\n    ProcedureLibrary.ProcedureData public procedureData;\n\n    // Stores factory that created the procedure.\n    address public factory;\n\n    constructor (bytes32 _metadataIpfsHash, uint8 _metadataHashFunction, uint8 _metadataHashSize)\n        public\n    {\n        factory = msg.sender;\n        procedureData.init(_metadataIpfsHash, _metadataHashFunction, _metadataHashSize);\n    }\n\n    function updateMetadata(bytes32 _ipfsHash, uint8 _hashFunction, uint8 _hashSize)\n        public\n    {\n        procedureData.updateMetadata(_ipfsHash, _hashFunction, _hashSize);\n    }\n\n    function updateAdmin(address payable _admin)\n        public\n    {\n        procedureData.updateAdmin(_admin);\n    }\n}",
+  "sourcePath": "/Users/alex/Code/organigr.am/kelsen/contracts/Procedure.sol",
+  "ast": {
+    "absolutePath": "/Users/alex/Code/organigr.am/kelsen/contracts/Procedure.sol",
+    "exportedSymbols": {
+      "Procedure": [
+        741
+      ]
+    },
+    "id": 742,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 674,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".22",
+          "<",
+          "0.7",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:32:4"
+      },
+      {
+        "absolutePath": "/Users/alex/Code/organigr.am/kelsen/contracts/Kelsen.sol",
+        "file": "./Kelsen.sol",
+        "id": 675,
+        "nodeType": "ImportDirective",
+        "scope": 742,
+        "sourceUnit": 41,
+        "src": "82:22:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/alex/Code/organigr.am/kelsen/contracts/libraries/procedureLibrary.sol",
+        "file": "./libraries/procedureLibrary.sol",
+        "id": 676,
+        "nodeType": "ImportDirective",
+        "scope": 742,
+        "sourceUnit": 4221,
+        "src": "105:42:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": [
+              {
+                "argumentTypes": null,
+                "hexValue": "66616c7365",
+                "id": 678,
+                "isConstant": false,
+                "isLValue": false,
+                "isPure": true,
+                "kind": "bool",
+                "lValueRequested": false,
+                "nodeType": "Literal",
+                "src": "178:5:4",
+                "subdenomination": null,
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "value": "false"
+              },
+              {
+                "argumentTypes": null,
+                "hexValue": "74727565",
+                "id": 679,
+                "isConstant": false,
+                "isLValue": false,
+                "isPure": true,
+                "kind": "bool",
+                "lValueRequested": false,
+                "nodeType": "Literal",
+                "src": "184:4:4",
+                "subdenomination": null,
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "value": "true"
+              }
+            ],
+            "baseName": {
+              "contractScope": null,
+              "id": 677,
+              "name": "Kelsen",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 40,
+              "src": "171:6:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Kelsen_$40",
+                "typeString": "contract Kelsen"
+              }
+            },
+            "id": 680,
+            "nodeType": "InheritanceSpecifier",
+            "src": "171:18:4"
+          }
+        ],
+        "contractDependencies": [
+          40
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 741,
+        "linearizedBaseContracts": [
+          741,
+          40
+        ],
+        "name": "Procedure",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "id": 683,
+            "libraryName": {
+              "contractScope": null,
+              "id": 681,
+              "name": "ProcedureLibrary",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4220,
+              "src": "203:16:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ProcedureLibrary_$4220",
+                "typeString": "library ProcedureLibrary"
+              }
+            },
+            "nodeType": "UsingForDirective",
+            "src": "197:58:4",
+            "typeName": {
+              "contractScope": null,
+              "id": 682,
+              "name": "ProcedureLibrary.ProcedureData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4028,
+              "src": "224:30:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_ProcedureData_$4028_storage_ptr",
+                "typeString": "struct ProcedureLibrary.ProcedureData"
+              }
+            }
+          },
+          {
+            "constant": false,
+            "id": 685,
+            "name": "procedureData",
+            "nodeType": "VariableDeclaration",
+            "scope": 741,
+            "src": "260:51:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+              "typeString": "struct ProcedureLibrary.ProcedureData"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 684,
+              "name": "ProcedureLibrary.ProcedureData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4028,
+              "src": "260:30:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_ProcedureData_$4028_storage_ptr",
+                "typeString": "struct ProcedureLibrary.ProcedureData"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 687,
+            "name": "factory",
+            "nodeType": "VariableDeclaration",
+            "scope": 741,
+            "src": "368:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 686,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "368:7:4",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 709,
+              "nodeType": "Block",
+              "src": "510:126:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 699,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 696,
+                      "name": "factory",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 687,
+                      "src": "520:7:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 697,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4927,
+                        "src": "530:3:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 698,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "530:10:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address_payable",
+                        "typeString": "address payable"
+                      }
+                    },
+                    "src": "520:20:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 700,
+                  "nodeType": "ExpressionStatement",
+                  "src": "520:20:4"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 704,
+                        "name": "_metadataIpfsHash",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 689,
+                        "src": "569:17:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 705,
+                        "name": "_metadataHashFunction",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 691,
+                        "src": "588:21:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 706,
+                        "name": "_metadataHashSize",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 693,
+                        "src": "611:17:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 701,
+                        "name": "procedureData",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 685,
+                        "src": "550:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+                          "typeString": "struct ProcedureLibrary.ProcedureData storage ref"
+                        }
+                      },
+                      "id": 703,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "init",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 4081,
+                      "src": "550:18:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_delegatecall_nonpayable$_t_struct$_ProcedureData_$4028_storage_ptr_$_t_bytes32_$_t_uint8_$_t_uint8_$returns$__$bound_to$_t_struct$_ProcedureData_$4028_storage_ptr_$",
+                        "typeString": "function (struct ProcedureLibrary.ProcedureData storage pointer,bytes32,uint8,uint8)"
+                      }
+                    },
+                    "id": 707,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "550:79:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 708,
+                  "nodeType": "ExpressionStatement",
+                  "src": "550:79:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 710,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 694,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 689,
+                  "name": "_metadataIpfsHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 710,
+                  "src": "410:25:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 688,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "410:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 691,
+                  "name": "_metadataHashFunction",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 710,
+                  "src": "437:27:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 690,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "437:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 693,
+                  "name": "_metadataHashSize",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 710,
+                  "src": "466:23:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 692,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "466:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "409:81:4"
+            },
+            "returnParameters": {
+              "id": 695,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "510:0:4"
+            },
+            "scope": 741,
+            "src": "397:239:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 727,
+              "nodeType": "Block",
+              "src": "742:82:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 722,
+                        "name": "_ipfsHash",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 712,
+                        "src": "781:9:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 723,
+                        "name": "_hashFunction",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 714,
+                        "src": "792:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 724,
+                        "name": "_hashSize",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 716,
+                        "src": "807:9:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 719,
+                        "name": "procedureData",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 685,
+                        "src": "752:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+                          "typeString": "struct ProcedureLibrary.ProcedureData storage ref"
+                        }
+                      },
+                      "id": 721,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "updateMetadata",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 4193,
+                      "src": "752:28:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_delegatecall_nonpayable$_t_struct$_ProcedureData_$4028_storage_ptr_$_t_bytes32_$_t_uint8_$_t_uint8_$returns$__$bound_to$_t_struct$_ProcedureData_$4028_storage_ptr_$",
+                        "typeString": "function (struct ProcedureLibrary.ProcedureData storage pointer,bytes32,uint8,uint8)"
+                      }
+                    },
+                    "id": 725,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "752:65:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 726,
+                  "nodeType": "ExpressionStatement",
+                  "src": "752:65:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 728,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "updateMetadata",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 717,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 712,
+                  "name": "_ipfsHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 728,
+                  "src": "666:17:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 711,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "666:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 714,
+                  "name": "_hashFunction",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 728,
+                  "src": "685:19:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 713,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "685:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 716,
+                  "name": "_hashSize",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 728,
+                  "src": "706:15:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 715,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "706:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "665:57:4"
+            },
+            "returnParameters": {
+              "id": 718,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "742:0:4"
+            },
+            "scope": 741,
+            "src": "642:182:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 739,
+              "nodeType": "Block",
+              "src": "894:50:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 736,
+                        "name": "_admin",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 730,
+                        "src": "930:6:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 733,
+                        "name": "procedureData",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 685,
+                        "src": "904:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+                          "typeString": "struct ProcedureLibrary.ProcedureData storage ref"
+                        }
+                      },
+                      "id": 735,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "updateAdmin",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 4128,
+                      "src": "904:25:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_delegatecall_nonpayable$_t_struct$_ProcedureData_$4028_storage_ptr_$_t_address_payable_$returns$__$bound_to$_t_struct$_ProcedureData_$4028_storage_ptr_$",
+                        "typeString": "function (struct ProcedureLibrary.ProcedureData storage pointer,address payable)"
+                      }
+                    },
+                    "id": 737,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "904:33:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 738,
+                  "nodeType": "ExpressionStatement",
+                  "src": "904:33:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 740,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "updateAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 731,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 730,
+                  "name": "_admin",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 740,
+                  "src": "851:22:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 729,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "851:15:4",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "850:24:4"
+            },
+            "returnParameters": {
+              "id": 732,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "894:0:4"
+            },
+            "scope": 741,
+            "src": "830:114:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 742,
+        "src": "149:797:4"
+      }
+    ],
+    "src": "0:946:4"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/alex/Code/organigr.am/kelsen/contracts/Procedure.sol",
+    "exportedSymbols": {
+      "Procedure": [
+        741
+      ]
+    },
+    "id": 742,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 674,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".22",
+          "<",
+          "0.7",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:32:4"
+      },
+      {
+        "absolutePath": "/Users/alex/Code/organigr.am/kelsen/contracts/Kelsen.sol",
+        "file": "./Kelsen.sol",
+        "id": 675,
+        "nodeType": "ImportDirective",
+        "scope": 742,
+        "sourceUnit": 41,
+        "src": "82:22:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/alex/Code/organigr.am/kelsen/contracts/libraries/procedureLibrary.sol",
+        "file": "./libraries/procedureLibrary.sol",
+        "id": 676,
+        "nodeType": "ImportDirective",
+        "scope": 742,
+        "sourceUnit": 4221,
+        "src": "105:42:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": [
+              {
+                "argumentTypes": null,
+                "hexValue": "66616c7365",
+                "id": 678,
+                "isConstant": false,
+                "isLValue": false,
+                "isPure": true,
+                "kind": "bool",
+                "lValueRequested": false,
+                "nodeType": "Literal",
+                "src": "178:5:4",
+                "subdenomination": null,
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "value": "false"
+              },
+              {
+                "argumentTypes": null,
+                "hexValue": "74727565",
+                "id": 679,
+                "isConstant": false,
+                "isLValue": false,
+                "isPure": true,
+                "kind": "bool",
+                "lValueRequested": false,
+                "nodeType": "Literal",
+                "src": "184:4:4",
+                "subdenomination": null,
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "value": "true"
+              }
+            ],
+            "baseName": {
+              "contractScope": null,
+              "id": 677,
+              "name": "Kelsen",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 40,
+              "src": "171:6:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Kelsen_$40",
+                "typeString": "contract Kelsen"
+              }
+            },
+            "id": 680,
+            "nodeType": "InheritanceSpecifier",
+            "src": "171:18:4"
+          }
+        ],
+        "contractDependencies": [
+          40
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 741,
+        "linearizedBaseContracts": [
+          741,
+          40
+        ],
+        "name": "Procedure",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "id": 683,
+            "libraryName": {
+              "contractScope": null,
+              "id": 681,
+              "name": "ProcedureLibrary",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4220,
+              "src": "203:16:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ProcedureLibrary_$4220",
+                "typeString": "library ProcedureLibrary"
+              }
+            },
+            "nodeType": "UsingForDirective",
+            "src": "197:58:4",
+            "typeName": {
+              "contractScope": null,
+              "id": 682,
+              "name": "ProcedureLibrary.ProcedureData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4028,
+              "src": "224:30:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_ProcedureData_$4028_storage_ptr",
+                "typeString": "struct ProcedureLibrary.ProcedureData"
+              }
+            }
+          },
+          {
+            "constant": false,
+            "id": 685,
+            "name": "procedureData",
+            "nodeType": "VariableDeclaration",
+            "scope": 741,
+            "src": "260:51:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+              "typeString": "struct ProcedureLibrary.ProcedureData"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 684,
+              "name": "ProcedureLibrary.ProcedureData",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 4028,
+              "src": "260:30:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_struct$_ProcedureData_$4028_storage_ptr",
+                "typeString": "struct ProcedureLibrary.ProcedureData"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 687,
+            "name": "factory",
+            "nodeType": "VariableDeclaration",
+            "scope": 741,
+            "src": "368:22:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 686,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "368:7:4",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 709,
+              "nodeType": "Block",
+              "src": "510:126:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 699,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 696,
+                      "name": "factory",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 687,
+                      "src": "520:7:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 697,
+                        "name": "msg",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 4927,
+                        "src": "530:3:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_magic_message",
+                          "typeString": "msg"
+                        }
+                      },
+                      "id": 698,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "sender",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "530:10:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address_payable",
+                        "typeString": "address payable"
+                      }
+                    },
+                    "src": "520:20:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 700,
+                  "nodeType": "ExpressionStatement",
+                  "src": "520:20:4"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 704,
+                        "name": "_metadataIpfsHash",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 689,
+                        "src": "569:17:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 705,
+                        "name": "_metadataHashFunction",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 691,
+                        "src": "588:21:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 706,
+                        "name": "_metadataHashSize",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 693,
+                        "src": "611:17:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 701,
+                        "name": "procedureData",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 685,
+                        "src": "550:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+                          "typeString": "struct ProcedureLibrary.ProcedureData storage ref"
+                        }
+                      },
+                      "id": 703,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "init",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 4081,
+                      "src": "550:18:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_delegatecall_nonpayable$_t_struct$_ProcedureData_$4028_storage_ptr_$_t_bytes32_$_t_uint8_$_t_uint8_$returns$__$bound_to$_t_struct$_ProcedureData_$4028_storage_ptr_$",
+                        "typeString": "function (struct ProcedureLibrary.ProcedureData storage pointer,bytes32,uint8,uint8)"
+                      }
+                    },
+                    "id": 707,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "550:79:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 708,
+                  "nodeType": "ExpressionStatement",
+                  "src": "550:79:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 710,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 694,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 689,
+                  "name": "_metadataIpfsHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 710,
+                  "src": "410:25:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 688,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "410:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 691,
+                  "name": "_metadataHashFunction",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 710,
+                  "src": "437:27:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 690,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "437:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 693,
+                  "name": "_metadataHashSize",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 710,
+                  "src": "466:23:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 692,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "466:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "409:81:4"
+            },
+            "returnParameters": {
+              "id": 695,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "510:0:4"
+            },
+            "scope": 741,
+            "src": "397:239:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 727,
+              "nodeType": "Block",
+              "src": "742:82:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 722,
+                        "name": "_ipfsHash",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 712,
+                        "src": "781:9:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 723,
+                        "name": "_hashFunction",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 714,
+                        "src": "792:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 724,
+                        "name": "_hashSize",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 716,
+                        "src": "807:9:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        },
+                        {
+                          "typeIdentifier": "t_uint8",
+                          "typeString": "uint8"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 719,
+                        "name": "procedureData",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 685,
+                        "src": "752:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+                          "typeString": "struct ProcedureLibrary.ProcedureData storage ref"
+                        }
+                      },
+                      "id": 721,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "updateMetadata",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 4193,
+                      "src": "752:28:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_delegatecall_nonpayable$_t_struct$_ProcedureData_$4028_storage_ptr_$_t_bytes32_$_t_uint8_$_t_uint8_$returns$__$bound_to$_t_struct$_ProcedureData_$4028_storage_ptr_$",
+                        "typeString": "function (struct ProcedureLibrary.ProcedureData storage pointer,bytes32,uint8,uint8)"
+                      }
+                    },
+                    "id": 725,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "752:65:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 726,
+                  "nodeType": "ExpressionStatement",
+                  "src": "752:65:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 728,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "updateMetadata",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 717,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 712,
+                  "name": "_ipfsHash",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 728,
+                  "src": "666:17:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 711,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "666:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 714,
+                  "name": "_hashFunction",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 728,
+                  "src": "685:19:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 713,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "685:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 716,
+                  "name": "_hashSize",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 728,
+                  "src": "706:15:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  },
+                  "typeName": {
+                    "id": 715,
+                    "name": "uint8",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "706:5:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint8",
+                      "typeString": "uint8"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "665:57:4"
+            },
+            "returnParameters": {
+              "id": 718,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "742:0:4"
+            },
+            "scope": 741,
+            "src": "642:182:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 739,
+              "nodeType": "Block",
+              "src": "894:50:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 736,
+                        "name": "_admin",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 730,
+                        "src": "930:6:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 733,
+                        "name": "procedureData",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 685,
+                        "src": "904:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_ProcedureData_$4028_storage",
+                          "typeString": "struct ProcedureLibrary.ProcedureData storage ref"
+                        }
+                      },
+                      "id": 735,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "updateAdmin",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 4128,
+                      "src": "904:25:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_delegatecall_nonpayable$_t_struct$_ProcedureData_$4028_storage_ptr_$_t_address_payable_$returns$__$bound_to$_t_struct$_ProcedureData_$4028_storage_ptr_$",
+                        "typeString": "function (struct ProcedureLibrary.ProcedureData storage pointer,address payable)"
+                      }
+                    },
+                    "id": 737,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "904:33:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 738,
+                  "nodeType": "ExpressionStatement",
+                  "src": "904:33:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 740,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "updateAdmin",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 731,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 730,
+                  "name": "_admin",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 740,
+                  "src": "851:22:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 729,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "851:15:4",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "850:24:4"
+            },
+            "returnParameters": {
+              "id": 732,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "894:0:4"
+            },
+            "scope": 741,
+            "src": "830:114:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 742,
+        "src": "149:797:4"
+      }
+    ],
+    "src": "0:946:4"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.12+commit.7709ece9.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.19",
+  "updatedAt": "2020-03-08T14:18:42.719Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
