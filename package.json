@@ -1,11 +1,12 @@
 {
-  "name": "kelsen",
+  "name": "@organigram/kelsen",
   "version": "0.1.0",
   "description": "Kelsen, solidity smart-contracts framework for governance systems.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "97 Network <hello@97.network> (https://97.network)",
   "contributors": [
     "97 Network <hello@97.network> (https://97.network)",
     "Organigr.am <dev@organigr.am> (https://organigr.am)"
@@ -17,5 +18,24 @@
     "ipfs": "^0.39.1",
     "truffle": "^5.1.1",
     "truffle-hdwallet-provider": "^1.0.17"
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/organigram/kelsen.git"
+  },
+  "keywords": [
+    "kelsen",
+    "solidity",
+    "governance",
+    "ethereum",
+    "dapp"
+  ],
+  "bugs": {
+    "url": "https://github.com/organigram/kelsen/issues"
+  },
+  "homepage": "https://github.com/organigram/kelsen#readme"
 }
