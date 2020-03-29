@@ -9,10 +9,8 @@
   "author": "Organigr.am <dev@organigr.am> (https://organigr.am)",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.17.1",
     "bs58": "^4.0.1",
     "ipfs": "^0.41.2",
-    "truffle": "^5.1.19",
     "truffle-hdwallet-provider": "^1.0.17"
   },
   "directories": {
