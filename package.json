@@ -1,22 +1,18 @@
 {
-  "name": "@organigram/kelsen",
-  "version": "0.1.0",
-  "description": "Kelsen, solidity smart-contracts framework for governance systems.",
+  "name": "@organigram/contracts",
+  "version": "0.1.1",
+  "description": "Solidity smart-contracts framework for governance systems.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "97 Network <hello@97.network> (https://97.network)",
-  "contributors": [
-    "97 Network <hello@97.network> (https://97.network)",
-    "Organigr.am <dev@organigr.am> (https://organigr.am)"
-  ],
+  "author": "Organigr.am <dev@organigr.am> (https://organigr.am)",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.16.2",
+    "@graphprotocol/graph-cli": "^0.17.1",
     "bs58": "^4.0.1",
-    "ipfs": "^0.39.1",
-    "truffle": "^5.1.1",
+    "ipfs": "^0.41.2",
+    "truffle": "^5.1.19",
     "truffle-hdwallet-provider": "^1.0.17"
   },
   "directories": {
@@ -25,17 +21,18 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/organigram/kelsen.git"
+    "url": "git+https://github.com/organigram/contracts.git"
   },
   "keywords": [
-    "kelsen",
+    "organigram",
     "solidity",
     "governance",
+    "organisations",
     "ethereum",
     "dapp"
   ],
   "bugs": {
-    "url": "https://github.com/organigram/kelsen/issues"
+    "url": "https://github.com/organigram/contracts/issues"
   },
-  "homepage": "https://github.com/organigram/kelsen#readme"
+  "homepage": "https://github.com/organigram/contracts#readme"
 }

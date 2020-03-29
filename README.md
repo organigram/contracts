@@ -1,8 +1,8 @@
-# Kelsen
+# Organigr.am Contracts
 
-Kelsen is a Solidity framework for building governance systems on Ethereum.
+Organigr.am Contracts is a Solidity framework for building governance systems on Ethereum.
 
-Kelsen dictates the governance through the architecture of its organisation.
+Organigr.am Contracts dictates the governance through the architecture of its organisation.
 
 For example, in order to add a document into a Publications organ, a member of the Redactors organ can call the Publish procedure.  Master procedures make it easy to administer the governance by modifying the architecture and replacing procedures.
 
@@ -15,26 +15,27 @@ For example, in order to add a document into a Publications organ, a member of t
 
 - Install package from NPM registry with
   ```bash
-  npm install --save @organigram/kelsen
+  npm install --save @organigram/contracts
   # or
-  yarn add @organigram/kelsen
+  yarn add @organigram/contracts
   ```
 - Import contracts in your solidity contracts like so
   ```javascript
-  import "@organigram/kelsen/contracts/Organ.sol";
+  import "@organigram/contracts/Organ.sol";
   ```
 - Import contracts artifacts in your JS code with
   ```javascript
   var contract = require("truffle-contract");
-  var data = require("@organigram/kelsen/build/contracts/Organ.json");
+  var data = require("@organigram/contracts/build/contracts/Organ.json");
   var Organ = contract(data);
   ```
 
 ## Third-party services
 
-- [Organigr.am](https://organigr.am) provides Governance-as-a-Service. It uses Kelsen to deploy your whole organisation chart and connects it with external services.
+- [Organigr.am](https://organigr.am) provides Governance-as-a-Service. It uses these contracts to deploy your whole organisation chart and connects it with external services.
 
 ## Contributing
 
-You can contribute to the Kelsen Solidity smart-contracts framework at the original github page.
-https://github.com/97network/Kelsen
+We are looking for Solidity developers and testers to keep our contracts secure and up-to-date. Please create issues in our Github page, fork and create Pull-Requests.
+
+https://github.com/organigram/contracts
