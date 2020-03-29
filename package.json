@@ -1,6 +1,6 @@
 {
   "name": "@organigram/contracts",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Solidity smart-contracts framework for governance systems.",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,6 @@
   "directories": {
     "doc": "docs"
   },
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/organigram/contracts.git"
