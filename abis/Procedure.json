@@ -1,0 +1,179 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashSize",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getKelsenData",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "_isOrgan",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isProcedure",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_version",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isOrgan",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isProcedure",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "kelsenVersion",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "procedureData",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashSize",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "admin",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_ipfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_hashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_hashSize",
+        "type": "uint8"
+      }
+    ],
+    "name": "updateMetadata",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_admin",
+        "type": "address"
+      }
+    ],
+    "name": "updateAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

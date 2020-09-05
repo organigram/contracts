@@ -1,0 +1,480 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashSize",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_votersOrganContract",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_affectedOrganContract",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_frequency",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_votingDuration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quorumSize",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_mandatesMaximum",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "currentElection",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "candidacyEndDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "hasQuorum",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isEnded",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votesTotal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votersTotal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "electedCandidatesMaximum",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumVotesToBeWinning",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashSize",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "cyclicalElectionData",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "frequency",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votingDuration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "candidacyDuration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nextElectionDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "mandatesMaximum",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quorumSize",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votersToCandidatesRatio",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "votersOrganContract",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "affectedOrganContract",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getKelsenData",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "_isOrgan",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isProcedure",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_version",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isOrgan",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isProcedure",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "kelsenVersion",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "procedureData",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "metadataHashSize",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address payable",
+        "name": "admin",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_admin",
+        "type": "address"
+      }
+    ],
+    "name": "updateAdmin",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_ipfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_hashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_hashSize",
+        "type": "uint8"
+      }
+    ],
+    "name": "updateMetadata",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_metadataIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_metadataHashSize",
+        "type": "uint8"
+      }
+    ],
+    "name": "createElection",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_proposalIpfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_proposalHashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_proposalHashSize",
+        "type": "uint8"
+      }
+    ],
+    "name": "presentCandidacy",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_candidate",
+        "type": "address"
+      }
+    ],
+    "name": "vote",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "endElection",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "electionWinner",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getCurrentCandidates",
+    "outputs": [
+      {
+        "internalType": "address payable[]",
+        "name": "candidates",
+        "type": "address[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getLatestElectionIVotedIn",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "electionIndex",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_candidate",
+        "type": "address"
+      }
+    ],
+    "name": "getCandidacyProposal",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "ipfsHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "hashFunction",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "hashSize",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
