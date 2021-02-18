@@ -15,8 +15,8 @@
   "devDependencies": {
     "bs58": "^4.0.1",
     "cids": "^1.0.0",
-    "ipfs": "^0.50.1",
-    "ipfs-http-client": "^46.1.1",
+    "ipfs": "^0.54.2",
+    "ipfs-http-client": "^49.0.2",
     "truffle": "^5.1.43",
     "truffle-hdwallet-provider": "^1.0.17"
   },
